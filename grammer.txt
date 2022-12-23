@@ -1,0 +1,6 @@
+Program -> function | variable
+variable -> type id = value; | type id
+type -> int | char
+id -> IDENT
+
+expr -> num 
