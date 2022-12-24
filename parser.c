@@ -6,6 +6,7 @@
 #define NUM_ACTIONS 9
 #define NUM_GOTO 7
 #define NUM_INSTANCES 24
+#define TOTAL_TOKENS 26
 
 typedef enum Step{
 	STEP_SHIFT,
@@ -313,9 +314,22 @@ void printRule(struct Rule rule) {
 }
 
 void printRules() {
+	printf("----------GRAMMAR-----------\n");
 	for (int i = 0; i < NUM_RULES; i++) {
 		printRule(rules[i]);
 	}
+}
+
+void shift(Token *token, Token *instance) {
+	push(token);
+	push(instance);
+}
+
+void reduce(int rule) {
+	for (int i = 0; i < rules[rule].length * 2; i++) {
+		pop();
+	}
+	push(varTokens[rule-(NUM_INSTANCES+TOTAL_TOKENS)]);
 }
 
 int parse() {
