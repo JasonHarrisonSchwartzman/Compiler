@@ -35,8 +35,20 @@ int tokenIndex = 0;
 struct Rule rules[NUM_RULES];
 
 struct Token **stack;
-int stackCapacity = 1;
-int stackTopPointer = 0;
+int stackCapacity = 0;
+int stackTopPointer = 0;//points to top of the stack
+
+void push(Token *token) {
+	stack = realloc(stack,sizeof(Token) * (stackTopPointer + 1));
+	stack[stackTopPointer++] = token;
+}
+void pop() {
+	stack = realloc(stack,sizeof(Token) * (--stackTopPointer));
+}
+
+Token *getTopOfStack() {
+	return stack[stackTopPointer];
+}
 
 void printToken(token_t token) {
 	char *str;
