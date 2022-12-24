@@ -5,16 +5,18 @@
 #define NUM_RULES 15
 #define NUM_ACTIONS 9
 #define NUM_GOTO 7
+#define NUM_INSTANCES 24
 
 typedef enum Step{
 	STEP_SHIFT,
 	STEP_REDUCE,
-	STEP_ERROR
+	STEP_ERROR,
+	STEP_ACCEPT
 }Step;
 
 struct Action {
 	Step step;
-	int instance;
+	int instance;//or rule in grammar
 };
 
 struct Rule {
@@ -24,19 +26,70 @@ struct Rule {
 } Rule;
 
 struct Instance {
-	struct Action action[NUM_ACTIONS];
+	struct Action actions[NUM_ACTIONS];
 	int gotoAction[NUM_GOTO];
 };
 
-extern struct Token **tokens;
-extern int numTokens;
-int tokenIndex = 0;
+struct Instance instances[NUM_INSTANCES];
 
-struct Rule rules[NUM_RULES];
+struct Token *instanceTokens[NUM_INSTANCES];//instance tokens (for stack)
+struct Token *varTokens[NUM_GOTO];//variable (nonterminal) tokens (for stack)
+extern struct Token **tokens;//input of tokens
+extern int numTokens;
+int tokenIndex = 0;//for reading input
+
+struct Rule rules[NUM_RULES];//grammar
 
 struct Token **stack;
 int stackCapacity = 0;
 int stackTopPointer = 0;//points to top of the stack
+
+void addInstanceAction(int instanceNum, struct Action action, int actionNum) {
+	instances[instanceNum].actions[actionNum].step = action.step;
+	instances[instanceNum].actions[actionNum].instance = action.instance;
+}
+void addInstanceGoto(int instanceNum, int gotoNum, int gotoInstance) {
+	instances[instanceNum].gotoAction[gotoNum] = gotoInstance;
+}
+
+void initializeInstances() {
+	//instance 0
+	struct Action action0id = { STEP_SHIFT, 5 };
+	struct Action action0int = { STEP_SHIFT, 6 };
+	struct Action action0long = { STEP_SHIFT, 7 };
+	addInstanceAction(0,action0id,1);
+	addInstanceAction(0,action0int,6);
+	addInstanceAction(0,action0long,7);
+	addInstanceGoto(0,0,1);
+	addInstanceGoto(0,1,2);
+	addInstanceGoto(0,2,3);
+	addInstanceGoto(0,3,4);
+	//instance 1
+	struct Action action1$ = { STEP_ACCEPT, -1 };
+	addInstanceAction(1,action1$,8);
+	//instance 2
+	struct Action action2id = { STEP_SHIFT, 5 };
+	struct Action action2int = { STEP_SHIFT, 6 };
+	struct Action action2long = { STEP_SHIFT, 7 };
+	struct Action action2$ = { STEP_REDUCE, 2 };
+	addInstanceAction(2,action2id,1);
+	addInstanceAction(2,action2int,6);
+	addInstanceAction(2,action2long,7);
+	addInstanceAction(2,action2$,8);
+	addInstanceGoto(2,0,8);
+	addInstanceGoto(2,1,2);
+	addInstanceGoto(2,2,3);
+	addInstanceGoto(2,3,4);
+	//instance 3
+	struct Action action3 = { STEP_REDUCE, 3 };
+	addInstanceAction(3,action3,1);
+	addInstanceAction(3,action3,6);
+	addInstanceAction(3,action3,7);
+	addInstanceAction(3,action3,8);
+	//instance 4
+
+
+}
 
 void push(Token *token) {
 	stack = realloc(stack,sizeof(Token) * (stackTopPointer + 1));
@@ -54,6 +107,33 @@ void freeStack() {
 	free(stack);
 }
 
+void printToken(token_t token);
+
+void printStack() {
+	for (int i = 0; i < stackTopPointer; i++) {
+		printToken(stack[i]->tokenType);
+	}
+}
+
+void createInstanceAndVarTokens() {
+	for (int i = 0; i < NUM_INSTANCES; i++) {
+		instanceTokens[i] = malloc(sizeof(Token));
+		instanceTokens[i]->tokenType = i;
+	}
+	for (int i = 0; i < NUM_GOTO; i++) {
+		varTokens[i] = malloc(sizeof(Token));
+		varTokens[i]->tokenType = NUM_INSTANCES + i; 
+	}
+}
+
+void freeInstanceAndVarTokens() {
+	for (int i = 0; i < NUM_INSTANCES; i++) {
+		free(instanceTokens[i]);
+	}
+	for (int i = 0; i < NUM_GOTO; i++) {
+		free(varTokens[i]);
+	}
+}
 void printToken(token_t token) {
 	char *str;
 	switch(token) {
@@ -145,8 +225,9 @@ void printRules() {
 		printRule(rules[i]);
 	}
 }
+
 int parse() {
-		
+
 	for (int i = 0; i < numTokens; i++) {
 		
 	}
@@ -158,7 +239,9 @@ void freeRules() {
 		free(rules[i].symbols);
 	}
 }
-
+/*
+ * initializing grammar
+ */
 void initializeRules() {
 	token_t rule0[1] = { VAR_L };
 	addRule(0, VAR_P, 1, rule0);
@@ -195,8 +278,16 @@ void initializeRules() {
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);
 	initializeRules();
+	createInstanceAndVarTokens();
 	printRules();
+	initializeInstances();
+
+
+
+
+
 	freeRules();
+	freeInstanceAndVarTokens();
 	//freeTokens();seg fault
 	freeStack();
 }
