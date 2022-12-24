@@ -87,7 +87,52 @@ void initializeInstances() {
 	addInstanceAction(3,action3,7);
 	addInstanceAction(3,action3,8);
 	//instance 4
-
+	struct Action action4id = { STEP_SHIFT, 9 };
+	addInstanceAction(4,action4id,1);
+	//instance 5
+	struct Action action5Assign = { STEP_SHIFT, 10};
+	addInstanceAction(5,action5Assign,4);
+	//instance 6
+	struct Action action6id = { STEP_REDUCE, 6};
+	addInstanceAction(6,action6id,1);
+	//instance 7
+	struct Action action7id = { STEP_REDUCE, 7};
+	addInstanceAction(7,action7id,1);
+	//instance 8
+	struct Action action8$ = { STEP_REDUCE, 1};
+	addInstanceAction(8,action8$,8);
+	//instance 9
+	struct Action action9Equal = { STEP_SHIFT, 11 };
+	addInstanceAction(9,action9Equal,4);
+	//instance 10
+	struct Action action10num = { STEP_SHIFT, 13 };
+	struct Action action10id = { STEP_SHIFT, 14 };
+	addInstanceAction(10,action10num,0);
+	addInstanceAction(10,action10id,1);
+	addInstanceGoto(10,4,12);
+	//instance 11
+	addInstanceAction(11,action10num,0);
+	addInstanceAction(11,action10id,1);
+	addInstanceGoto(10,4,15);
+	//instance 12
+	struct Action action12Plus = { STEP_SHIFT, 18};
+	struct Action action12Minus = { STEP_SHIFT, 19};
+	struct Action action12Semi = { STEP_SHIFT, 16};
+	addInstanceAction(12,action12Plus,2);
+	addInstanceAction(12,action12Minus,3);
+	addInstanceAction(12,action12Semi,5);
+	addInstanceGoto(12,5,17);
+	//instance 13
+	struct Action action13 = { STEP_REDUCE, 8 };
+	addInstanceAction(13,action13,2);
+	addInstanceAction(13,action13,3);
+	addInstanceAction(13,action13,5);
+	//instance 14
+	struct Action action14 = { STEP_REDUCE, 9};
+	addInstanceAction(14,action14,2);
+	addInstanceAction(14,action14,3);
+	addInstanceAction(14,action14,5);
+	//instance 15
 
 }
 
