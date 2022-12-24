@@ -133,7 +133,54 @@ void initializeInstances() {
 	addInstanceAction(14,action14,3);
 	addInstanceAction(14,action14,5);
 	//instance 15
-
+	struct Action action15Plus = { STEP_SHIFT, 18 };
+	struct Action action15Minus = { STEP_SHIFT, 19 };
+	struct Action action15Semi = { STEP_SHIFT, 20 };
+	addInstanceAction(15,action15Plus,2);
+	addInstanceAction(15,action15Minus,3);
+	addInstanceAction(15,action15Semi,5);
+	addInstanceGoto(15,5,17);
+	//instance 16
+	struct Action action16 = { STEP_REDUCE, 5};
+	addInstanceAction(16,action16,1);
+	addInstanceAction(16,action16,6);
+	addInstanceAction(16,action16,7);
+	addInstanceAction(16,action16,8);
+	//instance 17
+	struct Action action17num = { STEP_SHIFT, 22 };
+	struct Action action17id = { STEP_SHIFT, 23 };
+	addInstanceAction(17,action17num,0);
+	addInstanceAction(17,action17id,1);
+	addInstanceGoto(17,6,21);
+	//instance 18
+	struct Action action18 = { STEP_REDUCE, 11 };
+	addInstanceAction(18,action18,0);
+	addInstanceAction(18,action18,1);
+	//instance 19
+	struct Action action19 = { STEP_REDUCE, 12};
+	addInstanceAction(19,action19,0);
+	addInstanceAction(19,action19,1);
+	//instance 20
+	struct Action action20 = { STEP_REDUCE, 4};
+	addInstanceAction(20,action20,1);
+	addInstanceAction(20,action20,6);
+	addInstanceAction(20,action20,7);
+	addInstanceAction(20,action20,8);
+	//instance 21
+	struct Action action21 = { STEP_REDUCE, 10};
+	addInstanceAction(21,action21,2);
+	addInstanceAction(21,action21,3);
+	addInstanceAction(21,action21,5);
+	//instance 22
+	struct Action action22 = { STEP_REDUCE, 13};
+	addInstanceAction(22,action22,2);
+	addInstanceAction(22,action22,3);
+	addInstanceAction(22,action22,5);
+	//instance 23
+	struct Action action23 = { STEP_REDUCE, 14};
+	addInstanceAction(23,action23,2);
+	addInstanceAction(23,action23,3);
+	addInstanceAction(23,action23,5);
 }
 
 void push(Token *token) {
