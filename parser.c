@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "token.h"
 #include "scanner.c"
-#define NUM_RULES 14
+#define NUM_RULES 15
 #define NUM_ACTIONS 9
 #define NUM_GOTO 7
 
@@ -19,7 +19,7 @@ struct Action {
 
 struct Rule {
 	token_t var;
-	token_t *symbol;//tokens and variables
+	token_t *symbols;//tokens and variables
 	int length;
 } Rule;
 
@@ -108,8 +108,9 @@ void printToken(token_t token) {
 void addRule(int item, token_t var, int length, token_t symbol[length]) {
 	rules[item].var = var;
 	rules[item].length = length;
+	rules[item].symbols = malloc(sizeof(token_t) * length);
 	for (int i = 0; i < length; i++) {
-		rules[item].symbol[i] = symbol[i];
+		rules[item].symbols[i] = symbol[i];
 	}
 }
 
@@ -118,7 +119,7 @@ void printRule(struct Rule rule) {
 	printf("->");
 	for (int i = 0; i < rule.length; i++) {
 		printf(" ");
-		printToken(rule.symbol[i]);
+		printToken(rule.symbols[i]);
 	}
 	printf("\n");
 }
@@ -135,8 +136,15 @@ int parse() {
 	return -1;
 }
 
+void freeRules() {
+	for (int i = 0; i < NUM_RULES; i++) {
+		free(rules[i].symbols);
+	}
+}
+
 void initializeRules() {
 	token_t rule0[1] = { VAR_L };
+	printf("Test\n");
 	addRule(0, VAR_P, 1, rule0);
 	token_t rule1[2] = { VAR_D, VAR_L };
 	addRule(1, VAR_L, 2, rule1);
@@ -171,4 +179,6 @@ void initializeRules() {
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);
 	initializeRules();
+	printRules();
+	freeRules();
 }
