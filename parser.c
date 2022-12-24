@@ -50,6 +50,10 @@ Token *getTopOfStack() {
 	return stack[stackTopPointer];
 }
 
+void freeStack() {
+	free(stack);
+}
+
 void printToken(token_t token) {
 	char *str;
 	switch(token) {
@@ -142,6 +146,7 @@ void printRules() {
 	}
 }
 int parse() {
+	
 	for (int i = 0; i < numTokens; i++) {
 		
 	}
@@ -156,7 +161,6 @@ void freeRules() {
 
 void initializeRules() {
 	token_t rule0[1] = { VAR_L };
-	printf("Test\n");
 	addRule(0, VAR_P, 1, rule0);
 	token_t rule1[2] = { VAR_D, VAR_L };
 	addRule(1, VAR_L, 2, rule1);
@@ -193,4 +197,6 @@ int main(int argc, char *argv[]) {
 	initializeRules();
 	printRules();
 	freeRules();
+	//freeTokens();seg fault
+	freeStack();
 }
