@@ -17,16 +17,11 @@ struct Action {
 	int instance;
 };
 
-union Symbol {
-	var_t var;
-	token_t token;
-};
-
-struct Rules {
-	var_t var;
-	union Symbol *symbol;
+struct Rule {
+	token_t var;
+	token_t *symbol;//tokens and variables
 	int length;
-} Rules;
+} Rule;
 
 struct Instance {
 	struct Action action[NUM_ACTIONS];
@@ -37,15 +32,48 @@ extern struct Token **tokens;
 extern int numTokens;
 int tokenIndex = 0;
 
-struct Rules rules[NUM_RULES];
+struct Rule rules[NUM_RULES];
 
 struct Token **stack;
 int stackCapacity = 1;
 int stackTopPointer = 0;
 
-void printVar(var_t var) {
+void printToken(token_t token) {
 	char *str;
-	switch(var) {
+	switch(token) {
+		case TOKEN_NUM:
+			str = "num";
+			break;
+		case TOKEN_ID:
+			str = "id";
+			break;
+		case TOKEN_PLUS:
+			str = "+";
+			break;
+		case TOKEN_MINUS:
+			str = "-";
+			break;
+		case TOKEN_ASSIGN:
+			str = "=";
+			break;
+		case TOKEN_SEMICOLON:
+			str = ";";
+			break;
+		case TOKEN_INT:
+			str = "int";
+			break;
+		case TOKEN_LONG:
+			str = "long";
+			break;
+		case TOKEN_DOLLAR:
+			str = "$";
+			break;
+		case TOKEN_EOF:
+			str = "eof";
+			break;
+		case TOKEN_WHITESPACE:
+			str = "[SPACE]";
+			break;
 		case VAR_P:
 			str = "P";
 			break;
@@ -77,7 +105,7 @@ void printVar(var_t var) {
 	printf("%s",str);
 }
 
-void addRule(int item, var_t var, int length, union Symbol symbol[length]) {
+void addRule(int item, token_t var, int length, token_t symbol[length]) {
 	rules[item].var = var;
 	rules[item].length = length;
 	for (int i = 0; i < length; i++) {
@@ -85,21 +113,19 @@ void addRule(int item, var_t var, int length, union Symbol symbol[length]) {
 	}
 }
 
-void printRule(union Symbol symbol) {
-	//char *str;
-	/*switch (symbol) {
-
-	}*/
+void printRule(struct Rule rule) {
+	printToken(rule.var);
+	printf("->");
+	for (int i = 0; i < rule.length; i++) {
+		printf(" ");
+		printToken(rule.symbol[i]);
+	}
+	printf("\n");
 }
 
 void printRules() {
 	for (int i = 0; i < NUM_RULES; i++) {
-		printVar(rules[i].var);
-		printf("->");
-		for (int j = 0; j < rules[i].length; j++) {
-			printf(" ");
-			printRule(rules[i].symbol[j]);
-		}
+		printRule(rules[i]);
 	}
 }
 int parse() {

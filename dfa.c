@@ -59,7 +59,7 @@ int takeTransition(int startState, char letter, int *endState) {
  * builds dfa
  */
 void initialize() {
-	states[0].token = TOKEN_EOF; //Start state
+	/*states[0].token = TOKEN_EOF; //Start state
 	states[2].token = TOKEN_KEY; //keywords
 	states[6].token = TOKEN_NUM;
 	states[9].token = TOKEN_ID;
@@ -68,7 +68,7 @@ void initialize() {
 	states[15].token = TOKEN_OPERATOR;
 	states[16].token = TOKEN_ASSIGNMENT;
 	states[17].token = TOKEN_COMPARATOR;
-	states[18].token = TOKEN_STR;
+	states[18].token = TOKEN_STR;*/
 	//if
 	addTransition(0,'i',1,0);
 	addTransition(1,'f',2,0);
