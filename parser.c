@@ -135,7 +135,40 @@ int parse() {
 	return -1;
 }
 
-int main(int argc, char *argv[]) {
-	scanner(argc, argv);	
+void initializeRules() {
+	token_t rule0[1] = { VAR_L };
+	addRule(0, VAR_P, 1, rule0);
+	token_t rule1[2] = { VAR_D, VAR_L };
+	addRule(1, VAR_L, 2, rule1);
+	token_t rule2[1] = { VAR_D };
+	addRule(2, VAR_L, 1, rule2);
+	token_t rule3[1] = { VAR_S };
+	addRule(3, VAR_D, 1, rule3);
+	token_t rule4[5] = { VAR_T, TOKEN_ID, TOKEN_ASSIGN, VAR_E, TOKEN_SEMICOLON };
+	addRule(4, VAR_S, 5, rule4);
+	token_t rule5[4] = { TOKEN_ID, TOKEN_ASSIGN, VAR_E, TOKEN_SEMICOLON };
+	addRule(5, VAR_S, 4, rule5);
+	token_t rule6[1] = { TOKEN_INT };
+	addRule(6, VAR_T, 1, rule6);
+	token_t rule7[1] = { TOKEN_LONG };
+	addRule(7, VAR_T, 1, rule7);
+	token_t rule8[1] = { TOKEN_NUM };
+	addRule(8, VAR_E, 1, rule8);
+	token_t rule9[1] = { TOKEN_ID };
+	addRule(9, VAR_E, 1, rule9);
+	token_t rule10[3] = { VAR_E, VAR_O, VAR_X };
+	addRule(10, VAR_E, 3, rule10);
+	token_t rule11[1] = { TOKEN_PLUS };
+	addRule(11, VAR_O, 1, rule11);
+	token_t rule12[1] = { TOKEN_MINUS };
+	addRule(12, VAR_O, 1, rule12);
+	token_t rule13[1] = { TOKEN_NUM };
+	addRule(13, VAR_X, 1, rule13);
+	token_t rule14[1] = { TOKEN_ID };
+	addRule(14, VAR_X, 1, rule14);
+}
 
+int main(int argc, char *argv[]) {
+	scanner(argc, argv);
+	initializeRules();
 }
