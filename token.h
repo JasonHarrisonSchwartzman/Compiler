@@ -51,13 +51,14 @@ typedef enum token_t{
 	TOKEN_STRUCT = 47,
 	TOKEN_EOF = 48,
 	TOKEN_WHITESPACE = 49,
-	VAR_P = 50,
-	VAR_L = 51,
-	VAR_D = 52,
-	VAR_S = 53,
-	VAR_T = 54,
-	VAR_E = 55,
-	VAR_O = 56,
-	VAR_X = 57
+	VAR_L = 50,
+	VAR_D = 51,
+	VAR_S = 52,
+	VAR_T = 53,
+	VAR_E = 54,
+	VAR_O = 55,
+	VAR_X = 56,
+	VAR_P = 57,
+	VAR_ERROR = 58
 } token_t;
 #endif

@@ -345,6 +345,7 @@ void shift(Token *token, Token *instance) {
 	push(instance);
 	tokenIndex++;
 }
+void printStack();
 
 void reduce(int rule) {
 	printf("Reduce by %d\n",rule);
@@ -352,7 +353,7 @@ void reduce(int rule) {
 		pop();
 	}
 	push(varTokens[rules[rule].var-(TOTAL_TOKENS+NUM_INSTANCES)]);
-	push(instanceTokens[instances[getSecondTopOfStack()->tokenType].gotoAction[getTopOfStack()->tokenType-(TOTAL_TOKENS+NUM_INSTANCES+1)]]);
+	push(instanceTokens[instances[getSecondTopOfStack()->tokenType].gotoAction[getTopOfStack()->tokenType-(TOTAL_TOKENS+NUM_INSTANCES)]]);
 }
 
 void printStack() {
