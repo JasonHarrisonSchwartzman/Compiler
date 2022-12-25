@@ -108,7 +108,7 @@ int scanner(int argc, char *argv[]) {
 		string = scan(string, &stringLength, c, &state);
 		//printf("%s\n",string);
 	}
+	addToken(TOKEN_DOLLAR, "$", -1);
 	printTokens();
-	freeTokens();
 	return 0;
 }
