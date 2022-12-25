@@ -263,6 +263,9 @@ void printToken(token_t token) {
 		case TOKEN_WHITESPACE:
 			str = "[SPACE]";
 			break;
+		case TOKEN_SIGNED:
+			str = "signed";
+			break;
 		case VAR_P:
 			str = "P";
 			break;
@@ -286,6 +289,24 @@ void printToken(token_t token) {
 			break;
 		case VAR_X:
 			str = "X";
+			break;
+		case I_0:
+			str = "I0";
+			break;
+		case I_1:
+			str = "I1";
+			break;
+		case I_2:
+			str = "I2";
+			break;
+		case I_3:
+			str = "I3";
+			break;
+		case I_4:
+			str = "I4";
+			break;
+		case I_5:
+			str = "I5";
 			break;
 		default:
 			str = "ERROR VAR NOT FOUND";
@@ -335,8 +356,11 @@ void reduce(int rule) {
 
 int parse() {
 	push(instanceTokens[0]);
+	printf("Beggining parser...\n");
 	while(1) {
 		//ignoring whitespace
+		printf("Reading token: ");
+		printToken(tokens[tokenIndex]->tokenType);
 		if (tokens[tokenIndex]->tokenType == TOKEN_WHITESPACE) {
 			tokenIndex++;
 			continue;
@@ -407,8 +431,11 @@ int main(int argc, char *argv[]) {
 	createInstanceAndVarTokens();
 	//printRules();
 	initializeInstances();
-
-	int result = parse();
+	printTokens();
+	printf("Testing num %d\n",tokens[1]->tokenType);
+	printf(" Test str ");
+	printToken(tokens[1]->tokenType);
+	/*int result = parse();
 	if (result == 1) {
 		printf("SUCCESS!\n");
 	}
@@ -417,7 +444,7 @@ int main(int argc, char *argv[]) {
 	}
 	else {
 		printf("ODD FAILURE\n");
-	}
+	}*/
 
 
 	freeRules();

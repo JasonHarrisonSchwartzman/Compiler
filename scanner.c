@@ -3,6 +3,7 @@
 #include <string.h>
 #include "dfa.h"
 #include "dfa.c"
+#include "token.h"
 #define NUM_DELIMETERS 17
 
 typedef struct Token{
@@ -39,6 +40,7 @@ void addToken(token_t tokenType, char *token, int lineNum) {
 char* scan(char *curString, int *curStringLength, char c, int *state) {
 	if (c == '\n') lineNum++;
 	//printf("Start state: %d\n",*state);
+	int currentState = *state;
 	if (!takeTransition(*state,c,state)) {
 		//printf("New state: %d\n",*state);
 		curString = realloc(curString, sizeof(char) * (*curStringLength + 1));
@@ -51,7 +53,7 @@ char* scan(char *curString, int *curStringLength, char c, int *state) {
 		char *token = malloc(sizeof(char) * *curStringLength);
 		strcpy(token,curString);
 		//printf("Generated token: %s\n",curString);
-		addToken(states[*state].token, token,lineNum);
+		addToken(states[currentState].token, token,lineNum);
 		curString = realloc(curString, sizeof(char));
 		curString[0] = c;
 		*curStringLength = 1;
@@ -80,11 +82,6 @@ void printTokens() {
 }
 
 int scanner(int argc, char *argv[]) {
-	printf("Beginning scanner...\n");
-	// tests
-
-	
-
 	if (argc < 2) {
 		printf("Usage: ./scanner [file]\n");
 		return 0;
@@ -109,6 +106,5 @@ int scanner(int argc, char *argv[]) {
 		//printf("%s\n",string);
 	}
 	addToken(TOKEN_DOLLAR, "$", -1);
-	printTokens();
 	return 0;
 }

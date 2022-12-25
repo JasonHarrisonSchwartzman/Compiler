@@ -8,10 +8,10 @@ parser: parser.o scanner.o
 
 parser.o: parser.c scanner.c token.h
 
-scanner.o: scanner.c dfa.h dfa.c
+scanner.o: scanner.c dfa.h dfa.c token.h
 	$(CC) $(CFLAGS) -c scanner.c
 
-dfa.o: dfa.c dfa.h
+dfa.o: dfa.c dfa.h token.h
 	$(CC) $(CFLAGS) -c dfa.c
 
 clean:
