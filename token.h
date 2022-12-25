@@ -58,6 +58,6 @@ typedef enum token_t{
 	VAR_T = 54,
 	VAR_E = 55,
 	VAR_O = 56,
-	VAR_X = 57,
+	VAR_X = 57
 } token_t;
 #endif

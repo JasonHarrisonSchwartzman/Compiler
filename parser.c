@@ -43,7 +43,7 @@ struct Rule rules[NUM_RULES];//grammar
 
 struct Token **stack;
 int stackCapacity = 0;
-int stackTopPointer = 0;//points to top of the stack
+int stackTopPointer = -1;//points to top of the stack
 
 void addInstanceAction(int instanceNum, struct Action action, int actionNum) {
 	instances[instanceNum].actions[actionNum].step = action.step;
@@ -114,7 +114,7 @@ void initializeInstances() {
 	//instance 11
 	addInstanceAction(11,action10num,0);
 	addInstanceAction(11,action10id,1);
-	addInstanceGoto(10,4,15);
+	addInstanceGoto(11,4,15);
 	//instance 12
 	struct Action action12Plus = { STEP_SHIFT, 18};
 	struct Action action12Minus = { STEP_SHIFT, 19};
@@ -185,15 +185,19 @@ void initializeInstances() {
 }
 
 void push(Token *token) {
-	stack = realloc(stack,sizeof(Token) * (stackTopPointer + 1));
-	stack[stackTopPointer++] = token;
+	stack = realloc(stack,sizeof(Token) * (stackTopPointer + 2));
+	stack[++stackTopPointer] = token;
 }
 void pop() {
-	stack = realloc(stack,sizeof(Token) * (--stackTopPointer));
+	stack = realloc(stack,sizeof(Token) * (stackTopPointer--));
 }
 
 Token *getTopOfStack() {
 	return stack[stackTopPointer];
+}
+
+Token *getSecondTopOfStack() {
+	return stack[stackTopPointer-1];
 }
 
 void freeStack() {
@@ -202,12 +206,6 @@ void freeStack() {
 
 void printToken(token_t token);
 
-void printStack() {
-	for (int i = 0; i < stackTopPointer; i++) {
-		printToken(stack[i]->tokenType);
-	}
-}
-
 void createInstanceAndVarTokens() {
 	for (int i = 0; i < NUM_INSTANCES; i++) {
 		instanceTokens[i] = malloc(sizeof(Token));
@@ -215,7 +213,7 @@ void createInstanceAndVarTokens() {
 	}
 	for (int i = 0; i < NUM_GOTO; i++) {
 		varTokens[i] = malloc(sizeof(Token));
-		varTokens[i]->tokenType = NUM_INSTANCES + i; 
+		varTokens[i]->tokenType = NUM_INSTANCES + TOTAL_TOKENS + i; 
 	}
 }
 
@@ -342,16 +340,26 @@ void printRules() {
 }
 
 void shift(Token *token, Token *instance) {
+	printf("Shift \n");
 	push(token);
 	push(instance);
 	tokenIndex++;
 }
 
 void reduce(int rule) {
+	printf("Reduce by %d\n",rule);
 	for (int i = 0; i < rules[rule].length * 2; i++) {
 		pop();
 	}
-	push(varTokens[rule-(NUM_INSTANCES+TOTAL_TOKENS)]);
+	push(varTokens[rules[rule].var-(TOTAL_TOKENS+NUM_INSTANCES)]);
+	push(instanceTokens[instances[getSecondTopOfStack()->tokenType].gotoAction[getTopOfStack()->tokenType-(TOTAL_TOKENS+NUM_INSTANCES+1)]]);
+}
+
+void printStack() {
+	for (int i = 0; i <= stackTopPointer; i++) {
+		printf("%d ", stack[i]->tokenType);
+	}
+	printf("\n");
 }
 
 int parse() {
@@ -359,27 +367,33 @@ int parse() {
 	printf("Beggining parser...\n");
 	while(1) {
 		//ignoring whitespace
-		printf("Reading token: ");
+		printf("Reading token %d: ",tokenIndex);
 		printToken(tokens[tokenIndex]->tokenType);
+		printf("\n");
 		if (tokens[tokenIndex]->tokenType == TOKEN_WHITESPACE) {
+			printf("Skipping whitespace!\n");
 			tokenIndex++;
 			continue;
 		}
 		//reading shift
-		Step step = instances[getTopOfStack()->tokenType].actions[tokens[tokenIndex]->tokenType-NUM_INSTANCES].step;
+		token_t token = getTopOfStack()->tokenType;
+		int actionIndex = tokens[tokenIndex]->tokenType-NUM_INSTANCES;
+		Step step = instances[token].actions[actionIndex].step;
+		//printf("Instance: %d | ActionIndex: %d | step: %d\n",token,actionIndex,step);
 		if (step == STEP_ACCEPT) {
 			return 1;
 		}
 		else if (step == STEP_SHIFT) {
-			shift(tokens[tokenIndex],instanceTokens[instances[getTopOfStack()->tokenType].actions[tokens[tokenIndex]->tokenType-NUM_INSTANCES].instance]);
+			shift(tokens[tokenIndex],instanceTokens[instances[token].actions[actionIndex].instance]);
 		}
 		else if (step == STEP_REDUCE) {
-			reduce(instances[getTopOfStack()->tokenType].actions[tokens[tokenIndex]->tokenType-NUM_INSTANCES].instance);
+			reduce(instances[token].actions[actionIndex].instance);
 		}
 		else {
 			printf("Token not found\n");
 			return 0;
 		}
+		printStack();
 	}
 	return -1;
 }
@@ -430,12 +444,10 @@ int main(int argc, char *argv[]) {
 	initializeRules();
 	createInstanceAndVarTokens();
 	//printRules();
+
 	initializeInstances();
 	printTokens();
-	printf("Testing num %d\n",tokens[1]->tokenType);
-	printf(" Test str ");
-	printToken(tokens[1]->tokenType);
-	/*int result = parse();
+	int result = parse();
 	if (result == 1) {
 		printf("SUCCESS!\n");
 	}
@@ -444,7 +456,7 @@ int main(int argc, char *argv[]) {
 	}
 	else {
 		printf("ODD FAILURE\n");
-	}*/
+	}
 
 
 	freeRules();
