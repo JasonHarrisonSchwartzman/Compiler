@@ -323,6 +323,7 @@ void printRules() {
 void shift(Token *token, Token *instance) {
 	push(token);
 	push(instance);
+	tokenIndex++;
 }
 
 void reduce(int rule) {
@@ -333,9 +334,23 @@ void reduce(int rule) {
 }
 
 int parse() {
-
-	for (int i = 0; i < numTokens; i++) {
-		
+	push(instanceTokens[0]);
+	while(1) {
+		//reading shift
+		Step step = instances[getTopOfStack()->tokenType].actions[tokens[tokenIndex]->tokenType-NUM_INSTANCES].step;
+		if (step == STEP_ACCEPT) {
+			return 1;
+		}
+		else if (step == STEP_SHIFT) {
+			shift(tokens[tokenIndex],instanceTokens[instances[getTopOfStack()->tokenType].actions[tokens[tokenIndex]->tokenType-NUM_INSTANCES].instance]);
+		}
+		else if (step == STEP_REDUCE) {
+			reduce(instances[getTopOfStack()->tokenType].actions[tokens[tokenIndex]->tokenType-NUM_INSTANCES].instance);
+		}
+		else {
+			printf("Token not found\n");
+			return 0;
+		}
 	}
 	return -1;
 }
@@ -385,10 +400,10 @@ int main(int argc, char *argv[]) {
 	scanner(argc, argv);
 	initializeRules();
 	createInstanceAndVarTokens();
-	printRules();
+	//printRules();
 	initializeInstances();
 
-
+	parse();
 
 
 
