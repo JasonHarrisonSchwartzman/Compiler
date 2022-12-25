@@ -9,9 +9,9 @@
 #define TOTAL_TOKENS 26
 
 typedef enum Step{
-	STEP_SHIFT,
-	STEP_REDUCE,
 	STEP_ERROR,
+	STEP_REDUCE,
+	STEP_SHIFT,
 	STEP_ACCEPT
 }Step;
 
