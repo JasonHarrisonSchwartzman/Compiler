@@ -336,6 +336,11 @@ void reduce(int rule) {
 int parse() {
 	push(instanceTokens[0]);
 	while(1) {
+		//ignoring whitespace
+		if (tokens[tokenIndex]->tokenType == TOKEN_WHITESPACE) {
+			tokenIndex++;
+			continue;
+		}
 		//reading shift
 		Step step = instances[getTopOfStack()->tokenType].actions[tokens[tokenIndex]->tokenType-NUM_INSTANCES].step;
 		if (step == STEP_ACCEPT) {
