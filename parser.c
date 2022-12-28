@@ -439,9 +439,15 @@ void initializeRules() {
 	token_t rule14[1] = { TOKEN_ID };
 	addRule(14, VAR_X, 1, rule14);
 }
+struct Test {
+	int x;
+};
+
+struct Test test;
 
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);
+	test.x = 5;
 	initializeRules();
 	createInstanceAndVarTokens();
 	//printRules();
