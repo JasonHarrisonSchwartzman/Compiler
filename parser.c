@@ -391,7 +391,44 @@ void initializeRules() {
 	addRule(64, VAR_U1, 4, rule64);
 	token_t rule65[1] = { VAR_V1 };
 	addRule(65, VAR_U1, 1, rule65);
-
+	token_t rule66[4] = { TOKEN_ID, TOKEN_LEFTPAREN, VAR_W1, TOKEN_RIGHTPAREN };
+	addRule(66, VAR_V1, 4, rule66);
+	token_t rule67[3] = { TOKEN_ID, TOKEN_LEFTPAREN, TOKEN_RIGHTPAREN };
+	addRule(67, VAR_V1, 3, rule67);
+	token_t rule68[3] = { VAR_R1, TOKEN_COMMA, VAR_W1 };
+	addRule(68, VAR_W1, 3, rule68);
+	token_t rule69[1] = { VAR_R1 };
+	addRule(69, VAR_W1, 1, rule69);
+	token_t rule70[1] = { VAR_Y1 };
+	addRule(70, VAR_X1, 1, rule70);
+	token_t rule71[1] = { VAR_A2 };
+	addRule(71, VAR_X1, 1, rule71);
+	token_t rule72[7] = { TOKEN_WHILE, TOKEN_LEFTPAREN, VAR_R1, TOKEN_RIGHTPAREN, TOKEN_LEFTCURLY, VAR_N1, TOKEN_RIGHTCURLY };
+	addRule(72, VAR_Y1, 7, rule72);
+	token_t rule73[12] = { TOKEN_FOR, TOKEN_LEFTPAREN, VAR_E1, VAR_Q1, TOKEN_SEMICOLON, VAR_B2, TOKEN_SEMICOLON, VAR_C2, TOKEN_RIGHTPAREN, TOKEN_LEFTCURLY, VAR_N1, TOKEN_RIGHTCURLY };
+	addRule(73, VAR_A2, 12, rule73);
+	token_t rule74[3] = { TOKEN_ID, VAR_T1, VAR_R1 };
+	addRule(74, VAR_B2, 3, rule74);
+	token_t rule75[3] = { TOKEN_ID, TOKEN_ASSIGN, VAR_R1 };
+	addRule(75, VAR_C2, 3, rule75);
+	token_t rule76[3] = { VAR_E2, VAR_F2, VAR_G2 };
+	addRule(76, VAR_D2, 3, rule76);
+	token_t rule77[2] = { VAR_E2, VAR_F2 };
+	addRule(77, VAR_D2, 2, rule77);
+	token_t rule78[2] = { VAR_E2, VAR_G2 };
+	addRule(78, VAR_D2, 2, rule78);
+	token_t rule79[1] = { VAR_E2 };
+	addRule(79, VAR_D2, 1, rule79);
+	token_t rule80[7] = { TOKEN_IF, TOKEN_LEFTPAREN, VAR_R1, TOKEN_RIGHTPAREN, TOKEN_LEFTCURLY, VAR_N1, TOKEN_RIGHTCURLY };
+	addRule(80, VAR_E2, 7, rule80);
+	token_t rule81[7] = { TOKEN_ELSEIF, TOKEN_LEFTPAREN, VAR_R1, TOKEN_RIGHTPAREN, TOKEN_LEFTCURLY, VAR_N1, TOKEN_RIGHTCURLY };
+	addRule(81, VAR_F2, 7, rule81);
+	token_t rule82[8] = { TOKEN_ELSEIF, TOKEN_LEFTPAREN, VAR_R1, TOKEN_RIGHTPAREN, TOKEN_LEFTCURLY, VAR_N1, TOKEN_RIGHTCURLY, VAR_F2 };
+	addRule(82, VAR_F2, 8, rule82);
+	token_t rule83[4] = { TOKEN_ELSE, TOKEN_LEFTCURLY, VAR_N1, TOKEN_RIGHTCURLY };
+	addRule(83, VAR_G2, 4, rule83);
+	token_t rule84[3] = { TOKEN_RETURN, VAR_R1, TOKEN_SEMICOLON };
+	addRule(84, VAR_H2, 3, rule84);
 
 }
 struct Test {
