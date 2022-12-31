@@ -54,8 +54,8 @@ void addInstanceGoto(int instanceNum, int gotoNum, int gotoInstance) {
 }
 
 void initializeInstances() {
-	//instance 0
-	struct Action action0id = { STEP_SHIFT, 5 };
+	//EXAMPLE
+	/*struct Action action0id = { STEP_SHIFT, 5 };
 	struct Action action0int = { STEP_SHIFT, 6 };
 	struct Action action0long = { STEP_SHIFT, 7 };
 	addInstanceAction(0,action0id,1);
@@ -65,123 +65,9 @@ void initializeInstances() {
 	addInstanceGoto(0,1,2);
 	addInstanceGoto(0,2,3);
 	addInstanceGoto(0,3,4);
-	//instance 1
-	struct Action action1$ = { STEP_ACCEPT, -1 };
-	addInstanceAction(1,action1$,8);
-	//instance 2
-	struct Action action2id = { STEP_SHIFT, 5 };
-	struct Action action2int = { STEP_SHIFT, 6 };
-	struct Action action2long = { STEP_SHIFT, 7 };
-	struct Action action2$ = { STEP_REDUCE, 2 };
-	addInstanceAction(2,action2id,1);
-	addInstanceAction(2,action2int,6);
-	addInstanceAction(2,action2long,7);
-	addInstanceAction(2,action2$,8);
-	addInstanceGoto(2,0,8);
-	addInstanceGoto(2,1,2);
-	addInstanceGoto(2,2,3);
-	addInstanceGoto(2,3,4);
-	//instance 3
-	struct Action action3 = { STEP_REDUCE, 3 };
-	addInstanceAction(3,action3,1);
-	addInstanceAction(3,action3,6);
-	addInstanceAction(3,action3,7);
-	addInstanceAction(3,action3,8);
-	//instance 4
-	struct Action action4id = { STEP_SHIFT, 9 };
-	addInstanceAction(4,action4id,1);
-	//instance 5
-	struct Action action5Assign = { STEP_SHIFT, 10};
-	addInstanceAction(5,action5Assign,4);
-	//instance 6
-	struct Action action6id = { STEP_REDUCE, 6};
-	addInstanceAction(6,action6id,1);
-	//instance 7
-	struct Action action7id = { STEP_REDUCE, 7};
-	addInstanceAction(7,action7id,1);
-	//instance 8
-	struct Action action8$ = { STEP_REDUCE, 1};
-	addInstanceAction(8,action8$,8);
-	//instance 9
-	struct Action action9Equal = { STEP_SHIFT, 11 };
-	addInstanceAction(9,action9Equal,4);
-	//instance 10
-	struct Action action10num = { STEP_SHIFT, 13 };
-	struct Action action10id = { STEP_SHIFT, 14 };
-	addInstanceAction(10,action10num,0);
-	addInstanceAction(10,action10id,1);
-	addInstanceGoto(10,4,12);
-	//instance 11
-	addInstanceAction(11,action10num,0);
-	addInstanceAction(11,action10id,1);
-	addInstanceGoto(11,4,15);
-	//instance 12
-	struct Action action12Plus = { STEP_SHIFT, 18};
-	struct Action action12Minus = { STEP_SHIFT, 19};
-	struct Action action12Semi = { STEP_SHIFT, 16};
-	addInstanceAction(12,action12Plus,2);
-	addInstanceAction(12,action12Minus,3);
-	addInstanceAction(12,action12Semi,5);
-	addInstanceGoto(12,5,17);
-	//instance 13
-	struct Action action13 = { STEP_REDUCE, 8 };
-	addInstanceAction(13,action13,2);
-	addInstanceAction(13,action13,3);
-	addInstanceAction(13,action13,5);
-	//instance 14
-	struct Action action14 = { STEP_REDUCE, 9};
-	addInstanceAction(14,action14,2);
-	addInstanceAction(14,action14,3);
-	addInstanceAction(14,action14,5);
-	//instance 15
-	struct Action action15Plus = { STEP_SHIFT, 18 };
-	struct Action action15Minus = { STEP_SHIFT, 19 };
-	struct Action action15Semi = { STEP_SHIFT, 20 };
-	addInstanceAction(15,action15Plus,2);
-	addInstanceAction(15,action15Minus,3);
-	addInstanceAction(15,action15Semi,5);
-	addInstanceGoto(15,5,17);
-	//instance 16
-	struct Action action16 = { STEP_REDUCE, 5};
-	addInstanceAction(16,action16,1);
-	addInstanceAction(16,action16,6);
-	addInstanceAction(16,action16,7);
-	addInstanceAction(16,action16,8);
-	//instance 17
-	struct Action action17num = { STEP_SHIFT, 22 };
-	struct Action action17id = { STEP_SHIFT, 23 };
-	addInstanceAction(17,action17num,0);
-	addInstanceAction(17,action17id,1);
-	addInstanceGoto(17,6,21);
-	//instance 18
-	struct Action action18 = { STEP_REDUCE, 11 };
-	addInstanceAction(18,action18,0);
-	addInstanceAction(18,action18,1);
-	//instance 19
-	struct Action action19 = { STEP_REDUCE, 12};
-	addInstanceAction(19,action19,0);
-	addInstanceAction(19,action19,1);
-	//instance 20
-	struct Action action20 = { STEP_REDUCE, 4};
-	addInstanceAction(20,action20,1);
-	addInstanceAction(20,action20,6);
-	addInstanceAction(20,action20,7);
-	addInstanceAction(20,action20,8);
-	//instance 21
-	struct Action action21 = { STEP_REDUCE, 10};
-	addInstanceAction(21,action21,2);
-	addInstanceAction(21,action21,3);
-	addInstanceAction(21,action21,5);
-	//instance 22
-	struct Action action22 = { STEP_REDUCE, 13};
-	addInstanceAction(22,action22,2);
-	addInstanceAction(22,action22,3);
-	addInstanceAction(22,action22,5);
-	//instance 23
-	struct Action action23 = { STEP_REDUCE, 14};
-	addInstanceAction(23,action23,2);
-	addInstanceAction(23,action23,3);
-	addInstanceAction(23,action23,5);
+	*/
+
+
 }
 
 void push(Token *token) {
@@ -263,48 +149,6 @@ void printToken(token_t token) {
 			break;
 		case TOKEN_SIGNED:
 			str = "signed";
-			break;
-		case VAR_P:
-			str = "P";
-			break;
-		case VAR_L:
-			str = "L";
-			break;
-		case VAR_D:
-			str = "D";
-			break;
-		case VAR_S:
-			str = "S";
-			break;
-		case VAR_T:
-			str = "T";
-			break;
-		case VAR_E:
-			str = "E";
-			break;
-		case VAR_O:
-			str = "O";
-			break;
-		case VAR_X:
-			str = "X";
-			break;
-		case I_0:
-			str = "I0";
-			break;
-		case I_1:
-			str = "I1";
-			break;
-		case I_2:
-			str = "I2";
-			break;
-		case I_3:
-			str = "I3";
-			break;
-		case I_4:
-			str = "I4";
-			break;
-		case I_5:
-			str = "I5";
 			break;
 		default:
 			str = "ERROR VAR NOT FOUND";
@@ -408,36 +252,10 @@ void freeRules() {
  * initializing grammar
  */
 void initializeRules() {
+	/*EXAMPLE
 	token_t rule0[1] = { VAR_L };
-	addRule(0, VAR_P, 1, rule0);
-	token_t rule1[2] = { VAR_D, VAR_L };
-	addRule(1, VAR_L, 2, rule1);
-	token_t rule2[1] = { VAR_D };
-	addRule(2, VAR_L, 1, rule2);
-	token_t rule3[1] = { VAR_S };
-	addRule(3, VAR_D, 1, rule3);
-	token_t rule4[5] = { VAR_T, TOKEN_ID, TOKEN_ASSIGN, VAR_E, TOKEN_SEMICOLON };
-	addRule(4, VAR_S, 5, rule4);
-	token_t rule5[4] = { TOKEN_ID, TOKEN_ASSIGN, VAR_E, TOKEN_SEMICOLON };
-	addRule(5, VAR_S, 4, rule5);
-	token_t rule6[1] = { TOKEN_INT };
-	addRule(6, VAR_T, 1, rule6);
-	token_t rule7[1] = { TOKEN_LONG };
-	addRule(7, VAR_T, 1, rule7);
-	token_t rule8[1] = { TOKEN_NUM };
-	addRule(8, VAR_E, 1, rule8);
-	token_t rule9[1] = { TOKEN_ID };
-	addRule(9, VAR_E, 1, rule9);
-	token_t rule10[3] = { VAR_E, VAR_O, VAR_X };
-	addRule(10, VAR_E, 3, rule10);
-	token_t rule11[1] = { TOKEN_PLUS };
-	addRule(11, VAR_O, 1, rule11);
-	token_t rule12[1] = { TOKEN_MINUS };
-	addRule(12, VAR_O, 1, rule12);
-	token_t rule13[1] = { TOKEN_NUM };
-	addRule(13, VAR_X, 1, rule13);
-	token_t rule14[1] = { TOKEN_ID };
-	addRule(14, VAR_X, 1, rule14);
+	addRule(0, VAR_P, 1, rule0);*/
+
 }
 struct Test {
 	int x;
