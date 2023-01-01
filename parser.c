@@ -3,10 +3,10 @@
 #include "token.h"
 #include "scanner.c"
 #define NUM_RULES 87
-#define NUM_ACTIONS 9
-#define NUM_GOTO 7
-#define NUM_INSTANCES 24
-#define TOTAL_TOKENS 26
+#define NUM_ACTIONS 48
+#define NUM_GOTO 32
+#define NUM_INSTANCES 300
+#define TOTAL_TOKENS 50
 
 typedef enum Step{
 	STEP_ERROR,
@@ -45,12 +45,12 @@ struct Token **stack;
 int stackCapacity = 0;
 int stackTopPointer = -1;//points to top of the stack
 
-void addInstanceAction(int instanceNum, struct Action action, int actionNum) {
-	instances[instanceNum].actions[actionNum].step = action.step;
-	instances[instanceNum].actions[actionNum].instance = action.instance;
+void addInstanceAction(int instanceNum, struct Action action, token_t token) {
+	instances[instanceNum].actions[token-NUM_INSTANCES].step = action.step;
+	instances[instanceNum].actions[token-NUM_INSTANCES].instance = action.instance;
 }
-void addInstanceGoto(int instanceNum, int gotoNum, int gotoInstance) {
-	instances[instanceNum].gotoAction[gotoNum] = gotoInstance;
+void addInstanceGoto(int instanceNum, token_t gotoNum, int gotoInstance) {
+	instances[instanceNum].gotoAction[gotoNum-(NUM_INSTANCES+TOTAL_TOKENS)] = gotoInstance;
 }
 
 void initializeInstances() {
@@ -66,6 +66,28 @@ void initializeInstances() {
 	addInstanceGoto(0,2,3);
 	addInstanceGoto(0,3,4);
 	*/
+	struct Action action0int = { STEP_SHIFT, 4 };
+	struct Action action0long = { STEP_SHIFT, 5 };
+	struct Action action0double = { STEP_SHIFT, 8 };
+	struct Action action0char = { STEP_SHIFT, 7 };
+	struct Action action0short = { STEP_SHIFT, 6 };
+	struct Action action0signed = { STEP_SHIFT, 3 };
+	struct Action action0unsigned = { STEP_SHIFT, 2 };
+	addInstanceAction(0,action0int,TOKEN_INT);
+	addInstanceAction(0,action0long,TOKEN_LONG);
+	addInstanceAction(0,action0double,TOKEN_DOUBLE);
+	addInstanceAction(0,action0char,TOKEN_CHAR);
+	addInstanceAction(0,action0short,TOKEN_SHORT);
+	addInstanceAction(0,action0signed,TOKEN_SIGNED);
+	addInstanceAction(0,action0unsigned,TOKEN_UNSIGNED);
+	addInstanceGoto(0,VAR_B1,1);
+	addInstanceGoto(0,VAR_C1,9);
+	addInstanceGoto(0,VAR_D1,10);
+	addInstanceGoto(0,VAR_E1,12);
+	addInstanceGoto(0,VAR_F1,14);
+	addInstanceGoto(0,VAR_G1,15);
+	addInstanceGoto(0,VAR_K1,13);
+	addInstanceGoto(0,VAR_M1,11);
 
 
 }
