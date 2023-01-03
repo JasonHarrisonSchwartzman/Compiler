@@ -1148,6 +1148,122 @@ void initializeInstances() {
 	addInstanceAction(132,STEP_REDUCE,37,TOKEN_RETURN);
 	addInstanceAction(132,STEP_REDUCE,37,TOKEN_BREAK);
 	addInstanceAction(132,STEP_REDUCE,37,TOKEN_CONTINUE);
+	//instance 133
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_PLUS);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_MINUS);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_SEMICOLON);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_RIGHTBRACKET);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_RIGHTPAREN);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_EQUAL);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_GREATEQUAL);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_LESSEQUAL);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_GREAT);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_LESS);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_AND);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_OR);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_NOT);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_MULT);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_DIV);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_MOD);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_COMMA);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_BITWISEAND);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_BITWISEOR);
+	addInstanceAction(133,STEP_REDUCE,64,TOKEN_BITWISEXOR);
+	//instance 134
+	addInstanceAction(134,STEP_SHIFT,61,TOKEN_ID);
+	addInstanceAction(134,STEP_SHIFT,4,TOKEN_INT);
+	addInstanceAction(134,STEP_SHIFT,5,TOKEN_LONG);
+	addInstanceAction(134,STEP_SHIFT,58,TOKEN_IF);
+	addInstanceAction(134,STEP_SHIFT,60,TOKEN_FOR);
+	addInstanceAction(134,STEP_SHIFT,59,TOKEN_WHILE);
+	addInstanceAction(134,STEP_SHIFT,8,TOKEN_DOUBLE);
+	addInstanceAction(134,STEP_SHIFT,7,TOKEN_CHAR);
+	addInstanceAction(134,STEP_SHIFT,6,TOKEN_SHORT);
+	addInstanceAction(134,STEP_SHIFT,3,TOKEN_SIGNED);
+	addInstanceAction(134,STEP_SHIFT,2,TOKEN_UNSIGNED);
+	addInstanceAction(134,STEP_SHIFT,55,TOKEN_RETURN);
+	addInstanceAction(134,STEP_SHIFT,50,TOKEN_BREAK);
+	addInstanceAction(134,STEP_SHIFT,51,TOKEN_CONTINUE);
+	addInstanceGoto(134,VAR_E1,56);
+	addInstanceGoto(134,VAR_F1,14);
+	addInstanceGoto(134,VAR_G1,15);
+	addInstanceGoto(134,VAR_N1,139);
+	addInstanceGoto(134,VAR_O1,45);
+	addInstanceGoto(134,VAR_P1,49);
+	addInstanceGoto(134,VAR_V1,57);
+	addInstanceGoto(134,VAR_X1,47);
+	addInstanceGoto(134,VAR_Y1,53);
+	addInstanceGoto(134,VAR_A2,54);
+	addInstanceGoto(134,VAR_D2,46);
+	addInstanceGoto(134,VAR_E2,52);
+	addInstanceGoto(134,VAR_H2,48);
+	//instance 135
+	addInstanceAction(135,STEP_SHIFT,61,TOKEN_ID);
+	addInstanceAction(135,STEP_SHIFT,4,TOKEN_INT);
+	addInstanceAction(135,STEP_SHIFT,5,TOKEN_LONG);
+	addInstanceAction(135,STEP_SHIFT,58,TOKEN_IF);
+	addInstanceAction(135,STEP_SHIFT,60,TOKEN_FOR);
+	addInstanceAction(135,STEP_SHIFT,59,TOKEN_WHILE);
+	addInstanceAction(135,STEP_SHIFT,8,TOKEN_DOUBLE);
+	addInstanceAction(135,STEP_SHIFT,7,TOKEN_CHAR);
+	addInstanceAction(135,STEP_SHIFT,6,TOKEN_SHORT);
+	addInstanceAction(135,STEP_SHIFT,3,TOKEN_SIGNED);
+	addInstanceAction(135,STEP_SHIFT,2,TOKEN_UNSIGNED);
+	addInstanceAction(135,STEP_SHIFT,55,TOKEN_RETURN);
+	addInstanceAction(135,STEP_SHIFT,50,TOKEN_BREAK);
+	addInstanceAction(135,STEP_SHIFT,51,TOKEN_CONTINUE);
+	addInstanceGoto(135,VAR_E1,56);
+	addInstanceGoto(135,VAR_F1,14);
+	addInstanceGoto(135,VAR_G1,15);
+	addInstanceGoto(135,VAR_N1,140);
+	addInstanceGoto(135,VAR_O1,45);
+	addInstanceGoto(135,VAR_P1,49);
+	addInstanceGoto(135,VAR_V1,57);
+	addInstanceGoto(135,VAR_X1,47);
+	addInstanceGoto(135,VAR_Y1,53);
+	addInstanceGoto(135,VAR_A2,54);
+	addInstanceGoto(135,VAR_D2,46);
+	addInstanceGoto(135,VAR_E2,52);
+	addInstanceGoto(135,VAR_H2,48);
+	//instance 136
+	addInstanceAction(136,STEP_SHIFT,144,TOKEN_ID);
+	addInstanceGoto(136,VAR_B2,143);
+	//instance 137
+	addInstanceAction(137,STEP_REDUCE,68,TOKEN_RIGHTPAREN);
+	//instance 138
+	addInstanceAction(138,STEP_SHIFT,61,TOKEN_ID);
+	addInstanceAction(138,STEP_SHIFT,4,TOKEN_INT);
+	addInstanceAction(138,STEP_SHIFT,5,TOKEN_LONG);
+	addInstanceAction(138,STEP_SHIFT,58,TOKEN_IF);
+	addInstanceAction(138,STEP_SHIFT,60,TOKEN_FOR);
+	addInstanceAction(138,STEP_SHIFT,59,TOKEN_WHILE);
+	addInstanceAction(138,STEP_SHIFT,8,TOKEN_DOUBLE);
+	addInstanceAction(138,STEP_SHIFT,7,TOKEN_CHAR);
+	addInstanceAction(138,STEP_SHIFT,6,TOKEN_SHORT);
+	addInstanceAction(138,STEP_SHIFT,3,TOKEN_SIGNED);
+	addInstanceAction(138,STEP_SHIFT,2,TOKEN_UNSIGNED);
+	addInstanceAction(138,STEP_SHIFT,55,TOKEN_RETURN);
+	addInstanceAction(138,STEP_SHIFT,50,TOKEN_BREAK);
+	addInstanceAction(138,STEP_SHIFT,51,TOKEN_CONTINUE);
+	addInstanceGoto(138,VAR_E1,56);
+	addInstanceGoto(138,VAR_F1,14);
+	addInstanceGoto(138,VAR_G1,15);
+	addInstanceGoto(138,VAR_N1,145);
+	addInstanceGoto(138,VAR_O1,45);
+	addInstanceGoto(138,VAR_P1,49);
+	addInstanceGoto(138,VAR_V1,57);
+	addInstanceGoto(138,VAR_X1,47);
+	addInstanceGoto(138,VAR_Y1,53);
+	addInstanceGoto(138,VAR_A2,54);
+	addInstanceGoto(138,VAR_D2,46);
+	addInstanceGoto(138,VAR_E2,52);
+	addInstanceGoto(138,VAR_H2,48);
+	//instance 139
+	addInstanceAction(139,STEP_SHIFT,146,TOKEN_RIGHTCURLY);
+	//instance 140
+	addInstanceAction(140,STEP_SHIFT,147,TOKEN_RIGHTCURLY);
+	//instance 141
+	addInstanceAction(141,STEP_SHIFT,142,TOKEN_RIGHTCURLY);
 }
 
 void push(Token *token) {
