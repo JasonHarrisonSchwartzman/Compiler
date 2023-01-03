@@ -936,6 +936,46 @@ void initializeInstances() {
 	addInstanceGoto(114,VAR_R1,125);
 	addInstanceGoto(114,VAR_U1,74);
 	addInstanceGoto(114,VAR_V1,80);
+	//instance 115
+	addInstanceAction(115,STEP_SHIFT,95,TOKEN_PLUS);
+	addInstanceAction(115,STEP_SHIFT,99,TOKEN_MINUS);
+	addInstanceAction(115,STEP_SHIFT,126,TOKEN_RIGHTPAREN);
+	addInstanceAction(115,STEP_SHIFT,102,TOKEN_EQUAL);
+	addInstanceAction(115,STEP_SHIFT,104,TOKEN_GREATEQUAL);
+	addInstanceAction(115,STEP_SHIFT,103,TOKEN_LESSEQUAL);
+	addInstanceAction(115,STEP_SHIFT,105,TOKEN_GREAT);
+	addInstanceAction(115,STEP_SHIFT,106,TOKEN_LESS);
+	addInstanceAction(115,STEP_SHIFT,107,TOKEN_AND);
+	addInstanceAction(115,STEP_SHIFT,109,TOKEN_OR);
+	addInstanceAction(115,STEP_SHIFT,108,TOKEN_NOT);
+	addInstanceAction(115,STEP_SHIFT,96,TOKEN_MULT);
+	addInstanceAction(115,STEP_SHIFT,98,TOKEN_DIV);
+	addInstanceAction(115,STEP_SHIFT,97,TOKEN_MOD);
+	addInstanceAction(115,STEP_SHIFT,100,TOKEN_BITWISEAND);
+	addInstanceAction(115,STEP_SHIFT,73,TOKEN_BITWISEOR);
+	addInstanceAction(115,STEP_SHIFT,101,TOKEN_BITWISEXOR);
+	addInstanceGoto(115,VAR_S1,93);
+	addInstanceGoto(115,VAR_T1,94);
+	//instance 116
+	addInstanceAction(116,STEP_SHIFT,95,TOKEN_PLUS);
+	addInstanceAction(116,STEP_SHIFT,99,TOKEN_MINUS);
+	addInstanceAction(116,STEP_SHIFT,127,TOKEN_RIGHTPAREN);
+	addInstanceAction(116,STEP_SHIFT,102,TOKEN_EQUAL);
+	addInstanceAction(116,STEP_SHIFT,104,TOKEN_GREATEQUAL);
+	addInstanceAction(116,STEP_SHIFT,103,TOKEN_LESSEQUAL);
+	addInstanceAction(116,STEP_SHIFT,105,TOKEN_GREAT);
+	addInstanceAction(116,STEP_SHIFT,106,TOKEN_LESS);
+	addInstanceAction(116,STEP_SHIFT,107,TOKEN_AND);
+	addInstanceAction(116,STEP_SHIFT,109,TOKEN_OR);
+	addInstanceAction(116,STEP_SHIFT,108,TOKEN_NOT);
+	addInstanceAction(116,STEP_SHIFT,96,TOKEN_MULT);
+	addInstanceAction(116,STEP_SHIFT,98,TOKEN_DIV);
+	addInstanceAction(116,STEP_SHIFT,97,TOKEN_MOD);
+	addInstanceAction(116,STEP_SHIFT,100,TOKEN_BITWISEAND);
+	addInstanceAction(116,STEP_SHIFT,73,TOKEN_BITWISEOR);
+	addInstanceAction(116,STEP_SHIFT,101,TOKEN_BITWISEXOR);
+	addInstanceGoto(116,VAR_S1,93);
+	addInstanceGoto(116,VAR_T1,94);
 }
 
 void push(Token *token) {
