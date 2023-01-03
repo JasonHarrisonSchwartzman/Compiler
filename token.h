@@ -1,5 +1,9 @@
 #ifndef TOKEN_H
 #define TOKEN_H
+/**
+ * Contains instances, nonterminal variables and tokens
+ * Helpful to combine all into one type for the stack in the parser
+ */
 typedef enum token_t{
 	I_0 = 0,
 	I_1 = 1,

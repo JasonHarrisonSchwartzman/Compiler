@@ -31,6 +31,22 @@ struct Instance {
 	int gotoAction[NUM_GOTO];
 };
 
+
+typedef enum type_t {
+	INT,
+	LONG,
+	SHORT,
+	CHAR,
+	DOUBLE
+} type_t;
+
+typedef enum signed_t {
+	SIGNED,
+	UNSIGNED
+} signed_t;
+
+
+
 struct Instance instances[NUM_INSTANCES];
 
 struct Token *instanceTokens[NUM_INSTANCES];//instance tokens (for stack)
@@ -775,6 +791,151 @@ void initializeInstances() {
 	addInstanceAction(89,STEP_REDUCE,76,TOKEN_BREAK);
 	addInstanceAction(89,STEP_REDUCE,76,TOKEN_CONTINUE);
 	addInstanceAction(89,STEP_REDUCE,76,TOKEN_RIGHTCURLY);
+	//instance 90
+	addInstanceAction(90,STEP_SHIFT,32,TOKEN_NUM);
+	addInstanceAction(90,STEP_SHIFT,79,TOKEN_ID);
+	addInstanceAction(90,STEP_SHIFT,77,TOKEN_AT);
+	addInstanceAction(90,STEP_SHIFT,33,TOKEN_CHARCONST);
+	addInstanceAction(90,STEP_SHIFT,34,TOKEN_STRINGCONST);
+	addInstanceAction(90,STEP_SHIFT,78,TOKEN_QUESTIONMARK);
+	addInstanceGoto(90,VAR_J1,76);
+	addInstanceGoto(90,VAR_R1,120);
+	addInstanceGoto(90,VAR_U1,74);
+	addInstanceGoto(90,VAR_V1,80);
+	//instance 91
+	addInstanceAction(91,STEP_SHIFT,61,TOKEN_ID);
+	addInstanceAction(91,STEP_SHIFT,4,TOKEN_INT);
+	addInstanceAction(91,STEP_SHIFT,5,TOKEN_LONG);
+	addInstanceAction(91,STEP_SHIFT,58,TOKEN_IF);
+	addInstanceAction(91,STEP_SHIFT,60,TOKEN_FOR);
+	addInstanceAction(91,STEP_SHIFT,59,TOKEN_WHILE);
+	addInstanceAction(91,STEP_SHIFT,8,TOKEN_DOUBLE);
+	addInstanceAction(91,STEP_SHIFT,7,TOKEN_CHAR);
+	addInstanceAction(91,STEP_SHIFT,6,TOKEN_SHORT);
+	addInstanceAction(91,STEP_SHIFT,3,TOKEN_SIGNED);
+	addInstanceAction(91,STEP_SHIFT,2,TOKEN_UNSIGNED);
+	addInstanceAction(91,STEP_SHIFT,55,TOKEN_RETURN);
+	addInstanceAction(91,STEP_SHIFT,50,TOKEN_BREAK);
+	addInstanceAction(91,STEP_SHIFT,51,TOKEN_CONTINUE);
+	addInstanceGoto(91,VAR_E1,56);
+	addInstanceGoto(91,VAR_F1,14);
+	addInstanceGoto(91,VAR_G1,15);
+	addInstanceGoto(91,VAR_N1,141);
+	addInstanceGoto(91,VAR_O1,45);
+	addInstanceGoto(91,VAR_P1,49);
+	addInstanceGoto(91,VAR_V1,57);
+	addInstanceGoto(91,VAR_X1,47);
+	addInstanceGoto(91,VAR_Y1,53);
+	addInstanceGoto(91,VAR_A2,54);
+	addInstanceGoto(91,VAR_D2,46);
+	addInstanceGoto(91,VAR_E2,52);
+	addInstanceGoto(91,VAR_H2,48);
+	//instance 92
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_ID);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_INT);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_LONG);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_IF);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_FOR);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_WHILE);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_DOUBLE);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_CHAR);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_SHORT);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_SIGNED);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_UNSIGNED);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_RETURN);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_BREAK);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_CONTINUE);
+	addInstanceAction(92,STEP_REDUCE,84,TOKEN_RIGHTCURLY);
+	//instance 93
+	addInstanceAction(93,STEP_SHIFT,32,TOKEN_NUM);
+	addInstanceAction(93,STEP_SHIFT,79,TOKEN_ID);
+	addInstanceAction(93,STEP_SHIFT,77,TOKEN_AT);
+	addInstanceAction(93,STEP_SHIFT,33,TOKEN_CHARCONST);
+	addInstanceAction(93,STEP_SHIFT,34,TOKEN_STRINGCONST);
+	addInstanceAction(93,STEP_SHIFT,78,TOKEN_QUESTIONMARK);
+	addInstanceGoto(93,VAR_J1,76);
+	addInstanceGoto(93,VAR_U1,122);
+	addInstanceGoto(93,VAR_V1,80);
+	//instance 94
+	addInstanceAction(94,STEP_SHIFT,32,TOKEN_NUM);
+	addInstanceAction(94,STEP_SHIFT,79,TOKEN_ID);
+	addInstanceAction(94,STEP_SHIFT,77,TOKEN_AT);
+	addInstanceAction(94,STEP_SHIFT,33,TOKEN_CHARCONST);
+	addInstanceAction(94,STEP_SHIFT,34,TOKEN_STRINGCONST);
+	addInstanceGoto(94,VAR_J1,76);
+	addInstanceGoto(94,VAR_U1,123);
+	addInstanceGoto(94,VAR_V1,80);
+	//instance 95-109
+	for (int i = 0; i < 15; i++) {
+	if (i == 6) continue;
+	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_NUM);
+	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_ID);
+	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_AT);
+	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_CHARCONST);
+	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_STRINGCONST);
+	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_QUESTIONMARK);
+	}
+	//instance 110,111
+	for (int i = 0; i < 2; i++) {
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_PLUS);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_MINUS);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_SEMICOLON);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_RIGHTBRACKET);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_RIGHTPAREN);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_EQUAL);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_GREATEQUAL);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_LESSEQUAL);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_GREAT);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_LESS);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_AND);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_OR);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_NOT);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_MULT);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_DIV);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_MOD);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_COMMA);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_BITWISEAND);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_BITWISEOR);
+	addInstanceAction(110+i,STEP_REDUCE,61+i,TOKEN_BITWISEXOR);
+	}
+	//instance 112
+	addInstanceAction(112,STEP_SHIFT,32,TOKEN_NUM);
+	addInstanceAction(112,STEP_SHIFT,79,TOKEN_ID);
+	addInstanceAction(112,STEP_SHIFT,77,TOKEN_AT);
+	addInstanceAction(112,STEP_SHIFT,33,TOKEN_CHARCONST);
+	addInstanceAction(112,STEP_SHIFT,34,TOKEN_STRINGCONST);
+	addInstanceAction(112,STEP_SHIFT,78,TOKEN_QUESTIONMARK);
+	addInstanceGoto(112,VAR_J1,76);
+	addInstanceGoto(112,VAR_R1,124);
+	addInstanceGoto(112,VAR_U1,74);
+	addInstanceGoto(112,VAR_V1,80);
+	//instance 113
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_ID);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_INT);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_LONG);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_IF);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_FOR);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_WHILE);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_DOUBLE);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_CHAR);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_SHORT);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_SIGNED);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_UNSIGNED);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_RETURN);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_BREAK);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_CONTINUE);
+	addInstanceAction(113,STEP_REDUCE,38,TOKEN_RIGHTCURLY);
+	//instancd 114
+	addInstanceAction(114,STEP_SHIFT,32,TOKEN_NUM);
+	addInstanceAction(114,STEP_SHIFT,79,TOKEN_ID);
+	addInstanceAction(114,STEP_SHIFT,77,TOKEN_AT);
+	addInstanceAction(114,STEP_SHIFT,33,TOKEN_CHARCONST);
+	addInstanceAction(114,STEP_SHIFT,34,TOKEN_STRINGCONST);
+	addInstanceAction(114,STEP_SHIFT,78,TOKEN_QUESTIONMARK);
+	addInstanceGoto(114,VAR_J1,76);
+	addInstanceGoto(114,VAR_R1,125);
+	addInstanceGoto(114,VAR_U1,74);
+	addInstanceGoto(114,VAR_V1,80);
 }
 
 void push(Token *token) {
@@ -942,7 +1103,7 @@ int parse() {
 			reduce(instances[token].actions[actionIndex].instance);
 		}
 		else {
-			printf("Token not found\n");
+			printf("Token not found: %s NUM:  %d\n",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
 			return 0;
 		}
 		printStack();
@@ -959,9 +1120,6 @@ void freeRules() {
  * initializing grammar
  */
 void initializeRules() {
-	/*EXAMPLE
-	token_t rule0[1] = { VAR_L };
-	addRule(0, VAR_P, 1, rule0);*/
 	token_t rule0[1] = { VAR_B1 }; 
 	addRule(0, VAR_A1, 1, rule0);
 	token_t rule1[2] = { VAR_C1, VAR_B1 };
