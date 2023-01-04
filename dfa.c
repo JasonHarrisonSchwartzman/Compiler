@@ -303,6 +303,7 @@ void initialize() {
 		addTransition(79, ';', 85, 1);
 		addTransition(79, ' ', 82, 1);
 		addTransition(79, '\n', 82, 1);
+		addTransition(79, '\t', 82, 1);
 		addTransition(82, i, 79, 1);
 
 		// plus
@@ -322,10 +323,12 @@ void initialize() {
 	createSpaceTransitions();
 	addTransition(0, ' ', 82, 1);
 	addTransition(0, '\n', 82, 1);
+	addTransition(0, '\t', 82, 1);
 
 	// semicolon
 	addTransition(85, ' ', 82, 1);
 	addTransition(85, '\n', 82, 1);
+	addTransition(85, '\t', 82, 1);
 	addTransition(82, ';', 85, 1);
 
 	// plus
@@ -335,7 +338,6 @@ void initialize() {
 	// minus 
 	addTransition(82, '-', 84, 1);
 	addTransition(84, ' ', 82, 1);
-	
 
 	// from assign to id
 	for (int i = 0; i < 127; i++) {
