@@ -6,12 +6,6 @@
 #include "dfa.c"
 #define NUM_DELIMETERS 17
 
-typedef struct Token{
-	token_t tokenType;
-	char* token;
-	int line;
-} Token;
-
 struct Token **tokens;//array that contains all the tokens in the input file
 int numTokens = 0;
 int lineNum = 1;
