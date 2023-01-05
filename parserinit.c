@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "token.h"
 
 void initializeInstances() {
 	//instance 0
