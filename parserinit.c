@@ -1,6 +1,32 @@
 #include "parser.h"
 #include "token.h"
 
+void addRule(int item, token_t var, int length, token_t symbol[length]) {
+	rules[item].var = var;
+	rules[item].length = length;
+	rules[item].symbols = malloc(sizeof(token_t) * length);
+	for (int i = 0; i < length; i++) {
+		rules[item].symbols[i] = symbol[i];
+	}
+}
+
+void printRule(struct Rule rule) {
+	printToken(rule.var);
+	printf("->");
+	for (int i = 0; i < rule.length; i++) {
+		printf(" ");
+		printToken(rule.symbols[i]);
+	}
+	printf("\n");
+}
+
+void printRules() {
+	printf("----------GRAMMAR-----------\n");
+	for (int i = 0; i < NUM_RULES; i++) {
+		printRule(rules[i]);
+	}
+}
+
 void addInstanceAction(int instanceNum, Step step, int num, token_t token) {
 	instances[instanceNum].actions[token-NUM_INSTANCES].step = step;
 	instances[instanceNum].actions[token-NUM_INSTANCES].instance = num;
