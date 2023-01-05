@@ -122,6 +122,9 @@ void initialize() {
 	states[54].token = TOKEN_RETURN;
 	states[59].token = TOKEN_BREAK;
 	states[66].token = TOKEN_CONTINUE;
+	//states[69].token = TOKEN_FUNC;
+	//states[73].token = TOKEN_VOID;
+	//states[78].token = TOKEN_STRUCT
 	states[68].token = TOKEN_ELSEIF;
 	// states[69].token = TOKEN_FUNC;
 	// states[73].token = TOKEN_VOID;
