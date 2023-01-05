@@ -6,17 +6,6 @@
 #define NUM_INSTANCES 300
 #define TOTAL_TOKENS 50
 
-struct Rule {
-	token_t var;
-	token_t *symbols;//tokens and variables
-	int length;
-} Rule;
-
-struct Instance {
-	struct Action actions[NUM_ACTIONS];
-	int gotoAction[NUM_GOTO];
-};
-
 typedef enum Step{
 	STEP_ERROR,
 	STEP_REDUCE,
@@ -24,10 +13,21 @@ typedef enum Step{
 	STEP_ACCEPT
 }Step;
 
+struct Rule {
+	token_t var;
+	token_t *symbols;//tokens and variables
+	int length;
+} Rule;
+
 struct Action {
 	Step step;
 	int instance;//or rule in grammar
 } Action;
+
+struct Instance {
+	struct Action actions[NUM_ACTIONS];
+	int gotoAction[NUM_GOTO];
+};
 
 struct Instance instances[NUM_INSTANCES];
 
