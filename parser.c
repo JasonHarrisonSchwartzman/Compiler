@@ -144,31 +144,6 @@ void printToken(token_t token) {
 	printf("%s",str);
 }
 
-void addRule(int item, token_t var, int length, token_t symbol[length]) {
-	rules[item].var = var;
-	rules[item].length = length;
-	rules[item].symbols = malloc(sizeof(token_t) * length);
-	for (int i = 0; i < length; i++) {
-		rules[item].symbols[i] = symbol[i];
-	}
-}
-
-void printRule(struct Rule rule) {
-	printToken(rule.var);
-	printf("->");
-	for (int i = 0; i < rule.length; i++) {
-		printf(" ");
-		printToken(rule.symbols[i]);
-	}
-	printf("\n");
-}
-
-void printRules() {
-	printf("----------GRAMMAR-----------\n");
-	for (int i = 0; i < NUM_RULES; i++) {
-		printRule(rules[i]);
-	}
-}
 
 void shift(Token *token, Token *instance) {
 	printf("Shift \n");
