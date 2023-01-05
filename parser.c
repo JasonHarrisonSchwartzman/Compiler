@@ -16,17 +16,6 @@ struct StackItem {
 	
 } StackItem;
 
-struct Rule {
-	token_t var;
-	token_t *symbols;//tokens and variables
-	int length;
-} Rule;
-
-struct Instance {
-	struct Action actions[NUM_ACTIONS];
-	int gotoAction[NUM_GOTO];
-};
-
 
 typedef enum type_t {
 	INT,
