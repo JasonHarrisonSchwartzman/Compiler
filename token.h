@@ -390,4 +390,9 @@ typedef enum token_t{
 	VAR_A1 = 382,
 	VAR_ERROR = 383
 } token_t;
+typedef struct Token{
+	token_t tokenType;
+	char* token;
+	int line;
+} Token;
 #endif
