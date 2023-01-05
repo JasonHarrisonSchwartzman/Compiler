@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "token.h"
 #include "scanner.c"
+#include "parserinit.c"
 #define NUM_RULES 87
 #define NUM_ACTIONS 48
 #define NUM_GOTO 32
@@ -23,8 +24,8 @@ struct Action {
 struct StackItem {
 	token_t instance;
 	Token token;
-
-};
+	
+} StackItem;
 
 struct Rule {
 	token_t var;
