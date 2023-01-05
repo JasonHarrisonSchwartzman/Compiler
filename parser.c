@@ -3,23 +3,12 @@
 #include "token.h"
 #include "scanner.c"
 #include "parserinit.c"
+#include "parser.h"
 #define NUM_RULES 87
 #define NUM_ACTIONS 48
 #define NUM_GOTO 32
 #define NUM_INSTANCES 300
 #define TOTAL_TOKENS 50
-
-typedef enum Step{
-	STEP_ERROR,
-	STEP_REDUCE,
-	STEP_SHIFT,
-	STEP_ACCEPT
-}Step;
-
-struct Action {
-	Step step;
-	int instance;//or rule in grammar
-};
 
 struct StackItem {
 	token_t instance;
