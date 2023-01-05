@@ -34,8 +34,6 @@ struct Instance instances[NUM_INSTANCES];
 struct Token *instanceTokens[NUM_INSTANCES];//instance tokens (for stack)
 struct Token *varTokens[NUM_GOTO];//variable (nonterminal) tokens (for stack)
 
-int numTokens;
-
 int tokenIndex = 0;//for reading input
 
 struct Rule rules[NUM_RULES];//grammar
