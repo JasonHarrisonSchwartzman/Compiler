@@ -24,7 +24,7 @@ struct StackItem {
 	token_t instance;
 	Token token;
 
-}
+};
 
 struct Rule {
 	token_t var;
@@ -1858,33 +1858,28 @@ void initializeRules() {
 
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);
-<<<<<<< HEAD
-	test.x = 5;
 	initializeRules();
 	createInstanceAndVarTokens();
-	//printRules();
-=======
-	// initializeRules();
-	// createInstanceAndVarTokens();
-	// printRules();
->>>>>>> ba1fd0fd7b01b31aca17a57fe06ea8823c85558e
-
-	// initializeInstances();
+	printRules();
+	initializeRules();
+	createInstanceAndVarTokens();
+	printRules();
+	initializeInstances();
 	printTokens();
-	// int result = parse();
-	// if (result == 1) {
-	// 	printf("SUCCESS!\n");
-	// }
-	// else if (result == 0) {
-	// 	printf("FAILURE\n");
-	// }
-	// else {
-	// 	printf("ODD FAILURE\n");
-	// }
+	int result = parse();
+	if (result == 1) {
+		printf("SUCCESS!\n");
+	}
+	else if (result == 0) {
+	 	printf("FAILURE\n");
+	}
+	else {
+		printf("ODD FAILURE\n");
+	}
 
 
-	// freeRules();
-	// freeInstanceAndVarTokens();
+	freeRules();
+	freeInstanceAndVarTokens();
 	// //freeTokens();seg fault
-	// freeStack();
+	freeStack();
 }
