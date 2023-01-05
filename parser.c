@@ -20,6 +20,12 @@ struct Action {
 	int instance;//or rule in grammar
 };
 
+struct StackItem {
+	token_t instance;
+	Token token;
+
+}
+
 struct Rule {
 	token_t var;
 	token_t *symbols;//tokens and variables
@@ -70,18 +76,6 @@ void addInstanceGoto(int instanceNum, token_t gotoNum, int gotoInstance) {
 }
 
 void initializeInstances() {
-	//EXAMPLE
-	/*struct Action action0id = { STEP_SHIFT, 5 };
-	struct Action action0int = { STEP_SHIFT, 6 };
-	struct Action action0long = { STEP_SHIFT, 7 };
-	addInstanceAction(0,action0id,1);
-	addInstanceAction(0,action0int,6);
-	addInstanceAction(0,action0long,7);
-	addInstanceGoto(0,0,1);
-	addInstanceGoto(0,1,2);
-	addInstanceGoto(0,2,3);
-	addInstanceGoto(0,3,4);
-	*/
 	//instance 0
 	addInstanceAction(0,STEP_SHIFT,4,TOKEN_INT);
 	addInstanceAction(0,STEP_SHIFT,5,TOKEN_LONG);
@@ -1861,11 +1855,6 @@ void initializeRules() {
 	addRule(84, VAR_H2, 3, rule84);
 
 }
-struct Test {
-	int x;
-};
-
-struct Test test;
 
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);
