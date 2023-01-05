@@ -12,7 +12,7 @@ struct Transition {
 	 * int x = 5; 
 	 * the space between int and x sepeartes the three tokens. 'int' '[space]' 'x' are all tokens
 	 * the transition will looks as follows
-	 *  KEY         l: ' ', d: '1'   SPACE      l: 'x', d: '1'   IDENT
+	 *  KEY         l: 'q ', d: '1'   SPACE      l: 'x', d: '1'   IDENT
 	 * STATE[0]-------------------> STATE[1] -----------------> STATE[2]
 	 * where STATE[0] is a TOKEN_KEYWORD occurs after reading 'i' then 'n' then 't' (reading 'int')
 	 * reading a space will move to STATE[1] is a TOKEN_SPACE 
@@ -124,7 +124,11 @@ void initialize() {
 	states[66].token = TOKEN_CONTINUE;
 	//states[69].token = TOKEN_FUNC;
 	//states[73].token = TOKEN_VOID;
-	//states[78].token = TOKEN_STRUCT;
+	//states[78].token = TOKEN_STRUCT
+	states[68].token = TOKEN_ELSEIF;
+	// states[69].token = TOKEN_FUNC;
+	// states[73].token = TOKEN_VOID;
+	// states[78].token = TOKEN_STRUCT;
 	states[79].token = TOKEN_NUM;
 	states[80].token = TOKEN_ID;
 	states[81].token = TOKEN_ASSIGN;
@@ -136,23 +140,32 @@ void initialize() {
 	// if
 	addTransition(0, 'i', 1, 0);
 	addTransition(1, 'f', 2, 0);
+
 	addTransition(81, 'i', 1, 1);
+	addTransition(82, 'i', 1, 1);
 	addTransition(85, 'i', 1, 1);
+
 
 	// else
 	addTransition(0, 'e', 3, 0);
 	addTransition(3, 'l', 4, 0);
 	addTransition(4, 's', 5, 0);
 	addTransition(5, 'e', 6, 0);
+
 	addTransition(81, 'e', 3, 1);
+	addTransition(82, 'e', 3, 1);
 	addTransition(85, 'e', 3, 1);
+
 
 	// for
 	addTransition(0, 'f', 7, 0);
 	addTransition(7, 'o', 8, 0);
 	addTransition(8, 'r', 9, 0);
+
 	addTransition(81, 'f', 7, 1);
+	addTransition(82, 'f', 7, 1);
 	addTransition(85, 'f', 7, 1);
+
 
 	// while
 	addTransition(0, 'w', 10, 0);
@@ -160,14 +173,21 @@ void initialize() {
 	addTransition(11, 'i', 12, 0);
 	addTransition(12, 'l', 13, 0);
 	addTransition(13, 'e', 14, 0);
+
 	addTransition(81, 'w', 10, 1);
+	addTransition(82, 'w', 10, 1);
 	addTransition(85, 'w', 10, 1);
+
 
 	// int
 	addTransition(1, 'n', 15, 0);
 	addTransition(15, 't', 16, 0);
+
 	addTransition(16, ' ', 82, 1);
 	addTransition(16, '\n', 82, 1);
+	addTransition(16, '\t', 82, 1);
+	addTransition(16, '\r', 82, 1);
+
 
 	// double
 	addTransition(0, 'd', 17, 0);
@@ -176,30 +196,47 @@ void initialize() {
 	addTransition(19, 'b', 20, 0);
 	addTransition(20, 'l', 21, 0);
 	addTransition(21, 'e', 22, 0);
+
 	addTransition(81, 'd', 17, 1);
+	addTransition(82, 'd', 17, 1);
 	addTransition(85, 'd', 17, 1);
 	addTransition(22, ' ', 82, 1);
 	addTransition(22, '\n', 82, 1);
+	addTransition(22, '\t', 82, 1);
+	addTransition(22, '\r', 82, 1);
+
 
 	// char
 	addTransition(0, 'c', 23, 0);
 	addTransition(23, 'h', 24, 0);
 	addTransition(24, 'a', 25, 0);
 	addTransition(25, 'r', 26, 0);
+
 	addTransition(81, 'c', 23, 1);
+	addTransition(82, 'c', 23, 1);
 	addTransition(85, 'c', 23, 1);
+
 	addTransition(26, ' ', 82, 1);
 	addTransition(26, '\n', 82, 1);
+	addTransition(26, '\t', 82, 1);
+	addTransition(26, '\r', 82, 1);
+
 
 	// long
 	addTransition(0, 'l', 27, 0);
 	addTransition(27, 'o', 28, 0);
 	addTransition(28, 'n', 29, 0);
 	addTransition(29, 'g', 30, 0);
+
 	addTransition(81, 'l', 27, 1);
+	addTransition(82, 'l', 27, 1);
 	addTransition(85, 'l', 27, 1);
+
 	addTransition(30, ' ', 82, 1);
 	addTransition(30, '\n', 82, 1);
+	addTransition(30, '\t', 82, 1);
+	addTransition(30, '\r', 82, 1);
+
 
 	// short
 	addTransition(0, 's', 31, 0);
@@ -207,10 +244,16 @@ void initialize() {
 	addTransition(32, 'o', 33, 0);
 	addTransition(33, 'r', 34, 0);
 	addTransition(34, 't', 35, 0);
+
 	addTransition(81, 's', 31, 1);
+	addTransition(82, 's', 31, 1);
 	addTransition(85, 's', 31, 1);
+
 	addTransition(35, ' ', 82, 1);
 	addTransition(35, '\n', 82, 1);
+	addTransition(35, '\t', 82, 1);
+	addTransition(35, '\r', 82, 1);
+
 
 	// signed
 	addTransition(31, 'i', 36, 0);
@@ -218,8 +261,12 @@ void initialize() {
 	addTransition(37, 'n', 38, 0);
 	addTransition(38, 'e', 39, 0);
 	addTransition(39, 'd', 40, 0);
+
 	addTransition(40, ' ', 82, 1);
 	addTransition(40, '\n', 82, 1);
+	addTransition(40, '\t', 82, 1);
+	addTransition(40, '\r', 82, 1);
+
 
 	// unsigned
 	addTransition(0, 'u', 41, 0);
@@ -230,10 +277,16 @@ void initialize() {
 	addTransition(45, 'n', 46, 0);
 	addTransition(46, 'e', 47, 0);
 	addTransition(47, 'd', 48, 0);
+
 	addTransition(81, 'u', 41, 1);
+	addTransition(82, 'u', 41, 1);
 	addTransition(85, 'u', 41, 1);
+
 	addTransition(48, ' ', 82, 1);
 	addTransition(48, '\n', 82, 1);
+	addTransition(48, '\t', 82, 1);
+	addTransition(48, '\r', 82, 1);
+
 
 	// return
 	addTransition(0, 'r', 49, 0);
@@ -242,19 +295,32 @@ void initialize() {
 	addTransition(51, 'u', 52, 0);
 	addTransition(52, 'r', 53, 0);
 	addTransition(53, 'n', 54, 0);
+
 	addTransition(81, 'r', 49, 1);
+	addTransition(82, 'r', 49, 1);
 	addTransition(85, 'r', 49, 1);
+
 	addTransition(54, ' ', 82, 1);
+	addTransition(54, '\n', 82, 1);
+	addTransition(54, '\t', 82, 1);
+	addTransition(54, '\r', 82, 1);
 	
+
 	// break
 	addTransition(0, 'b', 55, 0);
 	addTransition(55, 'r', 56, 0);
 	addTransition(56, 'e', 57, 0);
 	addTransition(57, 'a', 58, 0);
 	addTransition(58, 'k', 59, 0);
+
 	addTransition(81, 'b', 55, 1);
+	addTransition(82, 'b', 55, 1);
 	addTransition(85, 'b', 55, 1);
+
 	addTransition(59, ' ', 82, 1);
+	addTransition(59, '\n', 82, 1);
+	addTransition(59, '\t', 82, 1);
+	addTransition(59, '\r', 82, 1);
 	addTransition(59, ';', 85, 1);
 
 	// continue
@@ -268,25 +334,9 @@ void initialize() {
 	addTransition(66, ' ', 82, 1);
 	addTransition(66, ';', 85, 1);
 
-	// func
-	addTransition(7, 'u', 67, 0);
-	addTransition(67, 'n', 68, 0);
-	addTransition(68, 'c', 69, 0);
-
-	// void
-	addTransition(0, 'v', 70, 0);
-	addTransition(70, 'o', 71, 0);
-	addTransition(71, 'i', 72, 0);
-	addTransition(72, 'd', 73, 0);
-	addTransition(81, 'v', 70, 1);
-	addTransition(85, 'v', 70, 1);
-
-	// struct
-	addTransition(25, 't', 74, 0);
-	addTransition(74, 'r', 75, 0);
-	addTransition(75, 'u', 76, 0);
-	addTransition(76, 'c', 77, 0);
-	addTransition(77, 't', 78, 0);
+	// elseif
+	addTransition(6, 'i', 67, 0);
+	addTransition(67, 'f', 68, 0);
 
 	// assign
 	addTransition(81, ' ', 82, 1);
@@ -303,6 +353,7 @@ void initialize() {
 		addTransition(79, ';', 85, 1);
 		addTransition(79, ' ', 82, 1);
 		addTransition(79, '\n', 82, 1);
+		addTransition(79, '\t', 82, 1);
 		addTransition(82, i, 79, 1);
 
 		// plus
@@ -322,10 +373,13 @@ void initialize() {
 	createSpaceTransitions();
 	addTransition(0, ' ', 82, 1);
 	addTransition(0, '\n', 82, 1);
+	addTransition(0, '\t', 82, 1);
 
 	// semicolon
 	addTransition(85, ' ', 82, 1);
 	addTransition(85, '\n', 82, 1);
+	addTransition(85, '\t', 82, 1);
+	addTransition(85, '\r', 82, 1);
 	addTransition(82, ';', 85, 1);
 
 	// plus
@@ -335,7 +389,6 @@ void initialize() {
 	// minus 
 	addTransition(82, '-', 84, 1);
 	addTransition(84, ' ', 82, 1);
-	
 
 	// from assign to id
 	for (int i = 0; i < 127; i++) {
@@ -368,7 +421,6 @@ void initialize() {
 	createIDTransitions(16, "");
 	createIDTransitions(17, "");
 	createIDTransitions(80, "");
-
 }
 
 
