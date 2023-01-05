@@ -75,52 +75,6 @@ void printTokens() {
 	}
 }
 
-void printToken(token_t token) {
-	char *str;
-	switch(token) {
-		case TOKEN_NUM:
-			str = "num";
-			break;
-		case TOKEN_ID:
-			str = "id";
-			break;
-		case TOKEN_PLUS:
-			str = "+";
-			break;
-		case TOKEN_MINUS:
-			str = "-";
-			break;
-		case TOKEN_ASSIGN:
-			str = "=";
-			break;
-		case TOKEN_SEMICOLON:
-			str = ";";
-			break;
-		case TOKEN_INT:
-			str = "int";
-			break;
-		case TOKEN_LONG:
-			str = "long";
-			break;
-		case TOKEN_DOLLAR:
-			str = "$";
-			break;
-		case TOKEN_EOF:
-			str = "eof";
-			break;
-		case TOKEN_WHITESPACE:
-			str = "[SPACE]";
-			break;
-		case TOKEN_SIGNED:
-			str = "signed";
-			break;
-		default:
-			str = "ERROR VAR NOT FOUND";
-			break;
-	}
-	printf("%s",str);
-}
-
 int scanner(int argc, char *argv[]) {
 	if (argc < 2) {
 		printf("Usage: ./scanner [file]\n");
