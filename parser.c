@@ -133,6 +133,7 @@ void initializeInstances() {
 	addInstanceGoto(9,VAR_B1,16);
 	addInstanceGoto(9,VAR_C1,9);
 	addInstanceGoto(9,VAR_D1,10);
+	addInstanceGoto(9,VAR_E1,12);
 	addInstanceGoto(9,VAR_F1,14);
 	addInstanceGoto(9,VAR_G1,15);
 	addInstanceGoto(9,VAR_K1,13);
