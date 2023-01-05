@@ -1855,11 +1855,6 @@ void initializeRules() {
 	addRule(84, VAR_H2, 3, rule84);
 
 }
-struct Test {
-	int x;
-};
-
-struct Test test;
 
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);
