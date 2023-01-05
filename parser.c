@@ -62,6 +62,13 @@ Token *getSecondTopOfStack() {
 	return stack[stackTopPointer-1];
 }
 
+void printStack() {
+	for (int i = 0; i <= stackTopPointer; i++) {
+		printf("%d ", stack[i]->tokenType);
+	}
+	printf("\n");
+}
+
 void freeStack() {
 	free(stack);
 }
@@ -74,7 +81,6 @@ void shift(Token *token, Token *instance) {
 	push(instance);
 	tokenIndex++;
 }
-void printStack();
 
 void reduce(int rule) {
 	printf("Reduce by %d\n",rule);
@@ -83,13 +89,6 @@ void reduce(int rule) {
 	}
 	push(varTokens[rules[rule].var-(TOTAL_TOKENS+NUM_INSTANCES)]);
 	push(instanceTokens[instances[getSecondTopOfStack()->tokenType].gotoAction[getTopOfStack()->tokenType-(TOTAL_TOKENS+NUM_INSTANCES)]]);
-}
-
-void printStack() {
-	for (int i = 0; i <= stackTopPointer; i++) {
-		printf("%d ", stack[i]->tokenType);
-	}
-	printf("\n");
 }
 
 int parse() {
