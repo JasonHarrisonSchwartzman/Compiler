@@ -57,14 +57,6 @@ struct Token **stack;
 int stackCapacity = 0;
 int stackTopPointer = -1;//points to top of the stack
 
-void addInstanceAction(int instanceNum, Step step, int num, token_t token) {
-	instances[instanceNum].actions[token-NUM_INSTANCES].step = step;
-	instances[instanceNum].actions[token-NUM_INSTANCES].instance = num;
-}
-void addInstanceGoto(int instanceNum, token_t gotoNum, int gotoInstance) {
-	instances[instanceNum].gotoAction[gotoNum-(NUM_INSTANCES+TOTAL_TOKENS)] = gotoInstance;
-}
-
 void push(Token *token) {
 	stack = realloc(stack,sizeof(Token) * (stackTopPointer + 2));
 	stack[++stackTopPointer] = token;
