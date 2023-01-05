@@ -1,3 +1,2 @@
-int x = 5 + y - 22 + y + 20;
-
-
+long x = 5;
+long x = 5 + 5;
