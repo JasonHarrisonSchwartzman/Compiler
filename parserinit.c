@@ -2,7 +2,25 @@
 #include "token.h"
 
 
+void createInstanceAndVarTokens() {
+	for (int i = 0; i < NUM_INSTANCES; i++) {
+		instanceTokens[i] = malloc(sizeof(Token));
+		instanceTokens[i]->tokenType = i;
+	}
+	for (int i = 0; i < NUM_GOTO; i++) {
+		varTokens[i] = malloc(sizeof(Token));
+		varTokens[i]->tokenType = NUM_INSTANCES + TOTAL_TOKENS + i; 
+	}
+}
 
+void freeInstanceAndVarTokens() {
+	for (int i = 0; i < NUM_INSTANCES; i++) {
+		free(instanceTokens[i]);
+	}
+	for (int i = 0; i < NUM_GOTO; i++) {
+		free(varTokens[i]);
+	}
+}
 
 void addRule(int item, token_t var, int length, token_t symbol[length]) {
 	rules[item].var = var;
