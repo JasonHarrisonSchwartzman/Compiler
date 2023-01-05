@@ -4,11 +4,6 @@
 #include "scanner.c"
 #include "parserinit.c"
 #include "parser.h"
-#define NUM_RULES 87
-#define NUM_ACTIONS 48
-#define NUM_GOTO 32
-#define NUM_INSTANCES 300
-#define TOTAL_TOKENS 50
 
 struct StackItem {
 	token_t instance;
