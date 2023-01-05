@@ -29,5 +29,20 @@ struct Action {
 	int instance;//or rule in grammar
 };
 
+struct Instance instances[NUM_INSTANCES];
+
+struct Token *instanceTokens[NUM_INSTANCES];//instance tokens (for stack)
+struct Token *varTokens[NUM_GOTO];//variable (nonterminal) tokens (for stack)
+extern struct Token **tokens;//input of tokens
+extern int numTokens;
+int tokenIndex = 0;//for reading input
+
+struct Rule rules[NUM_RULES];//grammar
+
+struct Token **stack;
+int stackCapacity = 0;
+int stackTopPointer = -1;//points to top of the stack
+
+
 
 #endif
