@@ -27,7 +27,7 @@ typedef enum Step{
 struct Action {
 	Step step;
 	int instance;//or rule in grammar
-};
+} Action;
 
 struct Instance instances[NUM_INSTANCES];
 
