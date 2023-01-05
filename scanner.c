@@ -4,10 +4,7 @@
 #include "token.h"
 #include "dfa.h"
 #include "dfa.c"
-#define NUM_DELIMETERS 17
 
-struct Token **tokens;//array that contains all the tokens in the input file
-int numTokens = 0;
 int lineNum = 1;
 extern struct State states[];//defined in dfa.c
 

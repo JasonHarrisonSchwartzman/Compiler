@@ -2,6 +2,7 @@
 #include "parser.h"
 #include "scanner.c"
 #include "parser.c"
+#include <stdio.h>
 
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);

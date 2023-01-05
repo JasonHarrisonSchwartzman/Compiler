@@ -1,5 +1,6 @@
 #include "token.h"
 #include "parser.h"
+#include <stdlib.h>
 
 
 void createInstanceAndVarTokens() {
