@@ -3,8 +3,13 @@ CFLAGS=-Wall
 EXE=jcc
 all: parser
 
-parser: parser.o scanner.o parserinit.o
-	$(CC) $(CFLAGS) -o $(EXE) parser.o
+
+
+main: main.o parser.o scanner.o parserinit.o
+	$(CC) $(CFLAGS) -o $(EXE) main.o
+
+main.o: main.c parser.c parserinit.c scanner.c token.h
+	$(CC) $(CFLAGS) -c main.c
 
 parser.o: parser.c scanner.c token.h
 	$(CC) $(CFLAGS) -c parser.c
