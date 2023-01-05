@@ -1,6 +1,14 @@
 #include "parser.h"
 #include "token.h"
 
+void addInstanceAction(int instanceNum, Step step, int num, token_t token) {
+	instances[instanceNum].actions[token-NUM_INSTANCES].step = step;
+	instances[instanceNum].actions[token-NUM_INSTANCES].instance = num;
+}
+void addInstanceGoto(int instanceNum, token_t gotoNum, int gotoInstance) {
+	instances[instanceNum].gotoAction[gotoNum-(NUM_INSTANCES+TOTAL_TOKENS)] = gotoInstance;
+}
+
 void initializeInstances() {
 	//instance 0
 	addInstanceAction(0,STEP_SHIFT,4,TOKEN_INT);
