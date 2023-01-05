@@ -1,8 +1,7 @@
-#include "parser.c"
-#include "parserinit.c"
 #include "token.h"
 #include "parser.h"
 #include "scanner.c"
+#include "parser.c"
 
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);

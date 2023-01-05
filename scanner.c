@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "token.h"
 #include "dfa.h"
 #include "dfa.c"
-#include "token.h"
 #define NUM_DELIMETERS 17
 
 typedef struct Token{

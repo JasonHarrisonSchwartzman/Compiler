@@ -1,5 +1,5 @@
-#include "parser.h"
 #include "token.h"
+#include "parser.h"
 
 
 void createInstanceAndVarTokens() {
