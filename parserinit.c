@@ -1239,7 +1239,7 @@ void initializeInstances() {
 	//instance 125
 	addInstanceAction(125,STEP_SHIFT,95,TOKEN_PLUS);
 	addInstanceAction(125,STEP_SHIFT,99,TOKEN_MINUS);
-	addInstanceAction(125,STEP_SHIFT,40,TOKEN_SEMICOLON);
+	addInstanceAction(125,STEP_REDUCE,40,TOKEN_SEMICOLON);
 	addInstanceAction(125,STEP_SHIFT,102,TOKEN_EQUAL);
 	addInstanceAction(125,STEP_SHIFT,104,TOKEN_GREATEQUAL);
 	addInstanceAction(125,STEP_SHIFT,103,TOKEN_LESSEQUAL);
