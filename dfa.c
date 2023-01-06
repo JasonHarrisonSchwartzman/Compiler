@@ -614,6 +614,10 @@ void initialize() {
 	// right curly
 	addTransition(85, '}', 94, 1); // semicolon to right curly
 	addTransition(82, '}', 94, 1);
+	addTransition(94, ' ', 82, 1);
+	addTransition(94, '\n', 82, 1);
+	addTransition(94, '\t', 82, 1);
+	addTransition(94, '\r', 82, 1);
 
 
 	// from assign to id

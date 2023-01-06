@@ -877,7 +877,7 @@ void initializeInstances() {
 	addInstanceAction(80,STEP_REDUCE,65,TOKEN_BITWISEOR);
 	addInstanceAction(80,STEP_REDUCE,65,TOKEN_BITWISEXOR);
 	//instance 81
-	addInstanceAction(81,STEP_SHIFT,118,TOKEN_SEMICOLON);
+	addInstanceAction(81,STEP_SHIFT,113,TOKEN_SEMICOLON);
 	//instance 82
 	addInstanceAction(82,STEP_SHIFT,114,TOKEN_ASSIGN);
 	addInstanceAction(82,STEP_REDUCE,39,TOKEN_SEMICOLON);
