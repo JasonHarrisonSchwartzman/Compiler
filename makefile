@@ -8,7 +8,7 @@ all: main.o parser.o parserinit.o scanner.o
 main.o: main.c parser.c parserinit.c scanner.c
 	$(CC) $(CFLAGS) -c main.c
 
-parser.o: parser.c parserinit.c token.h
+parser.o: parser.c parserinit.c token.h syntaxtree.h
 	$(CC) $(CFLAGS) -c parser.c
 
 parserinit.o: parserinit.c parser.h token.h

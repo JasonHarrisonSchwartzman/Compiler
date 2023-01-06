@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "token.h"
+#include "syntaxtree.h"
 #include "parserinit.c"
 #include "parser.h"
 
