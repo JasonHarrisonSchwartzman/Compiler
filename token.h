@@ -438,8 +438,122 @@ void printToken(token_t token) {
 		case TOKEN_SIGNED:
 			str = "signed";
 			break;
+		case TOKEN_UNSIGNED:
+			str = "unsigned";
+			break;
+		case TOKEN_IF:
+			str = "if";
+			break;
+		case TOKEN_ELSE: 
+			str = "else";
+			break;
+		case TOKEN_FOR:
+			str = "for";
+			break;
+		case TOKEN_WHILE:
+			str = "while";
+			break;
+		case TOKEN_DOUBLE:
+			str = "double";
+			break;
+		case TOKEN_CHAR:
+			str = "char";
+			break;
+		case TOKEN_SHORT:
+			str = "short";
+			break;
+		case TOKEN_RETURN:
+			str = "return";
+			break;
+		case TOKEN_BREAK:
+			str = "break";
+			break;
+		case TOKEN_CONTINUE:
+			str = "continue";
+			break;
+		case TOKEN_LEFTBRACKET:
+			str = "[";
+			break;
+		case TOKEN_RIGHTBRACKET:
+			str = "]";
+			break;
+		case TOKEN_LEFTPAREN:
+			str = "(";
+			break;
+		case TOKEN_RIGHTPAREN:
+			str = ")";
+			break;
+		case TOKEN_LEFTCURLY:
+			str = "{";
+			break;
+		case TOKEN_RIGHTCURLY:
+			str = "}";
+			break;
+		case TOKEN_EQUAL:
+			str = "==";
+			break;
+		case TOKEN_LESSEQUAL:
+			str = "<=";
+			break;
+		case TOKEN_GREATEQUAL:
+			str = ">=";
+			break;
+		case TOKEN_GREAT:
+			str = ">";
+			break;
+		case TOKEN_LESS:
+			str = "<";
+			break;
+		case TOKEN_AND:
+			str = "&&";
+			break;
+		case TOKEN_OR:
+			str = "||";
+			break;
+		case TOKEN_NOT:
+			str = "!=";
+			break;
+		case TOKEN_MULT:
+			str = "*";
+			break;
+		case TOKEN_DIV:
+			str = "/";
+			break;
+		case TOKEN_MOD:
+			str = "%";
+			break;
+		case TOKEN_TILDE:
+			str = "~";
+			break;
+		case TOKEN_AT:
+			str = "@";
+			break;
+		case TOKEN_COMMA:
+			str = ",";
+			break;
+		case TOKEN_BITWISEAND:
+			str = "&";
+			break;
+		case TOKEN_BITWISEOR:
+			str = "|";
+			break;
+		case TOKEN_BITWISEXOR:
+			str = "^";
+			break;
+		case TOKEN_CHARCONST:
+			str = "charconst";
+			break;
+		case TOKEN_STRINGCONST:
+			str = "stringconst";
+			break;
+		case TOKEN_QUESTIONMARK:
+			str = "?";
+			break;
+		case TOKEN_ELSEIF:
+			str = "elseif";
+			break;
 		default:
-			str = "ERROR VAR NOT FOUND";
+			str = "ERROR TOKEN NOT FOUND";
 			break;
 	}
 	printf("%s",str);

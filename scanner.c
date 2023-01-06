@@ -68,7 +68,9 @@ void freeTokens() {
 void printTokens() {
 	printf("NUM TOKENS: %d\n",numTokens);
 	for (int i = 0; i < numTokens; i++) {
-		printf("%s\n",tokens[i]->token);
+		printf("%s       | ",tokens[i]->token);
+		printToken(tokens[i]->tokenType);
+		printf("\n");
 	}
 }
 
