@@ -72,7 +72,11 @@ void createIDTransitions(int startState, char blacklist[]) {
 		if ((i >= 65 && i <= 90) || (i >= 97 && i <= 122)) {
 			char *ptr = strchr(blacklist, i);
 			if (!ptr) {
-				addTransition(startState, i, 80, 0);
+				if (startState == 91 || startState == 93) {
+					addTransition(startState, i, 80, 1);
+				} else {
+					addTransition(startState, i, 80, 0);
+				}
 			}
 		}
 	}
@@ -377,6 +381,7 @@ void initialize() {
 	addTransition(80, '\t', 82, 1);
 	addTransition(80, '\r', 82, 1);
 	addTransition(80, '=', 81, 1);
+	addTransition(80, ';', 85, 1);
 
 
 	// numbers
@@ -583,6 +588,7 @@ void initialize() {
 
 	// left paren
 	addTransition(82, '(', 91, 1);
+	addTransition(80, '(', 91, 1);
 	addTransition(91, ')', 92, 1);
 	addTransition(91, ' ', 82, 1);
 	addTransition(91, '\n', 82, 1);
