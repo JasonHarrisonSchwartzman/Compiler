@@ -98,7 +98,9 @@ int parse() {
 			reduce(instances[token].actions[actionIndex].instance);
 		}
 		else {
-			printf("Token not found: %s NUM:  %d\n",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
+			printf("Token not found: %s NUM:  %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
+			printToken(tokens[tokenIndex]->tokenType);
+			printf("\n");
 			return 0;
 		}
 		printStack();
