@@ -7,7 +7,8 @@
 struct StackItem {
 	token_t instance;
 	Token token;
-	
+	token_t var;
+	void *ptr;
 } StackItem;
 
 

@@ -59,8 +59,8 @@ int takeTransition(int startState, char letter, int *endState) {
 
 void createIDTransitions(int startState, char blacklist[]) {
 	for (int i = 0; i < 127; i++) {
-		// handles 0-9 when startStart != 0
-		if (startState != 0) {
+		// handles 0-9
+		if (startState != 0 && startState != 82) {
 			if (i >= 48 && i <= 57) {
 				char *ptr = strchr(blacklist, i);
 				if (!ptr) {
@@ -123,9 +123,17 @@ void initialize() {
 	states[59].token = TOKEN_BREAK;
 	states[66].token = TOKEN_CONTINUE;
 	states[68].token = TOKEN_ELSEIF;
-	// states[69].token = TOKEN_FUNC;
-	// states[73].token = TOKEN_VOID;
-	// states[78].token = TOKEN_STRUCT;
+
+	states[69].token = TOKEN_EQUAL;
+	states[70].token = TOKEN_LESS;
+	states[71].token = TOKEN_LESSEQUAL;
+	states[72].token = TOKEN_GREAT;
+	states[73].token = TOKEN_GREATEQUAL;
+	states[75].token = TOKEN_NOT;
+	states[76].token = TOKEN_BITWISEAND;
+	states[77].token = TOKEN_AND;
+	states[78].token = TOKEN_BITWISEXOR;
+
 	states[79].token = TOKEN_NUM;
 	states[80].token = TOKEN_ID;
 	states[81].token = TOKEN_ASSIGN;
@@ -133,6 +141,18 @@ void initialize() {
 	states[83].token = TOKEN_PLUS;
 	states[84].token = TOKEN_MINUS;
 	states[85].token = TOKEN_SEMICOLON;
+	states[86].token = TOKEN_MULT;
+	states[87].token = TOKEN_DIV;
+	states[88].token = TOKEN_MOD;
+
+	states[89].token = TOKEN_BITWISEOR;
+	states[90].token = TOKEN_OR;
+
+	states[91].token = TOKEN_LEFTPAREN;
+	states[92].token = TOKEN_RIGHTPAREN;
+
+	states[93].token = TOKEN_LEFTCURLY;
+	states[94].token = TOKEN_RIGHTCURLY;
 
 	// if
 	addTransition(0, 'i', 1, 0);
@@ -301,6 +321,7 @@ void initialize() {
 	addTransition(54, '\n', 82, 1);
 	addTransition(54, '\t', 82, 1);
 	addTransition(54, '\r', 82, 1);
+	addTransition(54, ';', 85, 1);
 	
 
 	// break
@@ -320,6 +341,7 @@ void initialize() {
 	addTransition(59, '\r', 82, 1);
 	addTransition(59, ';', 85, 1);
 
+
 	// continue
 	addTransition(23, 'o', 60, 0);
 	addTransition(60, 'n', 61, 0);
@@ -328,49 +350,111 @@ void initialize() {
 	addTransition(63, 'n', 64, 0);
 	addTransition(64, 'u', 65, 0);
 	addTransition(65, 'e', 66, 0);
+
 	addTransition(66, ' ', 82, 1);
+	addTransition(66, '\n', 82, 1);
+	addTransition(66, '\t', 82, 1);
+	addTransition(66, '\r', 82, 1);
 	addTransition(66, ';', 85, 1);
+
 
 	// elseif
 	addTransition(6, 'i', 67, 0);
 	addTransition(67, 'f', 68, 0);
 
+
 	// assign
 	addTransition(81, ' ', 82, 1);
+	addTransition(81, '\n', 82, 1);
+	addTransition(81, '\t', 82, 1);
+	addTransition(81, '\r', 82, 1);
 	addTransition(82, '=', 81, 1);
+
 
 	// id
 	addTransition(80, ' ', 82, 1);
+	addTransition(80, '\n', 82, 1);
+	addTransition(80, '\t', 82, 1);
+	addTransition(80, '\r', 82, 1);
 	addTransition(80, '=', 81, 1);
+
 
 	// numbers
 	for (int i = 48; i < 58; i++) {
 		addTransition(0, i, 79, 0);
 		addTransition(79, i, 79, 0);
-		addTransition(79, ';', 85, 1);
-		addTransition(79, ' ', 82, 1);
-		addTransition(79, '\n', 82, 1);
-		addTransition(79, '\t', 82, 1);
 		addTransition(82, i, 79, 1);
 
 		// plus
-		addTransition(79, '+', 83, 1);
 		addTransition(83, i, 79, 1);
 
 		// minus
-		addTransition(79, '-', 84, 1);
 		addTransition(84, i, 79, 1);
 
+		// mult
+		addTransition(86, i, 79, 1);
+
+		// div
+		addTransition(87, i, 79, 1);
+
+		// mod
+		addTransition(88, i, 79, 1);
+
+		// equal
+		addTransition(69, i, 79, 1);
+
+		// less
+		addTransition(70, i, 79, 1);
+
+		// less equal
+		addTransition(71, i, 79, 1);
+
+		// greater
+		addTransition(72, i, 79, 1);
+
+		// greater equal
+		addTransition(73, i, 79, 1);
+
+		// not equal
+		addTransition(75, i, 79, 1);
+
+		// bitwise and
+		addTransition(76, i, 79, 1);
+
+		// and
+		addTransition(77, i, 79, 1);
+
+		// bitwise xor
+		addTransition(78, i, 79, 1);
+
+		// bitwise or
+		addTransition(89, i, 79, 1);
+
+		// or
+		addTransition(90, i, 79, 1);
+
 		// assign
-		addTransition(79, '=', 81, 1);
 		addTransition(81, i, 79, 1);
+
+		// left paren
+		addTransition(91, i, 79, 1);
 	}
 	
+	// numbers
+	addTransition(79, ';', 85, 1);
+	addTransition(79, ' ', 82, 1);
+	addTransition(79, '\n', 82, 1);
+	addTransition(79, '\t', 82, 1);
+	addTransition(79, '\r', 82, 1);
+
 	// whitespaces
 	createSpaceTransitions();
 	addTransition(0, ' ', 82, 1);
 	addTransition(0, '\n', 82, 1);
 	addTransition(0, '\t', 82, 1);
+
+	// assign
+	addTransition(79, '=', 81, 1);
 
 	// semicolon
 	addTransition(85, ' ', 82, 1);
@@ -381,11 +465,150 @@ void initialize() {
 
 	// plus
 	addTransition(82, '+', 83, 1);
+	addTransition(79, '+', 83, 1);
 	addTransition(83, ' ', 82, 1);
+	addTransition(83, '\n', 82, 1);
+	addTransition(83, '\t', 82, 1);
+	addTransition(83, '\r', 82, 1);
 
 	// minus 
 	addTransition(82, '-', 84, 1);
+	addTransition(79, '-', 84, 1);
 	addTransition(84, ' ', 82, 1);
+	addTransition(84, '\n', 82, 1);
+	addTransition(84, '\t', 82, 1);
+	addTransition(84, '\r', 82, 1);
+
+	// mult
+	addTransition(82, '*', 86, 1);
+	addTransition(79, '*', 86, 1);
+	addTransition(86, ' ', 82, 1);
+	addTransition(86, '\n', 82, 1);
+	addTransition(86, '\t', 82, 1);
+	addTransition(86, '\r', 82, 1);
+
+	// div
+	addTransition(82, '/', 87, 1);
+	addTransition(79, '/', 87, 1);
+	addTransition(87, ' ', 82, 1);
+	addTransition(87, '\n', 82, 1);
+	addTransition(87, '\t', 82, 1);
+	addTransition(87, '\r', 82, 1);
+
+	// mod
+	addTransition(82, '%', 88, 1);
+	addTransition(79, '%', 88, 1);
+	addTransition(88, ' ', 82, 1);
+	addTransition(88, '\n', 82, 1);
+	addTransition(88, '\t', 82, 1);
+	addTransition(88, '\r', 82, 1);
+
+	// equal
+	addTransition(81, '=', 69, 0);
+	addTransition(69, ' ', 82, 1);
+	addTransition(69, '\n', 82, 1);
+	addTransition(69, '\t', 82, 1);
+	addTransition(69, '\r', 82, 1);
+
+	// less
+	addTransition(82, '<', 70, 1);
+	addTransition(70, ' ', 82, 1);
+	addTransition(70, '\n', 82, 1);
+	addTransition(70, '\t', 82, 1);
+	addTransition(70, '\r', 82, 1);
+
+	// less equal
+	addTransition(70, '=', 71, 0);
+	addTransition(71, ' ', 82, 1);
+	addTransition(71, '\n', 82, 1);
+	addTransition(71, '\t', 82, 1);
+	addTransition(71, '\r', 82, 1);
+
+	// greater 
+	addTransition(82, '>', 72, 1);
+	addTransition(72, ' ', 82, 1);
+	addTransition(72, '\n', 82, 1);
+	addTransition(72, '\t', 82, 1);
+	addTransition(72, '\r', 82, 1);
+
+	// greater equal
+	addTransition(72, '=', 73, 0);
+	addTransition(73, ' ', 82, 1);
+	addTransition(73, '\n', 82, 1);
+	addTransition(73, '\t', 82, 1);
+	addTransition(73, '\r', 82, 1);
+
+	// not equal
+	addTransition(82, '!', 74, 1);
+	addTransition(74, '=', 75, 0);
+	addTransition(75, ' ', 82, 1);
+	addTransition(75, '\n', 82, 1);
+	addTransition(75, '\t', 82, 1);
+	addTransition(75, '\r', 82, 1);
+
+	// bitwise and
+	addTransition(79, '&', 76, 1);
+	addTransition(76, ' ', 82, 1);
+	addTransition(76, '\n', 82, 1);
+	addTransition(76, '\t', 82, 1);
+	addTransition(76, '\r', 82, 1);
+
+	// and
+	addTransition(76, '&', 77, 0);
+	addTransition(77, ' ', 82, 1);
+	addTransition(77, '\n', 82, 1);
+	addTransition(77, '\t', 82, 1);
+	addTransition(77, '\r', 82, 1);
+
+	// bitwise xor
+	addTransition(82, '^', 78, 1);
+	addTransition(78, ' ', 82, 1);
+	addTransition(78, '\n', 82, 1);
+	addTransition(78, '\t', 82, 1);
+	addTransition(78, '\r', 82, 1);
+
+	// bitwise or
+	addTransition(82, '|', 89, 1);
+	addTransition(89, ' ', 82, 1);
+	addTransition(89, '\n', 82, 1);
+	addTransition(89, '\t', 82, 1);
+	addTransition(89, '\r', 82, 1);
+
+	// or
+	addTransition(89, '|', 90, 0);
+	addTransition(90, ' ', 82, 1);
+	addTransition(90, '\n', 82, 1);
+	addTransition(90, '\t', 82, 1);
+	addTransition(90, '\r', 82, 1);
+
+	// left paren
+	addTransition(82, '(', 91, 1);
+	addTransition(91, ')', 92, 1);
+	addTransition(91, ' ', 82, 1);
+	addTransition(91, '\n', 82, 1);
+	addTransition(91, '\t', 82, 1);
+	addTransition(91, '\r', 82, 1);
+
+	// right paren
+	addTransition(82, ')', 92, 1);
+	addTransition(92, ' ', 82, 1);
+	addTransition(92, '\n', 82, 1);
+	addTransition(92, '\t', 82, 1);
+	addTransition(92, '\r', 82, 1);
+	addTransition(92, ';', 85, 1);
+
+	// left curly
+	addTransition(92, '{', 93, 1); // right paren to left curly
+	addTransition(82, '{', 93, 1); 
+	addTransition(93, ' ', 82, 1);
+	addTransition(93, '\n', 82, 1);
+	addTransition(93, '\t', 82, 1);
+	addTransition(93, '\r', 82, 1);
+
+	// right curly
+	addTransition(85, '}', 94, 1); // semicolon to right curly
+	addTransition(82, '}', 94, 1);
+
 
 	// from assign to id
 	for (int i = 0; i < 127; i++) {
@@ -398,13 +621,16 @@ void initialize() {
 		}
 	}
 
+	// function - int
+	// addTransition()
+	
+
 	createIDTransitions(0, "iefwdclsuvrb");
 	createIDTransitions(1, "f");
 	createIDTransitions(2, "");
 	createIDTransitions(3, "l");
 	createIDTransitions(4, "s");
 	createIDTransitions(5, "e");
-	createIDTransitions(6, "");
 	createIDTransitions(6, "");
 	createIDTransitions(7, "o");
 	createIDTransitions(8, "r");
@@ -416,6 +642,82 @@ void initialize() {
 	createIDTransitions(14, "");
 	createIDTransitions(15, "t");
 	createIDTransitions(16, "");
-	createIDTransitions(17, "");
+	createIDTransitions(17, "o");
+	createIDTransitions(18, "u");
+	createIDTransitions(19, "b");
+	createIDTransitions(20, "l");
+	createIDTransitions(21, "e");
+	createIDTransitions(22, "");
+	createIDTransitions(23, "ho");
+	createIDTransitions(24, "a");
+	createIDTransitions(25, "r");
+	createIDTransitions(26, "");
+	createIDTransitions(27, "o");
+	createIDTransitions(28, "n");
+	createIDTransitions(29, "g");
+	createIDTransitions(30, "");
+	createIDTransitions(31, "hi");
+	createIDTransitions(32, "o");
+	createIDTransitions(33, "r");
+	createIDTransitions(34, "t");
+	createIDTransitions(35, "");
+	createIDTransitions(36, "g");
+	createIDTransitions(37, "n");
+	createIDTransitions(38, "e");
+	createIDTransitions(39, "d");
+	createIDTransitions(40, "");
+	createIDTransitions(41, "n");
+	createIDTransitions(42, "s");
+	createIDTransitions(43, "i");
+	createIDTransitions(44, "g");
+	createIDTransitions(45, "n");
+	createIDTransitions(46, "e");
+	createIDTransitions(47, "d");
+	createIDTransitions(48, "");
+	createIDTransitions(49, "e");
+	createIDTransitions(50, "t");
+	createIDTransitions(51, "u");
+	createIDTransitions(52, "r");
+	createIDTransitions(53, "n");
+	createIDTransitions(54, "");
+	createIDTransitions(55, "r");
+	createIDTransitions(56, "e");
+	createIDTransitions(57, "a");
+	createIDTransitions(58, "k");
+	createIDTransitions(59, "");
+	createIDTransitions(60, "n");
+	createIDTransitions(61, "t");
+	createIDTransitions(62, "i");
+	createIDTransitions(63, "n");
+	createIDTransitions(64, "u");
+	createIDTransitions(65, "e");
+	createIDTransitions(66, "");
+	createIDTransitions(67, "f");
+	createIDTransitions(68, "");
+	createIDTransitions(69, "");
+	createIDTransitions(70, "");
+	createIDTransitions(71, "");
+	createIDTransitions(72, "");
+	createIDTransitions(73, "");
+	// skip 74 because 74 is !
+	createIDTransitions(75, "");
+	createIDTransitions(76, "");
+	createIDTransitions(77, "");
+	createIDTransitions(78, "");
+	// skip 79 because 79 is NUM
 	createIDTransitions(80, "");
+	createIDTransitions(81, "iefwdclsuvrb");
+	createIDTransitions(82, "");
+	createIDTransitions(83, "");
+	createIDTransitions(84, "");
+	createIDTransitions(85, "");
+	createIDTransitions(86, "");
+	createIDTransitions(87, "");
+	createIDTransitions(88, "");
+	createIDTransitions(89, "");
+	createIDTransitions(90, "");
+	createIDTransitions(91, "");
+	// skip 92 because 92 is right paren
+	createIDTransitions(93, "");
+	createIDTransitions(94, "");
 }
