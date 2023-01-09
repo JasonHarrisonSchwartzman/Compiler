@@ -487,6 +487,7 @@ void initializeInstances() {
 	addInstanceGoto(38,VAR_D2,46);
 	addInstanceGoto(38,VAR_E2,52);
 	addInstanceGoto(38,VAR_H2,48);
+	addInstanceGoto(38,VAR_I2,162);
 	//instance 39
 	addInstanceAction(39,STEP_REDUCE,27,TOKEN_RIGHTPAREN);
 	addInstanceAction(39,STEP_SHIFT,62,TOKEN_COMMA);
@@ -534,6 +535,7 @@ void initializeInstances() {
 	addInstanceGoto(43,VAR_D2,46);
 	addInstanceGoto(43,VAR_E2,52);
 	addInstanceGoto(43,VAR_H2,48);
+	addInstanceGoto(43,VAR_I2,162);
 	//instance 44
 	addInstanceAction(44,STEP_SHIFT,65,TOKEN_RIGHTCURLY);
 	//instance 45
@@ -565,6 +567,7 @@ void initializeInstances() {
 	addInstanceGoto(45,VAR_D2,46);
 	addInstanceGoto(45,VAR_E2,52);
 	addInstanceGoto(45,VAR_H2,48);
+	addInstanceGoto(45,VAR_I2,162);
 	//instance 46,47,48,49
 	for (int i = 0; i < 4; i++){
 		addInstanceAction(i+46,STEP_REDUCE,i+33,TOKEN_ID);
@@ -665,6 +668,8 @@ void initializeInstances() {
 	addInstanceAction(60,STEP_SHIFT,85,TOKEN_LEFTPAREN);
 	//instance 61
 	addInstanceAction(61,STEP_SHIFT,86,TOKEN_LEFTPAREN);
+	addInstanceAction(61,STEP_REDUCE,88,TOKEN_ASSIGN);
+	addInstanceAction(61,STEP_SHIFT,166,TOKEN_LEFTBRACKET);
 	//instance 62
 	addInstanceAction(62,STEP_SHIFT,4,TOKEN_INT);
 	addInstanceAction(62,STEP_SHIFT,5,TOKEN_LONG);
@@ -999,6 +1004,7 @@ void initializeInstances() {
 	addInstanceGoto(91,VAR_D2,46);
 	addInstanceGoto(91,VAR_E2,52);
 	addInstanceGoto(91,VAR_H2,48);
+	addInstanceGoto(91,VAR_I2,162);
 	//instance 92
 	addInstanceAction(92,STEP_REDUCE,84,TOKEN_ID);
 	addInstanceAction(92,STEP_REDUCE,84,TOKEN_INT);
@@ -1366,6 +1372,7 @@ void initializeInstances() {
 	addInstanceGoto(134,VAR_D2,46);
 	addInstanceGoto(134,VAR_E2,52);
 	addInstanceGoto(134,VAR_H2,48);
+	addInstanceGoto(134,VAR_I2,162);
 	//instance 135
 	addInstanceAction(135,STEP_SHIFT,61,TOKEN_ID);
 	addInstanceAction(135,STEP_SHIFT,4,TOKEN_INT);
@@ -1394,6 +1401,7 @@ void initializeInstances() {
 	addInstanceGoto(135,VAR_D2,46);
 	addInstanceGoto(135,VAR_E2,52);
 	addInstanceGoto(135,VAR_H2,48);
+	addInstanceGoto(135,VAR_I2,162);
 	//instance 136
 	addInstanceAction(136,STEP_SHIFT,144,TOKEN_ID);
 	addInstanceGoto(136,VAR_B2,143);
@@ -1427,6 +1435,7 @@ void initializeInstances() {
 	addInstanceGoto(138,VAR_D2,46);
 	addInstanceGoto(138,VAR_E2,52);
 	addInstanceGoto(138,VAR_H2,48);
+	addInstanceGoto(138,VAR_I2,162);
 	//instance 139
 	addInstanceAction(139,STEP_SHIFT,146,TOKEN_RIGHTCURLY);
 	//instance 140
@@ -1595,6 +1604,7 @@ void initializeInstances() {
 	addInstanceGoto(156,VAR_D2,46);
 	addInstanceGoto(156,VAR_E2,52);
 	addInstanceGoto(156,VAR_H2,48);
+	addInstanceGoto(156,VAR_I2,162);
 	//instance 157
 	addInstanceAction(157,STEP_SHIFT,95,TOKEN_PLUS);
 	addInstanceAction(157,STEP_SHIFT,99,TOKEN_MINUS);
@@ -1670,4 +1680,86 @@ void initializeInstances() {
 	addInstanceAction(161,STEP_REDUCE,82,TOKEN_BREAK);
 	addInstanceAction(161,STEP_REDUCE,82,TOKEN_CONTINUE);
 	addInstanceAction(161,STEP_REDUCE,82,TOKEN_RIGHTCURLY);
+	//instance 162
+	addInstanceAction(162,STEP_SHIFT,163,TOKEN_ASSIGN);
+	//instance 163
+	addInstanceAction(163,STEP_SHIFT,32,TOKEN_NUM);
+	addInstanceAction(163,STEP_SHIFT,78,TOKEN_ID);
+	addInstanceAction(163,STEP_SHIFT,77,TOKEN_AT);
+	addInstanceAction(163,STEP_SHIFT,33,TOKEN_CHARCONST);
+	addInstanceAction(163,STEP_SHIFT,34,TOKEN_STRINGCONST);
+	addInstanceAction(163,STEP_SHIFT,78,TOKEN_QUESTIONMARK);
+	addInstanceGoto(163,VAR_J1,76);
+	addInstanceGoto(163,VAR_R1,164);
+	addInstanceGoto(163,VAR_U1,74);
+	addInstanceGoto(163,VAR_V1,80);
+	//instance 164
+	addInstanceAction(164,STEP_SHIFT,95,TOKEN_PLUS);
+	addInstanceAction(164,STEP_SHIFT,99,TOKEN_MINUS);
+	addInstanceAction(164,STEP_SHIFT,165,TOKEN_SEMICOLON);
+	addInstanceAction(164,STEP_SHIFT,102,TOKEN_EQUAL);
+	addInstanceAction(164,STEP_SHIFT,104,TOKEN_GREATEQUAL);
+	addInstanceAction(164,STEP_SHIFT,103,TOKEN_LESSEQUAL);
+	addInstanceAction(164,STEP_SHIFT,105,TOKEN_GREAT);
+	addInstanceAction(164,STEP_SHIFT,106,TOKEN_LESS);
+	addInstanceAction(164,STEP_SHIFT,107,TOKEN_AND);
+	addInstanceAction(164,STEP_SHIFT,109,TOKEN_OR);
+	addInstanceAction(164,STEP_SHIFT,108,TOKEN_NOT);
+	addInstanceAction(164,STEP_SHIFT,96,TOKEN_MULT);
+	addInstanceAction(164,STEP_SHIFT,98,TOKEN_DIV);
+	addInstanceAction(164,STEP_SHIFT,97,TOKEN_MOD);
+	addInstanceAction(164,STEP_SHIFT,100,TOKEN_BITWISEAND);
+	addInstanceAction(164,STEP_SHIFT,73,TOKEN_BITWISEOR);
+	addInstanceAction(164,STEP_SHIFT,101,TOKEN_BITWISEXOR);
+	addInstanceGoto(164,VAR_S1,93);
+	addInstanceGoto(164,VAR_T1,94);
+	//instance 165
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_ID);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_INT);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_LONG);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_IF);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_FOR);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_WHILE);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_DOUBLE);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_CHAR);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_SHORT);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_SIGNED);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_UNSIGNED);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_RETURN);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_BREAK);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_CONTINUE);
+	addInstanceAction(165,STEP_REDUCE,87,TOKEN_RIGHTCURLY);
+	//instance 166
+	addInstanceAction(166,STEP_SHIFT,32,TOKEN_NUM);
+	addInstanceAction(166,STEP_SHIFT,78,TOKEN_ID);
+	addInstanceAction(166,STEP_SHIFT,77,TOKEN_AT);
+	addInstanceAction(166,STEP_SHIFT,33,TOKEN_CHARCONST);
+	addInstanceAction(166,STEP_SHIFT,34,TOKEN_STRINGCONST);
+	addInstanceAction(166,STEP_SHIFT,78,TOKEN_QUESTIONMARK);
+	addInstanceGoto(166,VAR_J1,76);
+	addInstanceGoto(166,VAR_R1,167);
+	addInstanceGoto(166,VAR_U1,74);
+	addInstanceGoto(166,VAR_V1,80);
+	//instance 167
+	addInstanceAction(167,STEP_SHIFT,95,TOKEN_PLUS);
+	addInstanceAction(167,STEP_SHIFT,99,TOKEN_MINUS);
+	addInstanceAction(167,STEP_SHIFT,168,TOKEN_RIGHTBRACKET);
+	addInstanceAction(167,STEP_SHIFT,102,TOKEN_EQUAL);
+	addInstanceAction(167,STEP_SHIFT,104,TOKEN_GREATEQUAL);
+	addInstanceAction(167,STEP_SHIFT,103,TOKEN_LESSEQUAL);
+	addInstanceAction(167,STEP_SHIFT,105,TOKEN_GREAT);
+	addInstanceAction(167,STEP_SHIFT,106,TOKEN_LESS);
+	addInstanceAction(167,STEP_SHIFT,107,TOKEN_AND);
+	addInstanceAction(167,STEP_SHIFT,109,TOKEN_OR);
+	addInstanceAction(167,STEP_SHIFT,108,TOKEN_NOT);
+	addInstanceAction(167,STEP_SHIFT,96,TOKEN_MULT);
+	addInstanceAction(167,STEP_SHIFT,98,TOKEN_DIV);
+	addInstanceAction(167,STEP_SHIFT,97,TOKEN_MOD);
+	addInstanceAction(167,STEP_SHIFT,100,TOKEN_BITWISEAND);
+	addInstanceAction(167,STEP_SHIFT,73,TOKEN_BITWISEOR);
+	addInstanceAction(167,STEP_SHIFT,101,TOKEN_BITWISEXOR);
+	addInstanceGoto(167,VAR_S1,93);
+	addInstanceGoto(167,VAR_T1,94);
+	//instance 168
+	addInstanceAction(168,STEP_REDUCE,89,TOKEN_ASSIGN);
 }

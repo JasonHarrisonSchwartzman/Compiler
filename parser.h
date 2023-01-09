@@ -1,8 +1,8 @@
 #ifndef PARSER_H
 #define PARSER_H
-#define NUM_RULES 87
+#define NUM_RULES 90
 #define NUM_ACTIONS 48
-#define NUM_GOTO 32
+#define NUM_GOTO 33
 #define NUM_INSTANCES 300
 #define TOTAL_TOKENS 50
 
