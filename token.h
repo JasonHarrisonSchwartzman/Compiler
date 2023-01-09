@@ -388,8 +388,9 @@ typedef enum token_t{
 	VAR_F2 = 379,
 	VAR_G2 = 380,
 	VAR_H2 = 381,
-	VAR_A1 = 382,
-	VAR_ERROR = 383
+	VAR_I2 = 382,
+	VAR_A1 = 383,
+	VAR_ERROR = 384
 } token_t;
 typedef struct Token{
 	token_t tokenType;

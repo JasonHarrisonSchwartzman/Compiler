@@ -232,6 +232,12 @@ void initializeRules() {
 	addRule(83, VAR_G2, 4, rule83);
 	token_t rule84[3] = { TOKEN_RETURN, VAR_R1, TOKEN_SEMICOLON };
 	addRule(84, VAR_H2, 3, rule84);
+	token_t rule87[4] = { VAR_I2, TOKEN_ASSIGN, VAR_R1, TOKEN_SEMICOLON };
+	addRule(87, VAR_P1, 4, rule87);
+	token_t rule88[1] = { TOKEN_ID };
+	addRule(88, VAR_I2, 1, rule88);
+	token_t rule89[4] = { TOKEN_ID, TOKEN_LEFTBRACKET, VAR_R1, TOKEN_RIGHTBRACKET };
+	addRule(89, VAR_I2, 4, rule89);
 
 }
 
