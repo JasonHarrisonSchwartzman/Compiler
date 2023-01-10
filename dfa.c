@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "token.h"
 #include "dfa.h"
-#define NUM_STATES 100
+#define NUM_STATES 125
 
 struct Transition {
 	int state;
@@ -112,7 +112,15 @@ void createSpaceTransitions() {
  */
 void initialize() {
 	states[0].token = TOKEN_EOF;
+
+	states[1].token = TOKEN_ID;
+
 	states[2].token = TOKEN_IF;
+
+	states[3].token = TOKEN_ID;
+	states[4].token = TOKEN_ID;
+	states[5].token = TOKEN_ID;
+
 	states[6].token = TOKEN_ELSE;
 	states[9].token = TOKEN_FOR;
 	states[14].token = TOKEN_WHILE;
@@ -126,6 +134,9 @@ void initialize() {
 	states[54].token = TOKEN_RETURN;
 	states[59].token = TOKEN_BREAK;
 	states[66].token = TOKEN_CONTINUE;
+
+	states[67].token = TOKEN_ID;
+
 	states[68].token = TOKEN_ELSEIF;
 
 	states[69].token = TOKEN_EQUAL;
@@ -158,6 +169,8 @@ void initialize() {
 	states[93].token = TOKEN_LEFTCURLY;
 	states[94].token = TOKEN_RIGHTCURLY;
 
+	states[97].token = TOKEN_CHARCONST;
+
 	// if
 	addTransition(0, 'i', 1, 0);
 	addTransition(1, 'f', 2, 0);
@@ -165,6 +178,16 @@ void initialize() {
 	addTransition(81, 'i', 1, 1);
 	addTransition(82, 'i', 1, 1);
 	addTransition(85, 'i', 1, 1);
+
+	addTransition(1, ' ', 82, 1);
+	addTransition(1, '\n', 82, 1);
+	addTransition(1, '\t', 82, 1);
+	addTransition(1, '\r', 82, 1);
+
+	addTransition(2, ' ', 82, 1);
+	addTransition(2, '\n', 82, 1);
+	addTransition(2, '\t', 82, 1);
+	addTransition(2, '\r', 82, 1);
 
 
 	// else
@@ -177,6 +200,26 @@ void initialize() {
 	addTransition(82, 'e', 3, 1);
 	addTransition(85, 'e', 3, 1);
 
+	addTransition(3, ' ', 82, 1);
+	addTransition(3, '\n', 82, 1);
+	addTransition(3, '\t', 82, 1);
+	addTransition(3, '\r', 82, 1);
+
+	addTransition(4, ' ', 82, 1);
+	addTransition(4, '\n', 82, 1);
+	addTransition(4, '\t', 82, 1);
+	addTransition(4, '\r', 82, 1);
+
+	addTransition(5, ' ', 82, 1);
+	addTransition(5, '\n', 82, 1);
+	addTransition(5, '\t', 82, 1);
+	addTransition(5, '\r', 82, 1);
+
+	addTransition(6, ' ', 82, 1);
+	addTransition(6, '\n', 82, 1);
+	addTransition(6, '\t', 82, 1);
+	addTransition(6, '\r', 82, 1);
+
 
 	// for
 	addTransition(0, 'f', 7, 0);
@@ -186,6 +229,11 @@ void initialize() {
 	addTransition(81, 'f', 7, 1);
 	addTransition(82, 'f', 7, 1);
 	addTransition(85, 'f', 7, 1);
+
+	addTransition(9, ' ', 82, 1);
+	addTransition(9, '\n', 82, 1);
+	addTransition(9, '\t', 82, 1);
+	addTransition(9, '\r', 82, 1);
 
 
 	// while
@@ -366,6 +414,16 @@ void initialize() {
 	addTransition(6, 'i', 67, 0);
 	addTransition(67, 'f', 68, 0);
 
+	addTransition(67, ' ', 82, 1);
+	addTransition(67, '\n', 82, 1);
+	addTransition(67, '\t', 82, 1);
+	addTransition(67, '\r', 82, 1);
+
+	addTransition(68, ' ', 82, 1);
+	addTransition(68, '\n', 82, 1);
+	addTransition(68, '\t', 82, 1);
+	addTransition(68, '\r', 82, 1);
+
 
 	// assign
 	addTransition(81, ' ', 82, 1);
@@ -446,6 +504,7 @@ void initialize() {
 	}
 	
 	// numbers
+	addTransition(79, ')', 92, 1);
 	addTransition(79, ';', 85, 1);
 	addTransition(79, ' ', 82, 1);
 	addTransition(79, '\n', 82, 1);
@@ -630,10 +689,71 @@ void initialize() {
 			}
 		}
 	}
-
-	// function - int
-	// addTransition()
 	
+	// if
+	addTransition(2, '(', 91, 1);
+
+	// elseif
+	addTransition(68, '(', 91, 1);
+
+	// else
+	addTransition(6, '{', 93, 1);
+
+	// char const
+	addTransition(69, '\'', 95, 1);
+	addTransition(70, '\'', 95, 1);
+	addTransition(71, '\'', 95, 1);
+	addTransition(72, '\'', 95, 1);
+	addTransition(73, '\'', 95, 1);
+	addTransition(74, '\'', 95, 1);
+	addTransition(75, '\'', 95, 1);
+	addTransition(82, '\'', 95, 1);
+	addTransition(91, '\'', 95, 1);
+	for (int i = 0; i < 126; i++) {
+		if (i == 9 || i == 10 || i == 13 || (i >= 32 && i <= 126)) {
+			addTransition(95, i, 96, 0);
+		}
+	}
+	addTransition(96, '\'', 97, 0);
+	addTransition(97, ')', 92, 1);
+	addTransition(97, ';', 85, 1);
+	addTransition(97, '=', 81, 1);
+	addTransition(97, '<', 70, 1);
+	addTransition(97, '>', 72, 1);
+	addTransition(97, '!', 74, 1);
+	addTransition(97, ' ', 82, 1);
+	addTransition(97, '\n', 82, 1);
+	addTransition(97, '\t', 82, 1);
+	addTransition(97, '\r', 82, 1);
+
+	// string
+	addTransition(69, '\"', 98, 1);
+	addTransition(70, '\"', 98, 1);
+	addTransition(71, '\"', 98, 1);
+	addTransition(72, '\"', 98, 1);
+	addTransition(73, '\"', 98, 1);
+	addTransition(74, '\"', 98, 1);
+	addTransition(75, '\"', 98, 1);
+	addTransition(82, '\"', 98, 1);
+	addTransition(91, '\'', 98, 1);
+	for (int i = 0; i < 126; i++) {
+		if (i == 9 || i == 10 || i == 13 || (i >= 32 && i <= 126)) {
+			addTransition(98, i, 99, 0);
+		}
+	}
+	addTransition(99, '\"', 100, 0);
+	addTransition(100, ')', 92, 1);
+	addTransition(100, '=', 81, 1);
+	addTransition(100, ';', 85, 1);
+	addTransition(100, '<', 70, 1);
+	addTransition(100, '>', 72, 1);
+	addTransition(100, '!', 74, 1);
+	addTransition(100, ' ', 82, 1);
+	addTransition(100, '\n', 82, 1);
+	addTransition(100, '\t', 82, 1);
+	addTransition(100, '\r', 82, 1);
+
+
 
 	createIDTransitions(0, "iefwdclsuvrb");
 	createIDTransitions(1, "f");
