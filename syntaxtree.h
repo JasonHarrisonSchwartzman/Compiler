@@ -23,6 +23,39 @@ typedef enum signed_t {
 	UNSIGNED
 } signed_t;
 
+typedef enum operation_t {
+	PLUS,
+	MINUS,
+	MULT,
+	DIV,
+	MOD,
+	BITWISEAND,
+	BITWISEOR,
+	BITWISEXOR
+} operation_t;
+
+typedef enum conditional_t {
+	EQUAL,
+	GREATEQUAL,
+	LESSEQUAL,
+	LESS,
+	GREAT,
+	AND,
+	NOT,
+	OR
+} conditional_t;
+
+typedef enum statement_t {
+	FOR,
+	WHILE,
+	CONDITIONAL,
+	RETURN,
+	FUNCCALL,
+	VARIABLE,
+	BREAK,
+	CONTINUE
+} statement_t;
+
 struct Value {
 	char *string;
 	int num;
@@ -31,13 +64,13 @@ struct Value {
 
 struct Name {
 	char *name;
-	int *length;//length of array
-	int *pointer;//0 for not a pointer 1 for yes a pointer
+	int length;//length of array
+	int pointer;//0 for not a pointer 1 for yes a pointer
 } Name;
 
 struct Type {
-	type_t *dataType;
-	signed_t *sign;
+	type_t dataType;
+	signed_t sign;
 } Type;
 
 struct Decl {
@@ -50,6 +83,36 @@ struct VarDecl {
 	struct Decl *decl;
 } VarDecl;
 
+//R1
+struct Expression{ 
+	struct Expression *expr;
+	operation_t op;
+	conditional_t cond;
+	struct Evaluation *eval;
+} Expression;
+
+//W1
+struct FunctionArgs {
+	struct Expression *expr;
+	struct FunctionArgs *funcargs;
+} FunctionArgs;
+
+//V1
+struct FunctionCall {
+	char *name;
+	struct FunctionArgs *funcargs;
+} FunctionCall;
+
+//U1
+struct Evaluation{ 
+	struct Value *value;
+	char *name;
+	int dereference;
+	int reference;
+	struct Expression *expr;
+	struct FunctionCall *funccall;
+
+} Evaluation;
 
 
 //D1
@@ -72,8 +135,8 @@ struct Decl *addDecl(struct Name *name, struct Value *value) {
 struct Name *addName(char *name, int length, int pointer) {
 	struct Name *n = calloc(1,sizeof(struct Name));
 	n->name = name;
-	*(n->length) = length;
-	*(n->pointer) = pointer;
+	n->length = length;
+	n->pointer = pointer;
 	return n;
 }
 
@@ -100,13 +163,65 @@ signed_t *addSign(signed_t sign) {
 	return s;
 }
 
+//S1
+operation_t *addOperation(operation_t op) {
+	operation_t *o = malloc(sizeof(signed_t));
+	*o = op;
+	return o;
+}
+
+//T1
+conditional_t *addConditional(conditional_t cond) {
+	conditional_t *c = malloc(sizeof(conditional_t));
+	*c = cond;
+	return c;
+}
+
 //E1
-struct Type *addType(type_t *dataType, signed_t *sign) {
+struct Type *addType(type_t dataType, signed_t sign) {
 	struct Type *type = calloc(1,sizeof(struct Type));
 	type->dataType = dataType;
 	type->sign = sign;
 	return type;
-}		
+}
+
+//W1
+struct FunctionArgs *addFuncArgs(struct Expression *expr, struct FunctionArgs *funcArgs) {
+	struct FunctionArgs *f = calloc(1,sizeof(struct FunctionArgs));
+	f->expr = expr;
+	f->funcargs = funcArgs;
+	return f;
+}
+
+//V1
+struct FunctionCall *addFuncCall(char *name, struct FunctionArgs *funcargs) {
+	struct FunctionCall *f = calloc(1,sizeof(struct FunctionCall));
+	f->name = name;
+	f->funcargs = funcargs;
+	return f;
+}
+
+//U1
+struct Evaluation *addEval(struct Value *value, struct Expression *expr, char *name, int dereference, int reference, struct FunctionCall *funccall) {
+	struct Evaluation *eval = calloc(1,sizeof(struct Evaluation));
+	eval->value = value;
+	eval->expr = expr;
+	eval->name = name;
+	eval->dereference = dereference;
+	eval->reference = reference;
+	eval->funccall = funccall;
+	return eval;
+}
+
+//R1
+struct Expression *addExpr(struct Expression *expr, conditional_t cond, operation_t op, struct Evaluation *eval) {
+	struct Expression *e = calloc(1,sizeof(struct Expression));
+	e->expr = expr;
+	e->cond = cond;
+	e->op = op;
+	e->eval = eval;
+	return e;
+}
 
 
 #endif
