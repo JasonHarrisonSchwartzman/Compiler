@@ -661,7 +661,7 @@ void initializeInstances() {
 	//instance 57
 	addInstanceAction(57,STEP_SHIFT,132,TOKEN_SEMICOLON);
 	//instance 58
-	addInstanceAction(58,STEP_SHIFT,83,TOKEN_LEFTBRACKET);
+	addInstanceAction(58,STEP_SHIFT,83,TOKEN_LEFTPAREN);
 	//instance 59
 	addInstanceAction(59,STEP_SHIFT,84,TOKEN_LEFTPAREN);
 	//instance 60
@@ -1684,7 +1684,7 @@ void initializeInstances() {
 	addInstanceAction(162,STEP_SHIFT,163,TOKEN_ASSIGN);
 	//instance 163
 	addInstanceAction(163,STEP_SHIFT,32,TOKEN_NUM);
-	addInstanceAction(163,STEP_SHIFT,78,TOKEN_ID);
+	addInstanceAction(163,STEP_SHIFT,79,TOKEN_ID);
 	addInstanceAction(163,STEP_SHIFT,77,TOKEN_AT);
 	addInstanceAction(163,STEP_SHIFT,33,TOKEN_CHARCONST);
 	addInstanceAction(163,STEP_SHIFT,34,TOKEN_STRINGCONST);
@@ -1731,7 +1731,7 @@ void initializeInstances() {
 	addInstanceAction(165,STEP_REDUCE,87,TOKEN_RIGHTCURLY);
 	//instance 166
 	addInstanceAction(166,STEP_SHIFT,32,TOKEN_NUM);
-	addInstanceAction(166,STEP_SHIFT,78,TOKEN_ID);
+	addInstanceAction(166,STEP_SHIFT,79,TOKEN_ID);
 	addInstanceAction(166,STEP_SHIFT,77,TOKEN_AT);
 	addInstanceAction(166,STEP_SHIFT,33,TOKEN_CHARCONST);
 	addInstanceAction(166,STEP_SHIFT,34,TOKEN_STRINGCONST);
