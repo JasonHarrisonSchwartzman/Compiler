@@ -49,7 +49,9 @@ typedef enum statement_t {
 	DECLARATION,
 	FOR,
 	WHILE,
-	CONDITIONAL,
+	IF,
+	ELSEIF,
+	ELSE,
 	RETURN,
 	FUNCCALL,
 	ASSIGNMENT,
@@ -130,19 +132,89 @@ struct Params {
 	struct Params *next;
 } Params;
 
+struct CondStatement {
+	statement_t stmt;
+	struct Expression *expr;
+	struct Statement *stmts;
+	struct CondStatement *next;
+} CondStatement;
+
+//D2
+struct CondStatements {
+	struct CondStatement *ifstmt;
+	struct CondStatement *elseifstmt;
+	struct CondStatement *elsestmt;
+} CondStatements;
+
 //K1 M1
 struct FuncDecl {
 	struct Statement *statements;
 	struct Type *type;
 	struct Params *params;
 } FuncDecl;
+
+struct LoopMod { 
+	struct Expression *expr;
+	char *name;
+} LoopMod;
+
+struct ReturnState {
+	struct Expression *expr;
+} ReturnState;
+
+//B2
+struct LoopEnd {
+	struct Expression *expr;
+	conditional_t cond;
+	char *name;
+} LoopEnd;
 //B1
 struct Declaration {
 	int x;
 } Declaration;
 
-//H2
+//D2
+struct CondStatements *addCondStatements(struct CondStatement *ifstmt, struct CondStatement *elseifstmt, struct CondStatement *elsestmt) {
+	struct CondStatements *c = calloc(1,sizeof(CondStatements));
+	c->ifstmt = ifstmt;
+	c->elseifstmt = elseifstmt;
+	c->elsestmt = elsestmt;
+	return c;
+}
 
+//E2 F2 G2
+struct CondStatement *addCondStatement(struct Expression *expr, struct Statement *statement, statement_t stmt, struct CondStatement *next) {
+	struct CondStatement *c = calloc(1,sizeof(CondStatement));
+	c->expr = expr;
+	c->stmts = statement;
+	c->stmt = stmt;
+	c->next = next;
+	return c;
+}
+
+//H2
+struct ReturnState *addReturnState(struct Expression *expr) {
+	struct ReturnState *r = malloc(sizeof(struct Expression));
+	r->expr = expr;
+	return r;
+}
+
+//C2
+struct LoopMod *addLoopMod(struct Expression *expr, char *name) {
+	struct LoopMod *l = calloc(1,sizeof(LoopMod));
+	l->expr = expr;
+	l->name = name;
+	return l;
+}
+
+//B2
+struct LoopEnd *addLoopEnd(struct Expression *expr, conditional_t cond, char *name) {
+	struct LoopEnd *l = calloc(1,sizeof(struct LoopEnd));
+	l->name = name;
+	l->cond = cond;
+	l->expr = expr;
+	return l;
+}
 
 //D1
 struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
