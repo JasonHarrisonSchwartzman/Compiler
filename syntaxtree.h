@@ -46,38 +46,40 @@ typedef enum conditional_t {
 } conditional_t;
 
 typedef enum statement_t {
+	DECLARATION,
 	FOR,
 	WHILE,
 	CONDITIONAL,
 	RETURN,
 	FUNCCALL,
-	VARIABLE,
+	ASSIGNMENT,
 	BREAK,
 	CONTINUE
 } statement_t;
-
+//J1
 struct Value {
 	char *string;
 	int num;
 	char charconst;
 } Value;
-
+//I1
 struct Name {
 	char *name;
 	int length;//length of array
 	int pointer;//0 for not a pointer 1 for yes a pointer
 } Name;
 
+//E1
 struct Type {
 	type_t dataType;
 	signed_t sign;
 } Type;
-
+//H1
 struct Decl {
 	struct Name *name;
 	struct Value *value;
 } Decl;
-
+//D1
 struct VarDecl {
 	struct Type *type;
 	struct Decl *decl;
@@ -114,6 +116,33 @@ struct Evaluation{
 
 } Evaluation;
 
+//N1
+struct Statement {
+	statement_t stmt;
+	struct Statement *next;
+	struct Expression *expr;
+} Statement;
+
+//L1
+struct Params {
+	struct Type *type;
+	struct Name *name;
+	struct Params *next;
+} Params;
+
+//K1 M1
+struct FuncDecl {
+	struct Statement *statements;
+	struct Type *type;
+	struct Params *params;
+} FuncDecl;
+//B1
+struct Declaration {
+	int x;
+} Declaration;
+
+//H2
+
 
 //D1
 struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
@@ -122,6 +151,28 @@ struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
 	var->decl = decl;
 	return var;
 }
+
+
+
+//L1
+struct Params *addParam(struct Params *params, struct Type *type, struct Name *name) {
+	struct Params *p = calloc(1,sizeof(Params));
+	p->next = params;
+	p->type = type;
+	p->name = name;
+	return p;
+}
+
+//K1, M1
+struct FuncDecl *addFuncDecl(struct Statement *stmts, struct Type *type, struct Params *params) {
+	struct FuncDecl *f = calloc(1,sizeof(FuncDecl));
+	f->statements = stmts;
+	f->type = type;
+	f->params = params;
+	return f;
+}
+
+
 
 //H1
 struct Decl *addDecl(struct Name *name, struct Value *value) {
