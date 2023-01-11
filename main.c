@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 	printRules();
 	initializeInstances();
 	printTokens();
-	int result = parse2();
+	int result = parse();
 	if (result == 1) {
 		printf("SUCCESS!\n");
 	}
@@ -29,6 +29,5 @@ int main(int argc, char *argv[]) {
 	freeRules();
 	freeInstanceAndVarTokens();
 	// //freeTokens();seg fault
-	freeStack();
 }
 

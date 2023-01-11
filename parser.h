@@ -12,11 +12,12 @@ struct StackItem {
 			
 	Token *token;
 	token_t var;
+
+	void *ptr;
 } StackItem;
 
-struct StackItem **stack2;
-int stack2Capacity = 0;
-int stack2TopPointer = -1;
+struct StackItem **stack;
+int stackTopPointer = -1;
 
 
 typedef enum Step{
@@ -50,11 +51,11 @@ struct Token *varTokens[NUM_GOTO];//variable (nonterminal) tokens (for stack)
 int tokenIndex = 0;//for reading input
 
 struct Rule rules[NUM_RULES];//grammar
-
+/*
 struct Token **stack;
 int stackCapacity = 0;
 int stackTopPointer = -1;//points to top of the stack
-
+*/
 
 
 #endif
