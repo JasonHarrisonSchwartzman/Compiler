@@ -121,11 +121,36 @@ struct Evaluation{
 } Evaluation;
 
 //N1
+struct Statements {
+	struct Statements *next;
+	struct Statement *stmt;
+} Statements;
+
+//O1
 struct Statement {
 	statement_t stmt;
-	struct Statement *next;
-	struct Expression *expr;
+	struct FunctionStatement *funcstmt;
+	struct ReturnState *returnstmt;
+	struct Loop *loop;
+	struct CondStatements *condstmt;
 } Statement;
+
+struct Statement *addStatement(statement_t stmt, struct FunctionStatement *funcstmt, struct ReturnState *returnstmt, struct Loop *loop, struct CondStatements *condstmt) {
+	struct Statement *s = calloc(1,sizeof(Statement));
+	s->stmt = stmt;
+	s->funcstmt = funcstmt;
+	s->returnstmt = returnstmt;
+	s->loop = loop;
+	s->condstmt = condstmt;
+	return s;
+}
+
+struct Statements *addStatements(struct Statements *next, struct Statement *stmt) {
+	struct Statements *s = calloc(1,sizeof(Statements));
+	s->next = next;
+	s->stmt = stmt;
+	return s;
+}
 
 //L1
 struct Params {
@@ -191,10 +216,37 @@ struct Loop {
 	struct ForLoop *forloop;
 } Loop;
 
+struct Declarations {
+	struct Declarations *next;
+	struct Declaration *decl;
+} Declarations;
+
 //B1
 struct Declaration {
-	int x;
+	struct FuncDecl *funcdecl;
+	struct VarDecl *vardecl;
 } Declaration;
+
+struct Declaration *addDeclaration(struct FuncDecl *funcdecl, struct VarDecl *vardecl) {
+	struct Declaration *d = calloc(1,sizeof(Declaration));
+	d->funcdecl = funcdecl;
+	d->vardecl = vardecl;
+	return d;
+}
+
+struct Declarations *addDeclarations(struct Declarations *next, struct Declaration *decl) {
+	struct Declarations *d = calloc(1,sizeof(Declarations));
+	d->next = next;
+	d->decl = decl;
+	return d;
+}
+
+struct FunctionStatement {
+	statement_t stmt;
+	struct FunctionCall *funccall;
+	struct VarDecl *vardecl;
+	struct Decl *decl;
+} FunctionStatement;
 
 //Y1
 struct WhileLoop *addWhileLoop(struct Expression *expr, struct Statement *stmt) {
