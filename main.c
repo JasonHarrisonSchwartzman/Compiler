@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 	printRules();
 	initializeInstances();
 	printTokens();
-	int result = parse();
+	int result = parse2();
 	if (result == 1) {
 		printf("SUCCESS!\n");
 	}

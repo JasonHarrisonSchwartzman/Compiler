@@ -2,14 +2,6 @@
 #define SYNTAX_TREE_H
 #include "token.h"
 
-struct StackItem {
-	token_t instance;
-	Token token;
-	token_t var;
-	void *ptr;
-} StackItem;
-
-
 typedef enum type_t {
 	INT,
 	LONG,

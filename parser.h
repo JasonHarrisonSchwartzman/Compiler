@@ -5,6 +5,18 @@
 #define NUM_GOTO 33
 #define NUM_INSTANCES 300
 #define TOTAL_TOKENS 50
+#include "token.h"
+
+struct StackItem {
+	token_t instance;
+			
+	Token *token;
+	token_t var;
+} StackItem;
+
+struct StackItem **stack2;
+int stack2Capacity = 0;
+int stack2TopPointer = -1;
 
 
 typedef enum Step{

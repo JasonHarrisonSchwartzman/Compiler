@@ -8,7 +8,7 @@ int x() {
 	}
 	else {
 		if (5 == 2) {
-			while (10) { }
+			int x;	
 		}
 	}
 }
