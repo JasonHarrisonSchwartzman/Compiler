@@ -11,33 +11,34 @@ void printStack2() {
 		if (stack2[i]->token != NULL) {
 			printf("%d ",stack2[i]->token->tokenType);
 		}
-		if (stack2[i]->var != -1) {
+		if (stack2[i]->var != 0) {
 			printf("%d ",stack2[i]->var);
 		}
 	}
+	printf("\n");
 }
 
 void push2(token_t instance, Token *token, token_t var) {
 	if (var != -1) {
 		stack2[stack2TopPointer]->var = var;
 	}
+	if (token != NULL) {
+		stack2[stack2TopPointer]->token = token;
+	}
 	if (instance != -1) {
 		stack2 = realloc(stack2,sizeof(void*) * (stack2TopPointer + 2));
 		stack2[++stack2TopPointer] = calloc(1,sizeof(struct StackItem));
 		stack2[stack2TopPointer]->instance = instance;
 	}
-	if (token != NULL) {
-		stack2[stack2TopPointer]->token = token;
-	}
 }
 
 void pop2() {
-	if ((stack2[stack2TopPointer]->token == NULL) && (stack2[stack2TopPointer]->var == -1)) {
+	if ((stack2[stack2TopPointer]->token == NULL) && (stack2[stack2TopPointer]->var == 0)) {
 		stack2 = realloc(stack2,sizeof(StackItem) * (stack2TopPointer--));
 	}
 	else {
 		stack2[stack2TopPointer]->token = NULL;
-		stack2[stack2TopPointer]->var = -1;
+		stack2[stack2TopPointer]->var = 0;
 	}
 }
 
@@ -80,7 +81,8 @@ void reduce2(int rule) {
 		pop2();
 	}
 	token_t var = varTokens[rules[rule].var-(TOTAL_TOKENS+NUM_INSTANCES)]->tokenType;
-	push2(instanceTokens[instances[stack2[stack2TopPointer]->instance].gotoAction[var]]->tokenType,NULL,var);
+	token_t instance = instanceTokens[instances[stack2[stack2TopPointer]->instance].gotoAction[var-(TOTAL_TOKENS+NUM_INSTANCES)]]->tokenType;
+	push2(instance,NULL,var);
 }
 
 void shift(Token *token, Token *instance) {
@@ -101,6 +103,7 @@ void reduce(int rule) {
 
 int parse2() {
 	push2(0,NULL,-1);
+	printStack2();
 	while(1) {
 		printf("Reading token %d: ",tokenIndex);
 		printToken(tokens[tokenIndex]->tokenType);
