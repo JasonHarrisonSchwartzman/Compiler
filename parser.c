@@ -18,7 +18,7 @@ void printStack() {
 	printf("\n");
 }
 
-void push(token_t instance, Token *token, token_t var) {
+void push(token_t instance, Token *token, token_t var, void *ptr) {
 	if (var != -1) {
 		stack[stackTopPointer]->var = var;
 	}
@@ -30,15 +30,18 @@ void push(token_t instance, Token *token, token_t var) {
 		stack[++stackTopPointer] = calloc(1,sizeof(struct StackItem));
 		stack[stackTopPointer]->instance = instance;
 	}
+	stack[stackTopPointer]->ptr = ptr;
 }
 
-void pop() {
+void *pop() {
 	if ((stack[stackTopPointer]->token == NULL) && (stack[stackTopPointer]->var == 0)) {
 		stack = realloc(stack,sizeof(StackItem) * (stackTopPointer--));
+		return NULL;
 	}
 	else {
 		stack[stackTopPointer]->token = NULL;
 		stack[stackTopPointer]->var = 0;
+		return stack[stackTopPointer]->ptr;
 	}
 }
 
@@ -70,20 +73,30 @@ void freeStack() {
 }*/
 
 
-void shift(token_t instance, Token *token, token_t var) {
+void shift(token_t instance, Token *token, token_t var, void *ptr) {
 	printf("Shift \n");
-	push(instance, token, var);
+	push(instance, token, var, token);
 	tokenIndex++;
 }
 
 void reduce(int rule) {
 	printf("Reduce by %d\n",rule);
-	for (int i = 0; i < rules[rule].length * 2; i++) {
-		pop();
+	int ruleLength = rules[rule].length;
+	void *pointers[ruleLength];
+	int num = ruleLength - 1;
+	void *p;
+	for (int i = 0; i < ruleLength * 2; i++) {
+		if ((p = pop()) != NULL) {
+			pointers[num--] = p;
+		}
 	}
+	if (num != -1) printf("Did not fill up pointer array ERROR remaining: %d\n",num+1);
 	token_t var = varTokens[rules[rule].var-(TOTAL_TOKENS+NUM_INSTANCES)]->tokenType;
 	token_t instance = instanceTokens[instances[stack[stackTopPointer]->instance].gotoAction[var-(TOTAL_TOKENS+NUM_INSTANCES)]]->tokenType;
-	push(instance,NULL,var);
+
+	void *ptr = 1;
+
+	push(instance,NULL,var,ptr);
 }
 
 /*
@@ -104,7 +117,7 @@ void reduce(int rule) {
 }*/
 
 int parse() {
-	push(0,NULL,-1);
+	push(0,NULL,-1,1);
 	printStack();
 	while(1) {
 		printf("Reading token %d: ",tokenIndex);
@@ -122,7 +135,7 @@ int parse() {
 			return 1;
 		}
 		else if (step == STEP_SHIFT) {
-			shift(instanceTokens[instances[state].actions[actionIndex].instance]->tokenType, tokens[tokenIndex],-1);
+			shift(instanceTokens[instances[state].actions[actionIndex].instance]->tokenType, tokens[tokenIndex],-1,tokens[tokenIndex]);
 		}
 		else if (step == STEP_REDUCE) {
 			reduce(instances[state].actions[actionIndex].instance);
