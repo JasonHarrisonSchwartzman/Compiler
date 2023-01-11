@@ -64,11 +64,12 @@ struct Value {
 	int num;
 	char charconst;
 } Value;
-//I1
+//I1 I2
 struct Name {
 	char *name;
 	int length;//length of array
 	int pointer;//0 for not a pointer 1 for yes a pointer
+	struct Expression *expr;
 } Name;
 
 //E1
@@ -76,10 +77,11 @@ struct Type {
 	type_t dataType;
 	signed_t sign;
 } Type;
-//H1
+//H1 Q1
 struct Decl {
 	struct Name *name;
 	struct Value *value;
+	struct Expression *expr;
 } Decl;
 //D1
 struct VarDecl {
@@ -153,6 +155,15 @@ struct FuncDecl {
 	struct Params *params;
 } FuncDecl;
 
+//A2
+struct ForLoop {
+	struct Type  *type;
+	struct LoopMod *loopmod;
+	struct LoopEnd *loopend;
+	struct Statement *stmt;
+	struct Decl *decl;
+} ForLoop;
+
 struct LoopMod { 
 	struct Expression *expr;
 	char *name;
@@ -168,10 +179,48 @@ struct LoopEnd {
 	conditional_t cond;
 	char *name;
 } LoopEnd;
+
+struct WhileLoop {
+	struct Expression *expr;
+	struct Statement *stmt;
+} WhileLoop;
+
+//X1
+struct Loop {
+	struct WhileLoop *whileloop;
+	struct ForLoop *forloop;
+} Loop;
+
 //B1
 struct Declaration {
 	int x;
 } Declaration;
+
+//Y1
+struct WhileLoop *addWhileLoop(struct Expression *expr, struct Statement *stmt) {
+	struct WhileLoop *w = calloc(1,sizeof(WhileLoop));
+	w->expr = expr;
+	w->stmt = stmt;
+	return w;
+}
+
+struct Loop *addLoop(struct WhileLoop *whileloop, struct ForLoop *forloop) {
+	struct Loop *l = calloc(1,sizeof(Loop));
+	l->whileloop = whileloop;
+	l->forloop = forloop;
+	return l;
+}
+
+//A2
+struct ForLoop *addForLoop(struct Type *type, struct LoopMod *loopmod, struct LoopEnd *loopend, struct Statement *stmt, struct Decl *decl) {
+	struct ForLoop *f = calloc(1,sizeof(ForLoop));
+	f->type = type;
+	f->loopmod = loopmod;
+	f->loopend = loopend;
+	f->stmt = stmt;
+	f->decl = decl;
+	return f;
+}
 
 //D2
 struct CondStatements *addCondStatements(struct CondStatement *ifstmt, struct CondStatement *elseifstmt, struct CondStatement *elsestmt) {
