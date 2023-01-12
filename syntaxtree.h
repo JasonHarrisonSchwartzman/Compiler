@@ -193,7 +193,7 @@ struct ReturnState {
 //B2
 struct LoopEnd {
 	struct Expression *expr;
-	conditional_t cond;
+	conditional_t *cond;
 	char *name;
 } LoopEnd;
 
@@ -312,7 +312,7 @@ struct LoopMod *addLoopMod(struct Expression *expr, char *name) {
 }
 
 //B2
-struct LoopEnd *addLoopEnd(struct Expression *expr, conditional_t cond, char *name) {
+struct LoopEnd *addLoopEnd(struct Expression *expr, conditional_t *cond, char *name) {
 	struct LoopEnd *l = calloc(1,sizeof(struct LoopEnd));
 	l->name = name;
 	l->cond = cond;
@@ -360,11 +360,12 @@ struct Decl *addDecl(struct Name *name, struct Value *value, struct Expression *
 }
 
 //I1
-struct Name *addName(char *name, int length, int pointer) {
+struct Name *addName(char *name, int length, int pointer, struct Expression *expr) {
 	struct Name *n = calloc(1,sizeof(struct Name));
 	n->name = name;
 	n->length = length;
 	n->pointer = pointer;
+	n->expr = expr;
 	return n;
 }
 
