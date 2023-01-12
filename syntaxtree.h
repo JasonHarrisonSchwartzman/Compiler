@@ -84,8 +84,8 @@ struct VarDecl {
 //R1
 struct Expression{ 
 	struct Expression *expr;
-	operation_t op;
-	conditional_t cond;
+	operation_t *op;
+	conditional_t *cond;
 	struct Evaluation *eval;
 } Expression;
 
@@ -241,6 +241,15 @@ struct FunctionStatement {
 	struct Decl *decl;
 } FunctionStatement;
 
+struct FunctionStatement *addFunctionStatement(statement_t stmt, struct FunctionCall *funccall, struct VarDecl *vardecl, struct Decl *decl) {
+	struct FunctionStatement *f = calloc(1,sizeof(struct FunctionStatement));
+	f->stmt = stmt;
+	f->funccall = funccall;
+	f->vardecl = vardecl;
+	f->decl = decl;
+	return f;
+}
+
 //Y1
 struct WhileLoop *addWhileLoop(struct Expression *expr, struct Statements *stmts) {
 	struct WhileLoop *w = calloc(1,sizeof(WhileLoop));
@@ -342,10 +351,11 @@ struct FuncDecl *addFuncDecl(struct Statement *stmts, struct Type *type, struct 
 
 
 //H1
-struct Decl *addDecl(struct Name *name, struct Value *value) {
+struct Decl *addDecl(struct Name *name, struct Value *value, struct Expression *expr) {
 	struct Decl *decl = calloc(1,sizeof(struct Decl));
 	decl->name = name;
 	decl->value = value;
+	decl->expr = expr;
 	return decl;
 }
 
@@ -432,7 +442,7 @@ struct Evaluation *addEval(struct Value *value, struct Expression *expr, char *n
 }
 
 //R1
-struct Expression *addExpr(struct Expression *expr, conditional_t cond, operation_t op, struct Evaluation *eval) {
+struct Expression *addExpr(struct Expression *expr, conditional_t *cond, operation_t *op, struct Evaluation *eval) {
 	struct Expression *e = calloc(1,sizeof(struct Expression));
 	e->expr = expr;
 	e->cond = cond;

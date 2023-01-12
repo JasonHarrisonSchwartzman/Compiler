@@ -112,9 +112,9 @@ void *callSemanticRule(void *param[], int rule) {
 		case 14:
 			return addDataType(DOUBLE);
 		case 15:
-			return addDecl(param[0],NULL);
+			return addDecl(param[0],NULL,NULL);
 		case 16:
-			return addDecl(param[0],param[1]);
+			return addDecl(param[0],param[1],NULL);
 		case 17:
 			return addName(((struct Token*)param[0])->token,atoi(((struct Token*)param[2])->token),-1);
 		case 18:
@@ -156,51 +156,51 @@ void *callSemanticRule(void *param[], int rule) {
 		case 36:
 			return addStatement(((struct FunctionStatement*)param[0])->stmt,param[0],NULL,NULL,NULL);
 		case 37:
-			break;
+			return addFunctionStatement(FUNCCALL,param[0],NULL,NULL);
 		case 38:
-			break;
+			return addFunctionStatement(DECLARATION,NULL,addVarDecl(param[0],param[1]),NULL);
 		case 39:
-			break;
+			return addDecl(param[0],NULL,NULL);
 		case 40:
-			break;
+			return addDecl(param[0],NULL,param[1]);
 		case 41:
-			break;
+			return addExpr(NULL,NULL,NULL,param[0]);
 		case 42:
-			break;
+			return addExpr(param[0],NULL,param[1],param[2]);
 		case 43:
-			break;
+			return addExpr(param[0],param[1],NULL,param[2]);
 		case 44:
-			break;
+			return addOperation(PLUS);
 		case 45:
-			break;
+			return addOperation(MULT);
 		case 46:
-			break;
+			return addOperation(MOD);
 		case 47:
-			break;
+			return addOperation(DIV);
 		case 48:
-			break;
+			return addOperation(MINUS);
 		case 49:
-			break;
+			return addOperation(BITWISEAND);
 		case 50:
-			break;
+			return addOperation(BITWISEOR);
 		case 51:
-			break;
+			return addOperation(BITWISEXOR);
 		case 52:
-			break;
+			return addConditional(EQUAL);
 		case 53:
-			break;
+			return addConditional(LESSEQUAL);
 		case 54:
-			break;
+			return addConditional(GREATEQUAL);
 		case 55:
-			break;
+			return addConditional(GREAT);
 		case 56:
-			break;
+			return addConditional(LESS);
 		case 57:
-			break;
+			return addConditional(AND);
 		case 58:
-			break;
+			return addConditional(NOT);
 		case 59:
-			break;
+			return addConditional(OR);
 		case 60:
 			break;
 		case 61:
