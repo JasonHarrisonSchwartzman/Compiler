@@ -177,7 +177,7 @@ struct ForLoop {
 	struct Type  *type;
 	struct LoopMod *loopmod;
 	struct LoopEnd *loopend;
-	struct Statement *stmt;
+	struct Statements *stmts;
 	struct Decl *decl;
 } ForLoop;
 
@@ -199,11 +199,12 @@ struct LoopEnd {
 
 struct WhileLoop {
 	struct Expression *expr;
-	struct Statement *stmt;
+	struct Statements *stmts;
 } WhileLoop;
 
 //X1
 struct Loop {
+	statement_t stmt;
 	struct WhileLoop *whileloop;
 	struct ForLoop *forloop;
 } Loop;
@@ -241,27 +242,28 @@ struct FunctionStatement {
 } FunctionStatement;
 
 //Y1
-struct WhileLoop *addWhileLoop(struct Expression *expr, struct Statement *stmt) {
+struct WhileLoop *addWhileLoop(struct Expression *expr, struct Statements *stmts) {
 	struct WhileLoop *w = calloc(1,sizeof(WhileLoop));
 	w->expr = expr;
-	w->stmt = stmt;
+	w->stmts = stmts;
 	return w;
 }
 
-struct Loop *addLoop(struct WhileLoop *whileloop, struct ForLoop *forloop) {
+struct Loop *addLoop(struct WhileLoop *whileloop, struct ForLoop *forloop, statement_t stmt) {
 	struct Loop *l = calloc(1,sizeof(Loop));
 	l->whileloop = whileloop;
 	l->forloop = forloop;
+	l->stmt = stmt;
 	return l;
 }
 
 //A2
-struct ForLoop *addForLoop(struct Type *type, struct LoopMod *loopmod, struct LoopEnd *loopend, struct Statement *stmt, struct Decl *decl) {
+struct ForLoop *addForLoop(struct Type *type, struct LoopMod *loopmod, struct LoopEnd *loopend, struct Statements *stmts, struct Decl *decl) {
 	struct ForLoop *f = calloc(1,sizeof(ForLoop));
 	f->type = type;
 	f->loopmod = loopmod;
 	f->loopend = loopend;
-	f->stmt = stmt;
+	f->stmts = stmts;
 	f->decl = decl;
 	return f;
 }

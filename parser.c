@@ -79,82 +79,82 @@ void shift(token_t instance, Token *token, token_t var, void *ptr) {
 	tokenIndex++;
 }
 
-void *callSemanicRule(void *param[], int rule) {
+void *callSemanticRule(void *param[], int rule) {
 	switch (rule) {
 		case 0:
 			break;
 		case 1: 
-			break;
+			return addDeclarations(param[1],param[0]);
 		case 2:
-			break;
+			return addDeclarations(NULL,param[0]);
 		case 3:
-			break;
+			return addDeclaration(param[0],NULL);
 		case 4:
-			break;
+			return addDeclaration(NULL,param[0]);
 		case 5: 
-			break;
+			return addVarDecl(param[0],param[1]);
 		case 6:
-			break;
+			return NULL;
 		case 7:
-			break;
+			return NULL;
 		case 8:
-			break;
+			return addSign(SIGNED);
 		case 9:
-			break;
+			return addSign(UNSIGNED);
 		case 10:
-			break;
+			return addDataType(INT);
 		case 11:
-			break;
+			return addDataType(LONG);
 		case 12:
-			break;
+			return addDataType(SHORT);
 		case 13:
-			break;
+			return addDataType(CHAR);
 		case 14:
-			break;
+			return addDataType(DOUBLE);
 		case 15:
-			break;
+			return addDecl(param[0],NULL);
 		case 16:
-			break;
+			return addDecl(param[0],param[1]);
 		case 17:
-			break;
+			return addName(((struct Token*)param[0])->token,atoi(((struct Token*)param[2])->token),-1);
 		case 18:
-			break;
+			return addName(((struct Token*)param[0])->token,-1,-1);
 		case 19:
-			break;
+			return addName(((struct Token*)param[1])->token,-1,1);
 		case 20:
-			break;
+			return addName(((struct Token*)param[1])->token,atoi(((struct Token*)param[3])->token),1);
 		case 21:
-			break;
+			return NULL; //numbers and decimals and what not
 		case 22:
-			break;
+			return NULL;
 		case 23:
-			break;
+			return NULL;
 		case 24:
-			break;
+			return NULL;
 		case 25:
-			break;
+			return NULL; // need to add id field
 		case 26:
-			break;
+			return addParam(param[3],param[0],param[1]);
 		case 27:
-			break;
+			return addParam(NULL,param[0],param[1]);
 		case 28:
-			break;
+			return NULL;
 		case 29:
-			break;
+			return NULL;
 		case 30:
-			break;
+			return NULL;
 		case 31:
-			break;
+			return addStatements(param[1],param[0]);
 		case 32:
-			break;
+			return addStatements(NULL,param[0]);
 		case 33:
-			break;
+			return addStatement(IF,NULL,NULL,NULL,param[0]);
 		case 34:
-			break;
+			return addStatement(((struct Loop*)param[0])->stmt,NULL,NULL,param[0],NULL);
 		case 35:
-			break;
+			return addStatement(RETURN,NULL,param[0],NULL,NULL);
 		case 36:
-			break;
+			return addStatement(((struct FunctionStatement*)param[0])->stmt,param[0],NULL,NULL,NULL);
 		case 37:
 			break;
 		case 38:
@@ -284,8 +284,8 @@ void reduce(int rule) {
 	token_t var = varTokens[rules[rule].var-(TOTAL_TOKENS+NUM_INSTANCES)]->tokenType;
 	token_t instance = instanceTokens[instances[stack[stackTopPointer]->instance].gotoAction[var-(TOTAL_TOKENS+NUM_INSTANCES)]]->tokenType;
 
-	void *ptr = 1;
-
+	void *ptr = callSemanticRule(pointers,rule);
+	if (!ptr) ptr = 1;
 	push(instance,NULL,var,ptr);
 }
 
