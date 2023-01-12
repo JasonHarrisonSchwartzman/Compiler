@@ -79,6 +79,36 @@ void shift(token_t instance, Token *token, token_t var, void *ptr) {
 	tokenIndex++;
 }
 
+void *callSemanicRule(void *param[], int rule) {
+	switch (rule) {
+		case 0:
+			break;
+		case 1: 
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5: 
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+		case 8:
+			break;
+		case 9:
+			break;
+		case 10:
+			break;
+		case 11:
+			break;
+	}
+	return NULL;
+}
+
 void reduce(int rule) {
 	printf("Reduce by %d\n",rule);
 	int ruleLength = rules[rule].length;
