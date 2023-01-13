@@ -66,8 +66,8 @@ struct Name {
 
 //E1
 struct Type {
-	type_t dataType;
-	signed_t sign;
+	type_t *dataType;
+	signed_t *sign;
 } Type;
 //H1 Q1
 struct Decl {
@@ -170,6 +170,7 @@ struct FuncDecl {
 	struct Statement *statements;
 	struct Type *type;
 	struct Params *params;
+	char *name;
 } FuncDecl;
 
 //A2
@@ -340,11 +341,12 @@ struct Params *addParam(struct Params *params, struct Type *type, struct Name *n
 }
 
 //K1, M1
-struct FuncDecl *addFuncDecl(struct Statement *stmts, struct Type *type, struct Params *params) {
+struct FuncDecl *addFuncDecl(struct Statement *stmts, struct Type *type, struct Params *params, char *name) {
 	struct FuncDecl *f = calloc(1,sizeof(FuncDecl));
 	f->statements = stmts;
 	f->type = type;
 	f->params = params;
+	f->name = name;
 	return f;
 }
 
@@ -407,7 +409,7 @@ conditional_t *addConditional(conditional_t cond) {
 }
 
 //E1
-struct Type *addType(type_t dataType, signed_t sign) {
+struct Type *addType(type_t *dataType, signed_t *sign) {
 	struct Type *type = calloc(1,sizeof(struct Type));
 	type->dataType = dataType;
 	type->sign = sign;

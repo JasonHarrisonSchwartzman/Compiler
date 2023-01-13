@@ -94,9 +94,9 @@ void *callSemanticRule(void *param[], int rule) {
 		case 5: 
 			return addVarDecl(param[0],param[1]);
 		case 6:
-			return NULL;
+			return addType(param[1],param[0]);
 		case 7:
-			return NULL;
+			return addType(param[0],NULL);
 		case 8:
 			return addSign(SIGNED);
 		case 9:
@@ -130,19 +130,19 @@ void *callSemanticRule(void *param[], int rule) {
 		case 23:
 			return NULL;
 		case 24:
-			return NULL;
+			return addFuncDecl(param[6],param[0],param[3],param[1]);
 		case 25:
-			return NULL; // need to add id field
+			return addFuncDecl(param[5],param[0],NULL,param[1]);
 		case 26:
 			return addParam(param[3],param[0],param[1]);
 		case 27:
 			return addParam(NULL,param[0],param[1]);
 		case 28:
-			return NULL;
+			return addFuncDecl(NULL,param[0],param[3],param[1]);
 		case 29:
-			return NULL;
+			return addFuncDecl(NULL,param[0],NULL,param[1]);
 		case 30:
-			return NULL;
+			return param[0];
 		case 31:
 			return addStatements(param[1],param[0]);
 		case 32:
