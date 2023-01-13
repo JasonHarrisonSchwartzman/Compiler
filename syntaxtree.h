@@ -10,6 +10,12 @@ typedef enum type_t {
 	DOUBLE
 } type_t;
 
+typedef enum value_t {
+	NUM,
+	CHARCONST,
+	STRINGCONST
+} value_t;
+
 typedef enum signed_t {
 	SIGNED,
 	UNSIGNED
@@ -52,9 +58,8 @@ typedef enum statement_t {
 } statement_t;
 //J1
 struct Value {
-	char *string;
-	int num;
-	char charconst;
+	value_t val_t;
+	char *value;
 } Value;
 //I1 I2
 struct Name {
@@ -372,11 +377,10 @@ struct Name *addName(char *name, int length, int pointer, struct Expression *exp
 }
 
 //J1
-struct Value *addValue(int num, char charconst, char *string) {
+struct Value *addValue(value_t val_t, char *value) {
 	struct Value *val = calloc(1,sizeof(struct Value));
-	val->num = num;
-	val->charconst = charconst;
-	val->string = string;
+	val->val_t = val_t;
+	val->value = value;
 	return val;
 }
 

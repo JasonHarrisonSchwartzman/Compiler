@@ -124,11 +124,11 @@ void *callSemanticRule(void *param[], int rule) {
 		case 20:
 			return addName(((struct Token*)param[1])->token,atoi(((struct Token*)param[3])->token),1,NULL);
 		case 21:
-			return NULL; //numbers and decimals and what not
+			return addValue(NUM,((struct Token*)param[0])->token); //numbers and decimals and what not
 		case 22:
-			return NULL;
+			return addValue(CHARCONST,((struct Token*)param[0])->token);
 		case 23:
-			return NULL;
+			return addValue(STRINGCONST,((struct Token*)param[0])->token);
 		case 24:
 			return addFuncDecl(param[6],param[0],param[3],param[1]);
 		case 25:
