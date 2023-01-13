@@ -25,12 +25,12 @@ void push(token_t instance, Token *token, token_t var, void *ptr) {
 	if (token != NULL) {
 		stack[stackTopPointer]->token = token;
 	}
+	if (stackTopPointer != -1) stack[stackTopPointer]->ptr = ptr;
 	if (instance != -1) {
 		stack = realloc(stack,sizeof(void*) * (stackTopPointer + 2));
 		stack[++stackTopPointer] = calloc(1,sizeof(struct StackItem));
 		stack[stackTopPointer]->instance = instance;
 	}
-	stack[stackTopPointer]->ptr = ptr;
 }
 
 void *pop() {
@@ -285,7 +285,6 @@ void reduce(int rule) {
 	token_t instance = instanceTokens[instances[stack[stackTopPointer]->instance].gotoAction[var-(TOTAL_TOKENS+NUM_INSTANCES)]]->tokenType;
 
 	void *ptr = callSemanticRule(pointers,rule);
-	if (!ptr) ptr = 1;
 	push(instance,NULL,var,ptr);
 }
 
@@ -307,7 +306,7 @@ void reduce(int rule) {
 }*/
 
 int parse() {
-	push(0,NULL,-1,1);
+	push(0,NULL,-1,NULL);
 	printStack();
 	while(1) {
 		printf("Reading token %d: ",tokenIndex);
