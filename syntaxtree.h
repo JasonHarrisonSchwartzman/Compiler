@@ -375,16 +375,6 @@ struct Decl *addDecl(struct Name *name, struct Value *value, struct Expression *
 	return decl;
 }
 
-//I1
-struct Name *addName(char *name, char *length, int pointer, struct Expression *expr) {
-	struct Name *n = calloc(1,sizeof(struct Name));
-	n->name = name;
-	if (length) n->expr = addExpr(NULL,NULL,addEvalution(VALUE,addValue(NUM,length),NULL,NULL,-1,-1,NULL));
-	if (expr) n->expr = expr;
-	n->pointer = pointer;
-	return n;
-}
-
 //J1
 struct Value *addValue(value_t val_t, char *value) {
 	struct Value *val = calloc(1,sizeof(struct Value));
@@ -460,6 +450,16 @@ struct Expression *addExpr(struct Expression *expr, operation_t *op, struct Eval
 	e->op = *op;
 	e->eval = eval;
 	return e;
+}
+
+//I1
+struct Name *addName(char *name, char *length, int pointer, struct Expression *expr) {
+	struct Name *n = calloc(1,sizeof(struct Name));
+	n->name = name;
+	if (length) n->expr = addExpr(NULL,NULL,addEvalution(VALUE,addValue(NUM,length),NULL,NULL,-1,-1,NULL));
+	if (expr) n->expr = expr;
+	n->pointer = pointer;
+	return n;
 }
 
 
