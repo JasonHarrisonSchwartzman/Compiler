@@ -84,19 +84,19 @@ void *callSemanticRule(void *param[], int rule) {
 		case 0:
 			break;
 		case 1: 
-			return addDeclarations(param[1],param[0]);
+			return NULL;
 		case 2:
-			return addDeclarations(NULL,param[0]);
+			return NULL;
 		case 3:
-			return addDeclaration(param[0],NULL);
+			return NULL;
 		case 4:
-			return addDeclaration(NULL,param[0]);
+			return NULL;
 		case 5: 
-			return addVarDecl(param[0],param[1]);
+			return NULL;
 		case 6:
-			return addType(param[1],param[0]);
+			return NULL;
 		case 7:
-			return addType(param[0],NULL);
+			return NULL;
 		case 8:
 			return addSign(SIGNED);
 		case 9:
@@ -112,17 +112,17 @@ void *callSemanticRule(void *param[], int rule) {
 		case 14:
 			return addDataType(DOUBLE);
 		case 15:
-			return addDecl(param[0],NULL,NULL);
+			return NULL;
 		case 16:
-			return addDecl(param[0],param[1],NULL);
+			return NULL;
 		case 17:
-			return addName(((struct Token*)param[0])->token,atoi(((struct Token*)param[2])->token),-1,NULL);
+			return NULL;
 		case 18:
-			return addName(((struct Token*)param[0])->token,-1,-1,NULL);
+			return NULL;
 		case 19:
-			return addName(((struct Token*)param[1])->token,-1,1,NULL);
+			return NULL;
 		case 20:
-			return addName(((struct Token*)param[1])->token,atoi(((struct Token*)param[3])->token),1,NULL);
+			return NULL;
 		case 21:
 			return addValue(NUM,((struct Token*)param[0])->token); //numbers and decimals and what not
 		case 22:
@@ -130,45 +130,45 @@ void *callSemanticRule(void *param[], int rule) {
 		case 23:
 			return addValue(STRINGCONST,((struct Token*)param[0])->token);
 		case 24:
-			return addFuncDecl(param[6],param[0],param[3],param[1]);
+			return addFuncDecl(param[6],param[0],param[3],((struct Token*)param[1])->token);
 		case 25:
-			return addFuncDecl(param[5],param[0],NULL,param[1]);
+			return addFuncDecl(param[5],param[0],NULL,((struct Token*)param[1])->token);
 		case 26:
-			return addParam(param[3],param[0],param[1]);
+			return NULL;
 		case 27:
-			return addParam(NULL,param[0],param[1]);
+			return NULL;
 		case 28:
-			return addFuncDecl(NULL,param[0],param[3],param[1]);
+			return addFuncDecl(NULL,param[0],param[3],((struct Token*)param[1])->token);
 		case 29:
-			return addFuncDecl(NULL,param[0],NULL,param[1]);
+			return addFuncDecl(NULL,param[0],NULL,((struct Token*)param[1])->token);
 		case 30:
 			return param[0];
 		case 31:
-			return addStatements(param[1],param[0]);
+			return NULL;
 		case 32:
-			return addStatements(NULL,param[0]);
+			return NULL;
 		case 33:
-			return addStatement(IF,NULL,NULL,NULL,param[0]);
+			return NULL;
 		case 34:
-			return addStatement(((struct Loop*)param[0])->stmt,NULL,NULL,param[0],NULL);
+			return NULL;
 		case 35:
-			return addStatement(RETURN,NULL,param[0],NULL,NULL);
+			return NULL;
 		case 36:
-			return addStatement(((struct FunctionStatement*)param[0])->stmt,param[0],NULL,NULL,NULL);
+			return NULL;
 		case 37:
-			return addFunctionStatement(FUNCCALL,param[0],NULL,NULL);
+			return NULL;
 		case 38:
-			return addFunctionStatement(DECLARATION,NULL,addVarDecl(param[0],param[1]),NULL);
+			return NULL;
 		case 39:
-			return addDecl(param[0],NULL,NULL);
+			return NULL;
 		case 40:
-			return addDecl(param[0],NULL,param[1]);
+			return NULL;
 		case 41:
-			return addExpr(NULL,NULL,NULL,param[0]);
+			return addExpr(NULL,NULL,param[0]);
 		case 42:
-			return addExpr(param[0],NULL,param[1],param[2]);
+			return addExpr(param[0],param[1],param[2]);
 		case 43:
-			return addExpr(param[0],param[1],NULL,param[2]);
+			return addExpr(param[0],param[1],param[2]);
 		case 44:
 			return addOperation(PLUS);
 		case 45:
@@ -186,33 +186,33 @@ void *callSemanticRule(void *param[], int rule) {
 		case 51:
 			return addOperation(BITWISEXOR);
 		case 52:
-			return addConditional(EQUAL);
+			return addOperation(EQUAL);
 		case 53:
-			return addConditional(LESSEQUAL);
+			return addOperation(LESSEQUAL);
 		case 54:
-			return addConditional(GREATEQUAL);
+			return addOperation(GREATEQUAL);
 		case 55:
-			return addConditional(GREAT);
+			return addOperation(GREAT);
 		case 56:
-			return addConditional(LESS);
+			return addOperation(LESS);
 		case 57:
-			return addConditional(AND);
+			return addOperation(AND);
 		case 58:
-			return addConditional(NOT);
+			return addOperation(NOT);
 		case 59:
-			return addConditional(OR);
+			return addOperation(OR);
 		case 60:
-			return addEval(param[0],NULL,NULL,-1,-1,NULL);
+			return addEval(VALUE,param[0],NULL,NULL,-1,-1,NULL);
 		case 61:
-			return addEval(NULL,NULL,param[1],1,-1,NULL);
+			return addEval(DEREF,NULL,NULL,((struct Token*)param[1])->token,1,-1,NULL);
 		case 62:
-			return addEval(NULL,NULL,param[1],-1,1,NULL);
+			return addEval(REF,NULL,NULL,((struct Token*)param[1])->token,-1,1,NULL);
 		case 63:
-			return addEval(NULL,NULL,param[1],-1,-1,NULL);
+			return addEval(ID,NULL,NULL,((struct Token*)param[0])->token,-1,-1,NULL);
 		case 64:
-			return addEval(NULL,param[2],param[1],-1,-1,NULL);
+			return addEval(ARRAYINDEX,NULL,param[2],((struct Token*)param[0])->token,-1,-1,NULL);
 		case 65:
-			return addEval(NULL,NULL,NULL,-1,-1,param[0]);
+			return addEval(FUNCRETURN,NULL,NULL,NULL,-1,-1,param[0]);
 		case 66:
 			return addFuncCall(((struct Token*)param[0])->token,param[2]);
 		case 67:
@@ -222,45 +222,45 @@ void *callSemanticRule(void *param[], int rule) {
 		case 69:
 			return addFuncArgs(param[0],NULL);
 		case 70:
-			return addLoop(param[0],NULL,WHILE);
+			return NULL;
 		case 71:
-			return addLoop(NULL,param[0],FOR);
+			return NULL;
 		case 72:
-			return addWhileLoop(param[2],param[5]);
+			return NULL;
 		case 73:
-			return addForLoop(param[2],param[7],param[5],param[10],param[3]);
+			return NULL;
 		case 74:
-			return addLoopEnd(param[2],param[1],((struct Token*)param[0])->token);
+			return NULL;
 		case 75:
-			return addLoopMod(param[2],((struct Token*)param[0])->token);
+			return NULL;
 		case 76:
-			return addCondStatements(param[0],param[1],param[2]);
+			return NULL;
 		case 77:
-			return addCondStatements(param[0],param[1],NULL);
+			return NULL;
 		case 78:
-			return addCondStatements(param[0],NULL,param[1]);
+			return NULL;
 		case 79:
-			return addCondStatements(param[0],NULL,NULL);
+			return NULL;
 		case 80:
-			return addCondStatement(param[2],param[5],IF,NULL);
+			return NULL;
 		case 81:
-			return addCondStatement(param[2],param[5],ELSEIF,NULL);
+			return NULL;
 		case 82:
-			return addCondStatement(param[2],param[5],ELSEIF,param[7]);
+			return NULL;
 		case 83:
-			return addCondStatement(NULL,param[2],ELSE,NULL);
+			return NULL;
 		case 84:
-			return addReturnState(param[1]);
+			return NULL;
 		case 85:
-			return addStatement(BREAK,NULL,NULL,NULL,NULL);
+			return NULL;
 		case 86:
-			return addStatement(CONTINUE,NULL,NULL,NULL,NULL);
+			return NULL;
 		case 87:
-			return addFunctionStatement(ASSIGNMENT,NULL,NULL,addDecl(param[0],NULL,param[2]));
+			return NULL;
 		case 88:
-			return addName(((struct Token*)param[0])->token,-1,-1,NULL);
+			return NULL;
 		case 89:
-			return addName(((struct Token*)param[0])->token,-1,-1,param[2]);
+			return NULL;
 		default:
 			printf("Rule not found ERROR\n");
 			return NULL;
@@ -321,6 +321,7 @@ int parse() {
 		int actionIndex = tokens[tokenIndex]->tokenType-NUM_INSTANCES;
 		Step step = instances[state].actions[actionIndex].step;
 		if (step == STEP_ACCEPT) {
+			syntaxTree = stack[stackTopPointer]->ptr;
 			return 1;
 		}
 		else if (step == STEP_SHIFT) {

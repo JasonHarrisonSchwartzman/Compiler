@@ -2,6 +2,8 @@
 #define SYNTAX_TREE_H
 #include "token.h"
 
+struct Declarations *syntaxTree;
+
 typedef enum type_t {
 	INT,
 	LONG,
@@ -29,10 +31,7 @@ typedef enum operation_t {
 	MOD,
 	BITWISEAND,
 	BITWISEOR,
-	BITWISEXOR
-} operation_t;
-
-typedef enum conditional_t {
+	BITWISEXOR,
 	EQUAL,
 	GREATEQUAL,
 	LESSEQUAL,
@@ -41,7 +40,7 @@ typedef enum conditional_t {
 	AND,
 	NOT,
 	OR
-} conditional_t;
+} operation_t;
 
 typedef enum statement_t {
 	DECLARATION,
@@ -64,15 +63,16 @@ struct Value {
 //I1 I2
 struct Name {
 	char *name;
-	int length;//length of array
+	struct Expression *expr;//length of array
 	int pointer;//0 for not a pointer 1 for yes a pointer
-	struct Expression *expr;
 } Name;
 
 //E1
 struct Type {
-	type_t *dataType;
-	signed_t *sign;
+	type_t dataType;
+	signed_t sign;
+	int pointer; //1 means pointer 0 means not
+	struct Expression *length; // for arrays
 } Type;
 //H1 Q1
 struct Decl {
@@ -80,17 +80,18 @@ struct Decl {
 	struct Value *value;
 	struct Expression *expr;
 } Decl;
+
 //D1
 struct VarDecl {
 	struct Type *type;
-	struct Decl *decl;
+	char *name;
+	struct Expression *expr;
 } VarDecl;
 
 //R1
 struct Expression{ 
 	struct Expression *expr;
-	operation_t *op;
-	conditional_t *cond;
+	operation_t op;
 	struct Evaluation *eval;
 } Expression;
 
@@ -106,8 +107,18 @@ struct FunctionCall {
 	struct FunctionArgs *funcargs;
 } FunctionCall;
 
+typedef enum eval_t {
+	VALUE,
+	REF,
+	DEREF,
+	ID,
+	ARRAYINDEX,
+	FUNCRETURN
+} eval_t;
+
 //U1
 struct Evaluation{ 
+	eval_t eval;
 	struct Value *value;
 	char *name;
 	int dereference;
@@ -152,7 +163,7 @@ struct Statements *addStatements(struct Statements *next, struct Statement *stmt
 //L1
 struct Params {
 	struct Type *type;
-	struct Name *name;
+	char *name;
 	struct Params *next;
 } Params;
 
@@ -199,7 +210,7 @@ struct ReturnState {
 //B2
 struct LoopEnd {
 	struct Expression *expr;
-	conditional_t *cond;
+	operation_t *cond;
 	char *name;
 } LoopEnd;
 
@@ -215,28 +226,23 @@ struct Loop {
 	struct ForLoop *forloop;
 } Loop;
 
-struct Declarations {
-	struct Declarations *next;
-	struct Declaration *decl;
-} Declarations;
+typedef enum dec_t {
+	FUNC,
+	VAR
+} dec_t;
 
 //B1
 struct Declaration {
+	dec_t dec;
 	struct FuncDecl *funcdecl;
 	struct VarDecl *vardecl;
+	struct Declaration *next;
 } Declaration;
 
-struct Declaration *addDeclaration(struct FuncDecl *funcdecl, struct VarDecl *vardecl) {
+struct Declaration *addDeclaration(struct FuncDecl *funcdecl, struct VarDecl *vardecl, struct Declaration *next) {
 	struct Declaration *d = calloc(1,sizeof(Declaration));
 	d->funcdecl = funcdecl;
 	d->vardecl = vardecl;
-	return d;
-}
-
-struct Declarations *addDeclarations(struct Declarations *next, struct Declaration *decl) {
-	struct Declarations *d = calloc(1,sizeof(Declarations));
-	d->next = next;
-	d->decl = decl;
 	return d;
 }
 
@@ -318,7 +324,7 @@ struct LoopMod *addLoopMod(struct Expression *expr, char *name) {
 }
 
 //B2
-struct LoopEnd *addLoopEnd(struct Expression *expr, conditional_t *cond, char *name) {
+struct LoopEnd *addLoopEnd(struct Expression *expr, operation_t *cond, char *name) {
 	struct LoopEnd *l = calloc(1,sizeof(struct LoopEnd));
 	l->name = name;
 	l->cond = cond;
@@ -326,11 +332,14 @@ struct LoopEnd *addLoopEnd(struct Expression *expr, conditional_t *cond, char *n
 	return l;
 }
 
-//D1
+//D1                      (E1, H1)
 struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
 	struct VarDecl *var = calloc(1,sizeof(struct VarDecl));
 	var->type = type;
-	var->decl = decl;
+	var->type->length = decl->name->expr;
+	var->type->pointer = decl->name->pointer;
+	var->name = decl->name->name;
+	var->expr = decl->expr;
 	return var;
 }
 
@@ -341,7 +350,7 @@ struct Params *addParam(struct Params *params, struct Type *type, struct Name *n
 	struct Params *p = calloc(1,sizeof(Params));
 	p->next = params;
 	p->type = type;
-	p->name = name;
+	p->name = name->name;
 	return p;
 }
 
@@ -367,12 +376,12 @@ struct Decl *addDecl(struct Name *name, struct Value *value, struct Expression *
 }
 
 //I1
-struct Name *addName(char *name, int length, int pointer, struct Expression *expr) {
+struct Name *addName(char *name, char *length, int pointer, struct Expression *expr) {
 	struct Name *n = calloc(1,sizeof(struct Name));
 	n->name = name;
-	n->length = length;
+	if (length) n->expr = addExpr(NULL,NULL,addEvalution(VALUE,addValue(NUM,length),NULL,NULL,-1,-1,NULL));
+	if (expr) n->expr = expr;
 	n->pointer = pointer;
-	n->expr = expr;
 	return n;
 }
 
@@ -398,25 +407,20 @@ signed_t *addSign(signed_t sign) {
 	return s;
 }
 
-//S1
+//S1 T1
 operation_t *addOperation(operation_t op) {
 	operation_t *o = malloc(sizeof(signed_t));
 	*o = op;
 	return o;
 }
 
-//T1
-conditional_t *addConditional(conditional_t cond) {
-	conditional_t *c = malloc(sizeof(conditional_t));
-	*c = cond;
-	return c;
-}
-
 //E1
-struct Type *addType(type_t *dataType, signed_t *sign) {
+struct Type *addType(type_t *dataType, signed_t *sign, int pointer, struct Expression *length) {
 	struct Type *type = calloc(1,sizeof(struct Type));
-	type->dataType = dataType;
-	type->sign = sign;
+	type->dataType = *dataType;
+	type->sign = *sign;
+	type->pointer = pointer;
+	type->length = length;
 	return type;
 }
 
@@ -437,23 +441,23 @@ struct FunctionCall *addFuncCall(char *name, struct FunctionArgs *funcargs) {
 }
 
 //U1
-struct Evaluation *addEval(struct Value *value, struct Expression *expr, char *name, int dereference, int reference, struct FunctionCall *funccall) {
-	struct Evaluation *eval = calloc(1,sizeof(struct Evaluation));
-	eval->value = value;
-	eval->expr = expr;
-	eval->name = name;
-	eval->dereference = dereference;
-	eval->reference = reference;
-	eval->funccall = funccall;
-	return eval;
+struct Evaluation *addEval(eval_t eval, struct Value *value, struct Expression *expr, char *name, int dereference, int reference, struct FunctionCall *funccall) {
+	struct Evaluation *e = calloc(1,sizeof(struct Evaluation));
+	e->value = value;
+	e->expr = expr;
+	e->name = name;
+	e->dereference = dereference;
+	e->reference = reference;
+	e->funccall = funccall;
+	e->eval = eval;
+	return e;
 }
 
 //R1
-struct Expression *addExpr(struct Expression *expr, conditional_t *cond, operation_t *op, struct Evaluation *eval) {
+struct Expression *addExpr(struct Expression *expr, operation_t *op, struct Evaluation *eval) {
 	struct Expression *e = calloc(1,sizeof(struct Expression));
 	e->expr = expr;
-	e->cond = cond;
-	e->op = op;
+	e->op = *op;
 	e->eval = eval;
 	return e;
 }
