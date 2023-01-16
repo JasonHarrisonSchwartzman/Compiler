@@ -77,7 +77,6 @@ struct Type {
 //H1 Q1
 struct Decl {
 	struct Name *name;
-	struct Value *value;
 	struct Expression *expr;
 } Decl;
 
@@ -91,7 +90,7 @@ struct VarDecl {
 //R1
 struct Expression{ 
 	struct Expression *expr;
-	operation_t op;
+	operation_t *op;
 	struct Evaluation *eval;
 } Expression;
 
@@ -137,10 +136,12 @@ struct Statements {
 //O1
 struct Statement {
 	statement_t stmt;
-	struct FunctionStatement *funcstmt;
-	struct ReturnState *returnstmt;
+	struct VarDecl *var;
+	struct FuncCall *funccall;
+	struct Expression *returnstmt;
 	struct Loop *loop;
-	struct CondStatements *condstmt;
+	struct CondStatement *condstmt;
+	struct Statement *next;
 } Statement;
 
 struct Statement *addStatement(statement_t stmt, struct FunctionStatement *funcstmt, struct ReturnState *returnstmt, struct Loop *loop, struct CondStatements *condstmt) {
@@ -153,11 +154,9 @@ struct Statement *addStatement(statement_t stmt, struct FunctionStatement *funcs
 	return s;
 }
 
-struct Statements *addStatements(struct Statements *next, struct Statement *stmt) {
-	struct Statements *s = calloc(1,sizeof(Statements));
-	s->next = next;
-	s->stmt = stmt;
-	return s;
+struct Statement *addStatements(struct Statement *stmt, struct Statement *next) {
+	if (next) stmt->next = next;
+	return stmt;
 }
 
 //L1
@@ -250,15 +249,13 @@ struct FunctionStatement {
 	statement_t stmt;
 	struct FunctionCall *funccall;
 	struct VarDecl *vardecl;
-	struct Decl *decl;
 } FunctionStatement;
 
-struct FunctionStatement *addFunctionStatement(statement_t stmt, struct FunctionCall *funccall, struct VarDecl *vardecl, struct Decl *decl) {
+struct FunctionStatement *addFunctionStatement(statement_t stmt, struct FunctionCall *funccall, struct VarDecl *vardecl) {
 	struct FunctionStatement *f = calloc(1,sizeof(struct FunctionStatement));
 	f->stmt = stmt;
 	f->funccall = funccall;
 	f->vardecl = vardecl;
-	f->decl = decl;
 	return f;
 }
 
@@ -290,12 +287,21 @@ struct ForLoop *addForLoop(struct Type *type, struct LoopMod *loopmod, struct Lo
 }
 
 //D2
-struct CondStatements *addCondStatements(struct CondStatement *ifstmt, struct CondStatement *elseifstmt, struct CondStatement *elsestmt) {
-	struct CondStatements *c = calloc(1,sizeof(CondStatements));
-	c->ifstmt = ifstmt;
-	c->elseifstmt = elseifstmt;
-	c->elsestmt = elsestmt;
-	return c;
+struct CondStatement *addCondStatements(struct CondStatement *ifstmt, struct CondStatement *elseifstmt, struct CondStatement *elsestmt) {
+	if (elseifstmt) ifstmt->next = elseifstmt;
+	else {
+		ifstmt->next = elsestmt;
+		return ifstmt;
+	}
+	if (!elsestmt) return ifstmt;
+	struct CondStatement *c = elseifstmt;
+	elseifstmt = elseifstmt->next;
+	while (elseifstmt) {
+		c = c->next;
+		elseifstmt = elseifstmt->next;
+	}
+	c->next = elsestmt;
+	return ifstmt;
 }
 
 //E2 F2 G2
@@ -350,6 +356,8 @@ struct Params *addParam(struct Params *params, struct Type *type, struct Name *n
 	struct Params *p = calloc(1,sizeof(Params));
 	p->next = params;
 	p->type = type;
+	p->type->pointer = name->pointer;
+	p->type->length = name->expr;
 	p->name = name->name;
 	return p;
 }
@@ -366,11 +374,10 @@ struct FuncDecl *addFuncDecl(struct Statement *stmts, struct Type *type, struct 
 
 
 
-//H1
-struct Decl *addDecl(struct Name *name, struct Value *value, struct Expression *expr) {
+//H1 Q1
+struct Decl *addDecl(struct Name *name, struct Expression *expr) {
 	struct Decl *decl = calloc(1,sizeof(struct Decl));
 	decl->name = name;
-	decl->value = value;
 	decl->expr = expr;
 	return decl;
 }
@@ -447,7 +454,7 @@ struct Evaluation *addEval(eval_t eval, struct Value *value, struct Expression *
 struct Expression *addExpr(struct Expression *expr, operation_t *op, struct Evaluation *eval) {
 	struct Expression *e = calloc(1,sizeof(struct Expression));
 	e->expr = expr;
-	e->op = *op;
+	e->op = op;
 	e->eval = eval;
 	return e;
 }
@@ -456,7 +463,7 @@ struct Expression *addExpr(struct Expression *expr, operation_t *op, struct Eval
 struct Name *addName(char *name, char *length, int pointer, struct Expression *expr) {
 	struct Name *n = calloc(1,sizeof(struct Name));
 	n->name = name;
-	if (length) n->expr = addExpr(NULL,NULL,addEvalution(VALUE,addValue(NUM,length),NULL,NULL,-1,-1,NULL));
+	if (length) n->expr = addExpr(NULL,NULL,addEval(VALUE,addValue(NUM,length),NULL,NULL,-1,-1,NULL));
 	if (expr) n->expr = expr;
 	n->pointer = pointer;
 	return n;

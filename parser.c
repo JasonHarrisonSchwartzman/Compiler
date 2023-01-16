@@ -112,17 +112,17 @@ void *callSemanticRule(void *param[], int rule) {
 		case 14:
 			return addDataType(DOUBLE);
 		case 15:
-			return NULL;
+			return addDecl(param[0],NULL);
 		case 16:
-			return NULL;
+			return addDecl(param[0],addExpr(NULL,NULL,addEval(VALUE,param[2],NULL,NULL,-1,-1,NULL)));
 		case 17:
-			return NULL;
+			return addName(((struct Token*)param[0])->token,((struct Token*)param[2])->token,-1,NULL);
 		case 18:
-			return NULL;
+			return addName(((struct Token*)param[0])->token,NULL,-1,NULL);
 		case 19:
-			return NULL;
+			return addName(((struct Token*)param[1])->token,NULL,1,NULL);
 		case 20:
-			return NULL;
+			return addName(((struct Token*)param[1])->token,((struct Token*)param[3])->token,-1,NULL);
 		case 21:
 			return addValue(NUM,((struct Token*)param[0])->token); //numbers and decimals and what not
 		case 22:
@@ -134,9 +134,9 @@ void *callSemanticRule(void *param[], int rule) {
 		case 25:
 			return addFuncDecl(param[5],param[0],NULL,((struct Token*)param[1])->token);
 		case 26:
-			return NULL;
+			return addParam(param[3],param[0],param[1]);
 		case 27:
-			return NULL;
+			return addParam(NULL,param[0],param[1]);
 		case 28:
 			return addFuncDecl(NULL,param[0],param[3],((struct Token*)param[1])->token);
 		case 29:
@@ -144,9 +144,9 @@ void *callSemanticRule(void *param[], int rule) {
 		case 30:
 			return param[0];
 		case 31:
-			return NULL;
+			return addStatements(param[0],param[1]);
 		case 32:
-			return NULL;
+			return addStatements(param[0],NULL);
 		case 33:
 			return NULL;
 		case 34:
@@ -156,13 +156,13 @@ void *callSemanticRule(void *param[], int rule) {
 		case 36:
 			return NULL;
 		case 37:
-			return NULL;
+			return addFunctionStatement(FUNCCALL,param[0],NULL);
 		case 38:
-			return NULL;
+			return addFunctionStatement(DECLARATION,NULL,addVarDecl(param[0],param[1]));
 		case 39:
-			return NULL;
+			return addDecl(param[0],NULL);
 		case 40:
-			return NULL;
+			return addDecl(param[0],param[2]);
 		case 41:
 			return addExpr(NULL,NULL,param[0]);
 		case 42:
@@ -234,21 +234,21 @@ void *callSemanticRule(void *param[], int rule) {
 		case 75:
 			return NULL;
 		case 76:
-			return NULL;
+			return addCondStatements(param[0],param[1],param[2]);
 		case 77:
-			return NULL;
+			return addCondStatements(param[0],param[1],NULL);
 		case 78:
-			return NULL;
+			return addCondStatements(param[0],NULL,param[1]);
 		case 79:
-			return NULL;
+			return param[0];
 		case 80:
-			return NULL;
+			return addCondStatement(param[2],param[5],IF,NULL);
 		case 81:
-			return NULL;
+			return addCondStatement(param[2],param[5],ELSEIF,NULL);
 		case 82:
-			return NULL;
+			return addCondStatement(param[2],param[5],ELSEIF,param[7]);
 		case 83:
-			return NULL;
+			return addCondStatement(NULL,param[2],ELSE,NULL);
 		case 84:
 			return NULL;
 		case 85:
@@ -256,11 +256,11 @@ void *callSemanticRule(void *param[], int rule) {
 		case 86:
 			return NULL;
 		case 87:
-			return NULL;
+			return addFunctionStatement(ASSIGNMENT,NULL,addVarDecl(NULL,addDecl(param[0],param[2])));
 		case 88:
-			return NULL;
+			return addName(param[0],NULL,-1,NULL);
 		case 89:
-			return NULL;
+			return addName(param[0],NULL,-1,param[2]);
 		default:
 			printf("Rule not found ERROR\n");
 			return NULL;
