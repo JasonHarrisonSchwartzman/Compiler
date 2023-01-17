@@ -148,7 +148,7 @@ void *callSemanticRule(void *param[], int rule) {
 		case 33:
 			return addStatement(IF,NULL,NULL,NULL,NULL,param[0]);
 		case 34:
-			return addStatement(WHILE,NULL,NULL,NULL,param[0],NULL);
+			return NULL;
 		case 35:
 			return addStatement(RETURN,NULL,NULL,param[0],NULL,NULL);
 		case 36:
@@ -220,17 +220,17 @@ void *callSemanticRule(void *param[], int rule) {
 		case 69:
 			return addFuncArgs(param[0],NULL);
 		case 70:
-			return NULL;
+			return param[0];
 		case 71:
-			return NULL;
+			return param[0];
 		case 72:
-			return NULL;
+			return addLoop(WHILE,NULL,NULL,param[2],param[5]);
 		case 73:
-			return NULL;
+			return addLoop(FOR,addVarDecl(param[2],param[3]),param[7],param[5],param[10]);
 		case 74:
 			return NULL;
 		case 75:
-			return NULL;
+			return addVarDecl(NULL,addDecl(addName(((struct Token*)param[0])->token,NULL,-1,NULL),param[2]));
 		case 76:
 			return addCondStatements(param[0],param[1],param[2]);
 		case 77:
