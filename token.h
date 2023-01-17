@@ -553,6 +553,105 @@ void printToken(token_t token) {
 		case TOKEN_ELSEIF:
 			str = "elseif";
 			break;
+		case VAR_B1:
+			str = "B1";
+			break;
+		case VAR_C1:
+			str = "C1";
+			break;
+		case VAR_D1:
+			str = "D1";
+			break;
+		case VAR_E1:
+			str = "E1";
+			break;
+		case VAR_F1:
+			str = "F1";
+			break;
+		case VAR_G1:
+			str = "G1";
+			break;
+		case VAR_H1:
+			str = "H1";
+			break;
+		case VAR_I1:
+			str = "I1";
+			break;
+		case VAR_J1:
+			str = "J1";
+			break;
+		case VAR_K1:
+			str = "K1";
+			break;
+		case VAR_L1:
+			str = "L1";
+			break;
+		case VAR_M1:
+			str = "M1";
+			break;
+		case VAR_N1:
+			str = "N1";
+			break;
+		case VAR_O1:
+			str = "O1";
+			break;
+		case VAR_P1:
+			str = "P1";
+			break;
+		case VAR_Q1:
+			str = "Q1";
+			break;
+		case VAR_R1:
+			str = "R1";
+			break;
+		case VAR_S1:
+			str = "S1";
+			break;
+		case VAR_T1:
+			str = "T1";
+			break;
+		case VAR_U1:
+			str = "U1";
+			break;
+		case VAR_V1:
+			str = "V1";
+			break;
+		case VAR_W1:
+			str = "W1";
+			break;
+		case VAR_X1:
+			str = "X1";
+			break;
+		case VAR_Y1:
+			str = "Y1";
+			break;
+		case VAR_A2:
+			str = "A2";
+			break;
+		case VAR_B2:
+			str = "B2";
+			break;
+		case VAR_C2:
+			str = "C2";
+			break;
+		case VAR_D2:
+			str = "D2";
+			break;
+		case VAR_E2:
+			str = "E2";
+			break;
+		case VAR_F2:
+			str = "F2";
+			break;
+		case VAR_G2:
+			str = "G2";
+			break;
+		case VAR_H2:
+			str = "H2";
+			break;
+		case VAR_I2:
+			str = "I2";
+			break;
 		default:
 			str = "ERROR TOKEN NOT FOUND";
 			break;

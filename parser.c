@@ -228,7 +228,7 @@ void *callSemanticRule(void *param[], int rule) {
 		case 73:
 			return addLoop(FOR,addVarDecl(param[2],param[3]),param[7],param[5],param[10]);
 		case 74:
-			return NULL;
+			return NULL;//hey jason can you please change the grammar from B2 to R1 thanks bye
 		case 75:
 			return addVarDecl(NULL,addDecl(addName(((struct Token*)param[0])->token,NULL,-1,NULL),param[2]));
 		case 76:
