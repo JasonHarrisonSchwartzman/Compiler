@@ -268,8 +268,10 @@ struct CondStatement *addCondStatement(struct Expression *expr, struct Statement
 struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
 	struct VarDecl *var = calloc(1,sizeof(struct VarDecl));
 	var->type = type;
-	var->type->length = decl->name->expr;
-	var->type->pointer = decl->name->pointer;
+	if (type) {
+		var->type->length = decl->name->expr;
+		var->type->pointer = decl->name->pointer;
+	}
 	var->name = decl->name->name;
 	var->expr = decl->expr;
 	return var;

@@ -254,7 +254,7 @@ void *callSemanticRule(void *param[], int rule) {
 		case 86:
 			return addStatement(CONTINUE,NULL,NULL,NULL,NULL,NULL);
 		case 87:
-			return addFunctionStatement(ASSIGNMENT,NULL,addVarDecl(NULL,addDecl(param[0],param[2])));
+			return addFunctionStatement(ASSIGNMENT,NULL,addVarDecl(NULL,addDecl((struct Name*)param[0],(struct Expression*)param[2])));
 		case 88:
 			return addName(param[0],NULL,-1,NULL);
 		case 89:
