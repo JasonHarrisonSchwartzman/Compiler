@@ -81,8 +81,6 @@ void shift(token_t instance, Token *token, token_t var, void *ptr) {
 
 void *callSemanticRule(void *param[], int rule) {
 	switch (rule) {
-		case 0:
-			break;
 		case 1: 
 			return addDeclarations(param[0],param[1]);
 		case 2:
@@ -146,15 +144,15 @@ void *callSemanticRule(void *param[], int rule) {
 		case 31:
 			return addStatements(param[0],param[1]);
 		case 32:
-			return addStatements(param[0],NULL);
+			return param[0];
 		case 33:
-			return NULL;
+			return addStatement(IF,NULL,NULL,NULL,NULL,param[0]);
 		case 34:
-			return NULL;
+			return addStatement(WHILE,NULL,NULL,NULL,param[0],NULL);
 		case 35:
-			return NULL;
+			return addStatement(RETURN,NULL,NULL,param[0],NULL,NULL);
 		case 36:
-			return NULL;
+			return addStatement(((struct FunctionStatement*)param[0])->stmt,((struct FunctionStatement*)param[0])->vardecl,((struct FunctionStatement*)param[0])->funccall,NULL,NULL,NULL);
 		case 37:
 			return addFunctionStatement(FUNCCALL,param[0],NULL);
 		case 38:
@@ -252,9 +250,9 @@ void *callSemanticRule(void *param[], int rule) {
 		case 84:
 			return param[1];
 		case 85:
-			return NULL;
+			return addStatement(BREAK,NULL,NULL,NULL,NULL,NULL);
 		case 86:
-			return NULL;
+			return addStatement(CONTINUE,NULL,NULL,NULL,NULL,NULL);
 		case 87:
 			return addFunctionStatement(ASSIGNMENT,NULL,addVarDecl(NULL,addDecl(param[0],param[2])));
 		case 88:

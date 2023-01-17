@@ -131,17 +131,18 @@ struct Evaluation{
 struct Statement {
 	statement_t stmt;
 	struct VarDecl *var;//can be either a declaration or assignment
-	struct FuncCall *funccall;
+	struct FunctionCall *funccall;
 	struct Expression *returnstmt;
 	struct Loop *loop;
 	struct CondStatement *condstmt;
 	struct Statement *next;
 } Statement;
 
-struct Statement *addStatement(statement_t stmt, struct VarDecl *varDecl, struct FuncCall *funccall, struct Expression *returnstmt, struct Loop *loop, struct CondStatements *condstmt) {
+//01 N1
+struct Statement *addStatement(statement_t stmt, struct VarDecl *vardecl, struct FunctionCall *funccall, struct Expression *returnstmt, struct Loop *loop, struct CondStatement *condstmt) {
 	struct Statement *s = calloc(1,sizeof(Statement));
 	s->stmt = stmt;
-	s->vardecl = vardecl;
+	s->var = vardecl;
 	s->funccall = funccall;
 	s->returnstmt = returnstmt;
 	s->loop = loop;
@@ -150,7 +151,7 @@ struct Statement *addStatement(statement_t stmt, struct VarDecl *varDecl, struct
 }
 
 struct Statement *addStatements(struct Statement *stmt, struct Statement *next) {
-	if (next) stmt->next = next;
+	stmt->next = next;
 	return stmt;
 }
 
@@ -168,13 +169,6 @@ struct CondStatement {
 	struct CondStatement *next;
 } CondStatement;
 
-//D2
-struct CondStatements {
-	struct CondStatement *ifstmt;
-	struct CondStatement *elseifstmt;
-	struct CondStatement *elsestmt;
-} CondStatements;
-
 //K1 M1
 struct FuncDecl {
 	struct Statement *statements;
@@ -184,41 +178,23 @@ struct FuncDecl {
 } FuncDecl;
 
 //A2
-struct ForLoop {
-	struct Type  *type;
-	struct LoopMod *loopmod;
-	struct LoopEnd *loopend;
-	struct Statements *stmts;
-	struct Decl *decl;
-} ForLoop;
-
-struct LoopMod { 
-	struct Expression *expr;
-	char *name;
-} LoopMod;
-
-struct ReturnState {
-	struct Expression *expr;
-} ReturnState;
-
-//B2
-struct LoopEnd {
-	struct Expression *expr;
-	operation_t *cond;
-	char *name;
-} LoopEnd;
-
-struct WhileLoop {
-	struct Expression *expr;
-	struct Statements *stmts;
-} WhileLoop;
-
-//X1
 struct Loop {
 	statement_t stmt;
-	struct WhileLoop *whileloop;
-	struct ForLoop *forloop;
+	struct VarDecl *init;
+	struct VarDecl *mod;//assignment
+	struct Expression *expr;//for loop end or while loop expression
+	struct Statement *stmts;
 } Loop;
+
+struct Loop *addLoop(statement_t stmt, struct VarDecl *init, struct VarDecl *mod, struct Expression *expr, struct Statement *stmts) {
+	struct Loop *l = calloc(1,sizeof(struct Loop));
+	l->stmt = stmt;
+	l->init = init;
+	l->mod = mod;
+	l->expr = expr;
+	l->stmts = stmts;
+	return l;
+}
 
 typedef enum dec_t {
 	FUNC,
@@ -260,33 +236,6 @@ struct FunctionStatement *addFunctionStatement(statement_t stmt, struct Function
 	return f;
 }
 
-//Y1
-struct WhileLoop *addWhileLoop(struct Expression *expr, struct Statements *stmts) {
-	struct WhileLoop *w = calloc(1,sizeof(WhileLoop));
-	w->expr = expr;
-	w->stmts = stmts;
-	return w;
-}
-
-struct Loop *addLoop(struct WhileLoop *whileloop, struct ForLoop *forloop, statement_t stmt) {
-	struct Loop *l = calloc(1,sizeof(Loop));
-	l->whileloop = whileloop;
-	l->forloop = forloop;
-	l->stmt = stmt;
-	return l;
-}
-
-//A2
-struct ForLoop *addForLoop(struct Type *type, struct LoopMod *loopmod, struct LoopEnd *loopend, struct Statements *stmts, struct Decl *decl) {
-	struct ForLoop *f = calloc(1,sizeof(ForLoop));
-	f->type = type;
-	f->loopmod = loopmod;
-	f->loopend = loopend;
-	f->stmts = stmts;
-	f->decl = decl;
-	return f;
-}
-
 //D2
 struct CondStatement *addCondStatements(struct CondStatement *ifstmt, struct CondStatement *elseifstmt, struct CondStatement *elsestmt) {
 	if (elseifstmt) ifstmt->next = elseifstmt;
@@ -313,30 +262,6 @@ struct CondStatement *addCondStatement(struct Expression *expr, struct Statement
 	c->stmt = stmt;
 	c->next = next;
 	return c;
-}
-
-//H2
-struct ReturnState *addReturnState(struct Expression *expr) {
-	struct ReturnState *r = malloc(sizeof(struct Expression));
-	r->expr = expr;
-	return r;
-}
-
-//C2
-struct LoopMod *addLoopMod(struct Expression *expr, char *name) {
-	struct LoopMod *l = calloc(1,sizeof(LoopMod));
-	l->expr = expr;
-	l->name = name;
-	return l;
-}
-
-//B2
-struct LoopEnd *addLoopEnd(struct Expression *expr, operation_t *cond, char *name) {
-	struct LoopEnd *l = calloc(1,sizeof(struct LoopEnd));
-	l->name = name;
-	l->cond = cond;
-	l->expr = expr;
-	return l;
 }
 
 //D1                      (E1, H1)
