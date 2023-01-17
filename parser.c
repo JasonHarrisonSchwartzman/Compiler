@@ -84,19 +84,19 @@ void *callSemanticRule(void *param[], int rule) {
 		case 0:
 			break;
 		case 1: 
-			return NULL;
+			return addDeclarations(param[0],param[1]);
 		case 2:
-			return NULL;
+			return param[0];
 		case 3:
-			return NULL;
+			return addDeclaration(FUNC,param[0],NULL);
 		case 4:
-			return NULL;
+			return addDeclaration(VAR,NULL,param[0]);
 		case 5: 
-			return NULL;
+			return addVarDecl(param[0],param[1]);
 		case 6:
-			return NULL;
+			return addType(param[1],param[0]);
 		case 7:
-			return NULL;
+			return addType(param[0],NULL);
 		case 8:
 			return addSign(SIGNED);
 		case 9:
@@ -250,7 +250,7 @@ void *callSemanticRule(void *param[], int rule) {
 		case 83:
 			return addCondStatement(NULL,param[2],ELSE,NULL);
 		case 84:
-			return NULL;
+			return param[1];
 		case 85:
 			return NULL;
 		case 86:

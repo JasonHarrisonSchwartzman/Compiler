@@ -2,7 +2,7 @@
 #define SYNTAX_TREE_H
 #include "token.h"
 
-struct Declarations *syntaxTree;
+struct Declaration *syntaxTree;
 
 typedef enum type_t {
 	INT,
@@ -71,7 +71,7 @@ struct Name {
 struct Type {
 	type_t dataType;
 	signed_t sign;
-	int pointer; //1 means pointer 0 means not
+	int pointer; //1 means pointer
 	struct Expression *length; // for arrays
 } Type;
 //H1 Q1
@@ -127,16 +127,10 @@ struct Evaluation{
 
 } Evaluation;
 
-//N1
-struct Statements {
-	struct Statements *next;
-	struct Statement *stmt;
-} Statements;
-
-//O1
+//O1 N1
 struct Statement {
 	statement_t stmt;
-	struct VarDecl *var;
+	struct VarDecl *var;//can be either a declaration or assignment
 	struct FuncCall *funccall;
 	struct Expression *returnstmt;
 	struct Loop *loop;
@@ -144,10 +138,11 @@ struct Statement {
 	struct Statement *next;
 } Statement;
 
-struct Statement *addStatement(statement_t stmt, struct FunctionStatement *funcstmt, struct ReturnState *returnstmt, struct Loop *loop, struct CondStatements *condstmt) {
+struct Statement *addStatement(statement_t stmt, struct VarDecl *varDecl, struct FuncCall *funccall, struct Expression *returnstmt, struct Loop *loop, struct CondStatements *condstmt) {
 	struct Statement *s = calloc(1,sizeof(Statement));
 	s->stmt = stmt;
-	s->funcstmt = funcstmt;
+	s->vardecl = vardecl;
+	s->funccall = funccall;
 	s->returnstmt = returnstmt;
 	s->loop = loop;
 	s->condstmt = condstmt;
@@ -238,8 +233,14 @@ struct Declaration {
 	struct Declaration *next;
 } Declaration;
 
-struct Declaration *addDeclaration(struct FuncDecl *funcdecl, struct VarDecl *vardecl, struct Declaration *next) {
+struct Declaration *addDeclarations(struct Declaration *decl, struct Declaration *next) {
+	decl->next = next;
+	return decl;
+}
+
+struct Declaration *addDeclaration(dec_t dec, struct FuncDecl *funcdecl, struct VarDecl *vardecl) {
 	struct Declaration *d = calloc(1,sizeof(Declaration));
+	d->dec = dec;
 	d->funcdecl = funcdecl;
 	d->vardecl = vardecl;
 	return d;
@@ -412,12 +413,14 @@ operation_t *addOperation(operation_t op) {
 }
 
 //E1
-struct Type *addType(type_t *dataType, signed_t *sign, int pointer, struct Expression *length) {
+struct Type *addType(type_t *dataType, signed_t *sign) {
 	struct Type *type = calloc(1,sizeof(struct Type));
 	type->dataType = *dataType;
-	type->sign = *sign;
-	type->pointer = pointer;
-	type->length = length;
+	if (!sign) {
+		if (*dataType == CHAR) type->sign = UNSIGNED;
+		else type->sign = SIGNED;
+	}
+	else type->sign = *sign;
 	return type;
 }
 
