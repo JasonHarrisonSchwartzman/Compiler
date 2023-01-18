@@ -1,3 +1,6 @@
+int x = 10;
+long y = 5;
+int x = 10;
 int x() {
 	y();
 	signed int x = 5 + 2 - 3 / 10;

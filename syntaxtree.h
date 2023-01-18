@@ -1,6 +1,7 @@
 #ifndef SYNTAX_TREE_H
 #define SYNTAX_TREE_H
 #include "token.h"
+#include <stdlib.h>
 
 struct Declaration *syntaxTree;
 

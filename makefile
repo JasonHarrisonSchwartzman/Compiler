@@ -2,11 +2,14 @@ CC=gcc
 CFLAGS=-Wall
 EXE=jcc
 
-all: main.o parser.o parserinit.o scanner.o
+all: main.o parser.o parserinit.o scanner.o semantics.o
 	$(CC) $(CFLAGS) -o $(EXE) main.o
 
 main.o: main.c parser.c parserinit.c scanner.c
 	$(CC) $(CFLAGS) -c main.c
+
+semantics.o: semantics.c semantics.h syntaxtree.h
+	$(CC) $(CLFAGS) -c semantics.c
 
 parser.o: parser.c parserinit.c token.h syntaxtree.h
 	$(CC) $(CFLAGS) -c parser.c
