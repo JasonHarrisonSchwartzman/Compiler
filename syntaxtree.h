@@ -56,6 +56,44 @@ typedef enum statement_t {
 	BREAK,
 	CONTINUE
 } statement_t;
+
+typedef enum eval_t {
+	VALUE,
+	REF,
+	DEREF,
+	ID,
+	ARRAYINDEX,
+	FUNCRETURN
+} eval_t;
+
+typedef enum dec_t {
+	FUNC,
+	VAR
+} dec_t;
+
+//B1
+struct Declaration {
+	dec_t dec;
+	struct FuncDecl *funcdecl;
+	struct VarDecl *vardecl;
+	struct Declaration *next;
+} Declaration;
+
+//D1
+struct VarDecl {
+	struct Type *type;
+	char *name;
+	struct Expression *expr;
+} VarDecl;
+
+//K1 M1
+struct FuncDecl {
+	struct Statement *statements;
+	struct Type *type;
+	struct Params *params;
+	char *name;
+} FuncDecl;
+
 //J1
 struct Value {
 	value_t val_t;
@@ -81,13 +119,6 @@ struct Decl {
 	struct Expression *expr;
 } Decl;
 
-//D1
-struct VarDecl {
-	struct Type *type;
-	char *name;
-	struct Expression *expr;
-} VarDecl;
-
 //R1
 struct Expression{ 
 	struct Expression *expr;
@@ -106,15 +137,6 @@ struct FunctionCall {
 	char *name;
 	struct FunctionArgs *funcargs;
 } FunctionCall;
-
-typedef enum eval_t {
-	VALUE,
-	REF,
-	DEREF,
-	ID,
-	ARRAYINDEX,
-	FUNCRETURN
-} eval_t;
 
 //U1
 struct Evaluation{ 
@@ -139,23 +161,6 @@ struct Statement {
 	struct Statement *next;
 } Statement;
 
-//01 N1
-struct Statement *addStatement(statement_t stmt, struct VarDecl *vardecl, struct FunctionCall *funccall, struct Expression *returnstmt, struct Loop *loop, struct CondStatement *condstmt) {
-	struct Statement *s = calloc(1,sizeof(Statement));
-	s->stmt = stmt;
-	s->var = vardecl;
-	s->funccall = funccall;
-	s->returnstmt = returnstmt;
-	s->loop = loop;
-	s->condstmt = condstmt;
-	return s;
-}
-
-struct Statement *addStatements(struct Statement *stmt, struct Statement *next) {
-	stmt->next = next;
-	return stmt;
-}
-
 //L1
 struct Params {
 	struct Type *type;
@@ -170,14 +175,6 @@ struct CondStatement {
 	struct CondStatement *next;
 } CondStatement;
 
-//K1 M1
-struct FuncDecl {
-	struct Statement *statements;
-	struct Type *type;
-	struct Params *params;
-	char *name;
-} FuncDecl;
-
 //A2
 struct Loop {
 	statement_t stmt;
@@ -186,42 +183,6 @@ struct Loop {
 	struct Expression *expr;//for loop end or while loop expression
 	struct Statement *stmts;
 } Loop;
-
-struct Loop *addLoop(statement_t stmt, struct VarDecl *init, struct VarDecl *mod, struct Expression *expr, struct Statement *stmts) {
-	struct Loop *l = calloc(1,sizeof(struct Loop));
-	l->stmt = stmt;
-	l->init = init;
-	l->mod = mod;
-	l->expr = expr;
-	l->stmts = stmts;
-	return l;
-}
-
-typedef enum dec_t {
-	FUNC,
-	VAR
-} dec_t;
-
-//B1
-struct Declaration {
-	dec_t dec;
-	struct FuncDecl *funcdecl;
-	struct VarDecl *vardecl;
-	struct Declaration *next;
-} Declaration;
-
-struct Declaration *addDeclarations(struct Declaration *decl, struct Declaration *next) {
-	decl->next = next;
-	return decl;
-}
-
-struct Declaration *addDeclaration(dec_t dec, struct FuncDecl *funcdecl, struct VarDecl *vardecl) {
-	struct Declaration *d = calloc(1,sizeof(Declaration));
-	d->dec = dec;
-	d->funcdecl = funcdecl;
-	d->vardecl = vardecl;
-	return d;
-}
 
 struct FunctionStatement {
 	statement_t stmt;
@@ -235,6 +196,19 @@ struct FunctionStatement *addFunctionStatement(statement_t stmt, struct Function
 	f->funccall = funccall;
 	f->vardecl = vardecl;
 	return f;
+}
+
+struct Declaration *addDeclarations(struct Declaration *decl, struct Declaration *next) {
+	decl->next = next;
+	return decl;
+}
+
+struct Declaration *addDeclaration(dec_t dec, struct FuncDecl *funcdecl, struct VarDecl *vardecl) {
+	struct Declaration *d = calloc(1,sizeof(Declaration));
+	d->dec = dec;
+	d->funcdecl = funcdecl;
+	d->vardecl = vardecl;
+	return d;
 }
 
 //D2
@@ -399,6 +373,34 @@ struct Name *addName(char *name, char *length, int pointer, struct Expression *e
 	n->pointer = pointer;
 	return n;
 }
+
+//01 N1
+struct Statement *addStatement(statement_t stmt, struct VarDecl *vardecl, struct FunctionCall *funccall, struct Expression *returnstmt, struct Loop *loop, struct CondStatement *condstmt) {
+	struct Statement *s = calloc(1,sizeof(Statement));
+	s->stmt = stmt;
+	s->var = vardecl;
+	s->funccall = funccall;
+	s->returnstmt = returnstmt;
+	s->loop = loop;
+	s->condstmt = condstmt;
+	return s;
+}
+
+struct Statement *addStatements(struct Statement *stmt, struct Statement *next) {
+	stmt->next = next;
+	return stmt;
+}
+
+struct Loop *addLoop(statement_t stmt, struct VarDecl *init, struct VarDecl *mod, struct Expression *expr, struct Statement *stmts) {
+	struct Loop *l = calloc(1,sizeof(struct Loop));
+	l->stmt = stmt;
+	l->init = init;
+	l->mod = mod;
+	l->expr = expr;
+	l->stmts = stmts;
+	return l;
+}
+
 
 
 #endif
