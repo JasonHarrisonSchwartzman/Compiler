@@ -319,7 +319,7 @@ int parse() {
 		int actionIndex = tokens[tokenIndex]->tokenType-NUM_INSTANCES;
 		Step step = instances[state].actions[actionIndex].step;
 		if (step == STEP_ACCEPT) {
-			syntaxTree = stack[stackTopPointer]->ptr;
+			syntaxTree = stack[0]->ptr;
 			return 1;
 		}
 		else if (step == STEP_SHIFT) {

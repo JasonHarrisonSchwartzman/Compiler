@@ -2,6 +2,7 @@
 #include "parser.h"
 #include "scanner.c"
 #include "parser.c"
+#include "semantics.h"
 #include "semantics.c"
 #include <stdio.h>
 
@@ -25,6 +26,7 @@ int main(int argc, char *argv[]) {
 	else {
 		printf("ODD FAILURE\n");
 	}
+	checkAll();
 
 
 	freeRules();
