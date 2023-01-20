@@ -179,6 +179,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		if (s->stmt == DECLARATION) {
 			createSymbolTableVarDecl(symTab,s->var);
 			resolveExpr(symTab,s->var->expr);
+			//might need to resolve something elsee???
 		}
 		if (s->stmt == FOR) {
 			struct SymbolTable *innerStmts = addInner(symTab);
@@ -208,6 +209,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		if (s->stmt == ASSIGNMENT) {
 			resolveExpr(symTab,s->var->expr);
 			//need to resolve left hand side
+			//remember array on left hand side
 		}
 
 		s = s->next;

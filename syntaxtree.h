@@ -70,6 +70,7 @@ typedef enum dec_t {
 	FUNC,
 	VAR
 } dec_t;
+
 /*
  * for semantics
  */

@@ -94,7 +94,10 @@ int scanner(int argc, char *argv[]) {
 	//use scanner to scan every character in input file
 	while (1) {
 		c = fgetc(file);
-		if (feof(file)) break;
+		if (feof(file)) {
+			addToken(states[state].token, string, lineNum);
+			break;
+		}
 		string = scan(string, &stringLength, c, &state);
 		//printf("%s\n",string);
 	}
