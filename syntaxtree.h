@@ -70,6 +70,23 @@ typedef enum dec_t {
 	FUNC,
 	VAR
 } dec_t;
+/*
+ * for semantics
+ */
+typedef enum symbol_t {
+	SYMBOL_GLOBAL,
+	SYMBOL_LOCAL
+} symbol_t;
+
+struct Symbol {
+	char *name;
+	struct Type *type;
+	symbol_t sym;
+	dec_t dec;
+	struct Symbol *next;
+} Symbol;
+
+
 
 //B1
 struct Declaration {
