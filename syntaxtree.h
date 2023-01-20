@@ -165,6 +165,8 @@ struct Evaluation{
 	struct Expression *expr;
 	struct FunctionCall *funccall;
 
+	struct Symbol *symbol;
+
 } Evaluation;
 
 //O1 N1

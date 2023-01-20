@@ -69,25 +69,49 @@ void printSymbolTable(struct SymbolTable *sym) {
 
 /*
  * Determines whether a symbol has been defined at the current scope (within the same symbol table)
- * Note: I might want to return a pointer rather than an int for more information
  */
-int lookUpNameCurrentScope(char *name, struct SymbolTable *symTab) {
+struct Symbol *lookUpNameCurrentScope(char *name, struct SymbolTable *symTab) {
 	struct Symbol *tempSym = symTab->symbols;
 	while (tempSym) {
 		if (strcmp(name,tempSym->name) == 0) {
 			printf("Redefinition of identifier \"%s\" defined on line [line] and attempted on line [line]\n",name);
-			return 0;
+			return tempSym;
 		}
 		tempSym = tempSym->next;
 	}
-	return 1;
+	return NULL;
 }
+
+struct Symbol *lookUpName(char *name, struct SymbolTable *symTab) {
+	struct SymbolTable *t = symTab;
+	while (t) {
+		struct Symbol *s = lookUpNameCurrentScope(name,t);
+		if (s) return s;
+		t = t->outer;
+	}
+
+	return NULL;
+}
+
+void printError(int errorNum, char *name) {
+	switch(errorNum) {
+		case 1:
+			printf("Redefinition of identifier \"%s\" attempted on line [line] and defined on line [line].\n",name);
+			break;
+	}
+}
+
+
 
 /*
  * takes a var decl to create a symbol to add to current scope
  */
 void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
-	if (!lookUpNameCurrentScope(var->name,symTab)) return;
+	struct Symbol *x = lookUpNameCurrentScope(var->name,symTab);
+	if (x) {
+		printError(1,x->name);
+		return;
+	}
 	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR);
 	addSymbol(symTab,s);
 	printf("Entered variable %s\n",var->name);
@@ -97,11 +121,17 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
  * Same as above function except for functions
  */ 
 void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func) {
-	if (!lookUpNameCurrentScope(func->name,symTab)) return;
+	struct Symbol *x = lookUpNameCurrentScope(func->name,symTab);
+	if (x) {
+		printError(1,x->name);
+		return;
+	}
 	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC);
 	addSymbol(symTab,s);
 	printf("entered function %s\n",func->name);
 }
+
+
 
 /*
  * Given the statements within a function will add symbol for variables defined OR 
@@ -131,6 +161,15 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 				c = c->next;
 			}
 		}
+		if (s->stmt == FUNCCALL) {
+
+		}
+		if (s->stmt == RETURN) {
+			resolveExpr(symTab,s->returnstmt);
+		}
+		if (s->stmt == ASSIGNMENT) {
+			
+		}
 
 		s = s->next;
 
@@ -147,16 +186,29 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
  * This is illegal because the x on line 2 was defined in the parameter in line 1
  */
 void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
-	if (!lookUpNameCurrentScope(param->name,symTab)) return;
+	struct Symbol *x = lookUpNameCurrentScope(param->name,symTab);
+	if (x) {
+		printError(1,x->name);
+		return;
+	}
 	struct Symbol *s = createSymbol(param->name,param->type,SYMBOL_LOCAL,VAR);
 	addSymbol(symTab,s);
 	printf("entered param %s\n",param->name);
 }
 
-void resolveEval(struct Evaluation *eval) {
+void resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 	if ((eval->eval == ID) || (eval->eval == ARRAYINDEX)) {
-		//lookup name
+		eval->symbol = lookUpName(eval->name,symTab);
 	}
+}
+
+void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
+	struct Expression *e = expr;
+	while (e) {
+		e = e->expr;
+		resolveExpr(symTab,e);
+	}
+	if (e) resolveEval(symTab,e->eval);
 }
 
 /*
