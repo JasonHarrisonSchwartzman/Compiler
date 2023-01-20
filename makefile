@@ -8,7 +8,7 @@ all: main.o parser.o parserinit.o scanner.o semantics.o
 main.o: main.c parser.c parserinit.c scanner.c semantics.c
 	$(CC) $(CFLAGS) -c main.c
 
-semantics.o: semantics.c semantics.h syntaxtree.h
+semantics.o: semantics.c syntaxtree.h
 	$(CC) $(CLFAGS) -c semantics.c
 
 parser.o: parser.c parserinit.c token.h syntaxtree.h
