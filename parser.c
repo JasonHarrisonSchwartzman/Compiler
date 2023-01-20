@@ -5,6 +5,17 @@
 #include "parserinit.c"
 #include "parser.h"
 
+/*
+ * How the stack is set up for SLR Parsing:
+ * Each element in the stack contains an instance followed by a nonterminal variable or token
+ * [0 ID] [5 INT] [7 x] //reading id then reading int (x means empty in the stack struct)
+ * [0 E]  [10 x]       //reducing to E (x means empty in the stack struct)
+ * (this isn't a real part of the grammar its just an example
+ */
+
+/*
+ * Prints stack with integers instead of meaningful characters I will probably change this eventually
+ */
 void printStack() {
 	for (int i = 0; i <= stackTopPointer; i++) {
 		printf("%d ", stack[i]->instance);
@@ -17,7 +28,11 @@ void printStack() {
 	}
 	printf("\n");
 }
-
+/*
+ * Pushes an instance, a token, and a var (
+ * will only push two at a time since the second element of stack item struct is either a token or a var
+ * The pointer is used for the syntax tree
+ */
 void push(token_t instance, Token *token, token_t var, void *ptr) {
 	if (var != -1) {
 		stack[stackTopPointer]->var = var;
@@ -32,7 +47,13 @@ void push(token_t instance, Token *token, token_t var, void *ptr) {
 		stack[stackTopPointer]->instance = instance;
 	}
 }
-
+/*
+ * pops and return a pointer to a syntax tree struct if popping a token or var
+ * pops and returns NULL if popping an instance
+ * Remember instead of a stack containing an array of individual elements it contains structures containing two elements
+ * i.e. [INSTANCE VAR/TOKEN] so this function pops the last non-NULL value
+ * there are multiple structs within the tree and its void because you dont know which one
+ */
 void *pop() {
 	if ((stack[stackTopPointer]->token == NULL) && (stack[stackTopPointer]->var == 0)) {
 		stack = realloc(stack,sizeof(StackItem) * (stackTopPointer--));
@@ -45,40 +66,20 @@ void *pop() {
 	}
 }
 
-/*void push(Token *token) {
-	stack = realloc(stack,sizeof(Token) * (stackTopPointer + 2));
-	stack[++stackTopPointer] = token;
-}
-void pop() {
-	stack = realloc(stack,sizeof(Token) * (stackTopPointer--));
-}
-
-Token *getTopOfStack() {
-	return stack[stackTopPointer];
-}
-
-Token *getSecondTopOfStack() {
-	return stack[stackTopPointer-1];
-}
-
-void printStack() {
-	for (int i = 0; i <= stackTopPointer; i++) {
-		printf("%d ", stack[i]->tokenType);
-	}
-	printf("\n");
-}
-
-void freeStack() {
-	free(stack);
-}*/
-
-
+/*
+ * Simply pushes a stack item onto the stack
+ */
 void shift(token_t instance, Token *token, token_t var, void *ptr) {
 	printf("Shift \n");
 	push(instance, token, var, token);
 	tokenIndex++;
 }
 
+/*
+ * The semantic rules help build the syntax tree
+ * the param array input contains the list of void pointers pointing to structs within syntax tree
+ * rule is gotten from the SLR parsing table
+ */
 void *callSemanticRule(void *param[], int rule) {
 	switch (rule) {
 		case 1: 
@@ -267,6 +268,10 @@ void *callSemanticRule(void *param[], int rule) {
 	return NULL;
 }
 
+/*
+ * Given a rule from the SLR Parsing Table take all the needed void pointer params and call the semantic rule function
+ * pops the number of items that make up a rule in the grammar
+ */
 void reduce(int rule) {
 	printf("Reduce by %d\n",rule);
 	int ruleLength = rules[rule].length;
@@ -285,24 +290,9 @@ void reduce(int rule) {
 	void *ptr = callSemanticRule(pointers,rule);
 	push(instance,NULL,var,ptr);
 }
-
 /*
-void shift(Token *token, Token *instance) {
-	printf("Shift \n");
-	push(token);
-	push(instance);
-	tokenIndex++;
-}
-
-void reduce(int rule) {
-	printf("Reduce by %d\n",rule);
-	for (int i = 0; i < rules[rule].length * 2; i++) {
-		pop();
-	}
-	push(varTokens[rules[rule].var-(TOTAL_TOKENS+NUM_INSTANCES)]);
-	push(instanceTokens[instances[getSecondTopOfStack()->tokenType].gotoAction[getTopOfStack()->tokenType-(TOTAL_TOKENS+NUM_INSTANCES)]]);
-}*/
-
+ * The main parsing function that utilizes the SLR Parsing technique and initializes the syntax tree
+ */
 int parse() {
 	push(0,NULL,-1,NULL);
 	printStack();
@@ -338,40 +328,3 @@ int parse() {
 	}
 	return -1;
 }
-/*
-int parse() {
-	push(instanceTokens[0]);
-	printf("Beggining parser...\n");
-	while(1) {
-		//ignoring whitespace
-		printf("Reading token %d: ",tokenIndex);
-		printToken(tokens[tokenIndex]->tokenType);
-		printf("\n");
-		if (tokens[tokenIndex]->tokenType == TOKEN_WHITESPACE) {
-			printf("Skipping whitespace!\n");
-			tokenIndex++;
-			continue;
-		}
-		token_t token = getTopOfStack()->tokenType;
-		int actionIndex = tokens[tokenIndex]->tokenType-NUM_INSTANCES;
-		Step step = instances[token].actions[actionIndex].step;
-		//printf("Instance: %d | ActionIndex: %d | step: %d\n",token,actionIndex,step);
-		if (step == STEP_ACCEPT) {
-			return 1;
-		}
-		else if (step == STEP_SHIFT) {
-			shift(tokens[tokenIndex],instanceTokens[instances[token].actions[actionIndex].instance]);
-		}
-		else if (step == STEP_REDUCE) {
-			reduce(instances[token].actions[actionIndex].instance);
-		}
-		else {
-			printf("Token not found: %s NUM:  %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
-			printToken(tokens[tokenIndex]->tokenType);
-			printf("\n");
-			return 0;
-		}
-		printStack();
-	}
-	return -1;
-}*/
