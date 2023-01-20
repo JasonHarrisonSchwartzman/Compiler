@@ -1,5 +1,6 @@
 int x = 10;
 long y = 5;
+int id = 10;
 int x = 10;
 int x() {
 	y();
