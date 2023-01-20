@@ -154,6 +154,12 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 	printf("entered param %s\n",param->name);
 }
 
+void resolveEval(struct Evaluation *eval) {
+	if ((eval->eval == ID) || (eval->eval == ARRAYINDEX)) {
+		//lookup name
+	}
+}
+
 /*
  * Loops through the declarations calling the appropriate createSymbolTable function
  * adds level when it sees a function declaration and calls createSymbolTableParam for params and 
