@@ -131,6 +131,41 @@ void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func
 	printf("entered function %s\n",func->name);
 }
 
+/*
+ * creates symbols in the current symbol table for the parameters of a function
+ * Parameters are considered to be local variables of a function at the same scope of level 1 variables
+ * 1 int foo(int x, int y) {
+ * 2	int x = 10;
+ * 3	return x;
+ * 4 }
+ * This is illegal because the x on line 2 was defined in the parameter in line 1
+ */
+void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
+	struct Symbol *x = lookUpNameCurrentScope(param->name,symTab);
+	if (x) {
+		printError(1,x->name);
+		return;
+	}
+	struct Symbol *s = createSymbol(param->name,param->type,SYMBOL_LOCAL,VAR);
+	addSymbol(symTab,s);
+	printf("entered param %s\n",param->name);
+}
+
+void resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
+	if ((eval->eval == ID) || (eval->eval == ARRAYINDEX)) {
+		eval->symbol = lookUpName(eval->name,symTab);
+	}
+}
+
+void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
+	struct Expression *e = expr;
+	while (e) {
+		e = e->expr;
+		resolveExpr(symTab,e);
+	}
+	if (e) resolveEval(symTab,e->eval);
+}
+
 
 
 /*
@@ -174,41 +209,6 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		s = s->next;
 
 	}
-}
-
-/*
- * creates symbols in the current symbol table for the parameters of a function
- * Parameters are considered to be local variables of a function at the same scope of level 1 variables
- * 1 int foo(int x, int y) {
- * 2	int x = 10;
- * 3	return x;
- * 4 }
- * This is illegal because the x on line 2 was defined in the parameter in line 1
- */
-void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
-	struct Symbol *x = lookUpNameCurrentScope(param->name,symTab);
-	if (x) {
-		printError(1,x->name);
-		return;
-	}
-	struct Symbol *s = createSymbol(param->name,param->type,SYMBOL_LOCAL,VAR);
-	addSymbol(symTab,s);
-	printf("entered param %s\n",param->name);
-}
-
-void resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
-	if ((eval->eval == ID) || (eval->eval == ARRAYINDEX)) {
-		eval->symbol = lookUpName(eval->name,symTab);
-	}
-}
-
-void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
-	struct Expression *e = expr;
-	while (e) {
-		e = e->expr;
-		resolveExpr(symTab,e);
-	}
-	if (e) resolveEval(symTab,e->eval);
 }
 
 /*
