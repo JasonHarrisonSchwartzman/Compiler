@@ -28,7 +28,6 @@ int main(int argc, char *argv[]) {
 	}
 	checkAll();
 
-
 	freeRules();
 	freeInstanceAndVarTokens();
 	// //freeTokens();seg fault

@@ -38,13 +38,15 @@ struct SymbolTable *addInner(struct SymbolTable *t) {
 	return t->inner[t->numInner-1];
 }
 
-void printSymbolTable() {
-	printf("-----------SYMBOL TABLE-----------\n");
-	while (symbolTables->symbols) {
-		printf("Level %lu Symbol: %s\n",symbolTables->level,symbolTables->symbols->name);
-		symbolTables->symbols = symbolTables->symbols->next;
+void printSymbolTable(struct SymbolTable *sym) {
+	struct SymbolTable *temp = sym;
+	while (temp->symbols) {
+		printf("Level %lu Symbol: %s\n",temp->level,temp->symbols->name);
+		temp->symbols = temp->symbols->next;
 	}
-	printf("----------------------------------\n");
+	for (int i = 0; i < temp->numInner; i++ ) {
+		printSymbolTable(temp->inner[i]);
+	}
 }
 
 int lookUpNameCurrentScope(char *name, struct SymbolTable *symTab) {
@@ -79,7 +81,26 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		if (s->stmt == DECLARATION) {
 			createSymbolTableVarDecl(symTab,s->var);
 		}
+		if (s->stmt == FOR) {
+			struct SymbolTable *innerStmts = addInner(symTab);
+			createSymbolTableVarDecl(innerStmts,s->loop->init);
+			createSymbolTableStatements(innerStmts,s->loop->stmts);
+		}
+		if (s->stmt == WHILE) {
+			struct SymbolTable *innerStmts = addInner(symTab);
+			createSymbolTableStatements(innerStmts,s->loop->stmts);
+		}
+		if (s->stmt == IF) {
+			struct CondStatement *c = s->condstmt;
+			while (c) {
+				struct SymbolTable *innerStmts = addInner(symTab);
+				createSymbolTableStatements(innerStmts,c->stmts);
+				c = c->next;
+			}
+		}
+
 		s = s->next;
+
 	}
 }
 
@@ -116,7 +137,7 @@ int checkAll() {
 	symbolTables->numInner = 0;
 	symbolTables->level = 0;
 	createSymbolTableDeclarations(symbolTables,syntaxTree);
-	printSymbolTable();
+	printSymbolTable(symbolTables);
 	printf("Checked all semantics\n");
 	return 0;
 }
