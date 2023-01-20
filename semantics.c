@@ -74,7 +74,6 @@ struct Symbol *lookUpNameCurrentScope(char *name, struct SymbolTable *symTab) {
 	struct Symbol *tempSym = symTab->symbols;
 	while (tempSym) {
 		if (strcmp(name,tempSym->name) == 0) {
-			printf("Redefinition of identifier \"%s\" defined on line [line] and attempted on line [line]\n",name);
 			return tempSym;
 		}
 		tempSym = tempSym->next;
@@ -97,6 +96,9 @@ void printError(int errorNum, char *name) {
 	switch(errorNum) {
 		case 1:
 			printf("Redefinition of identifier \"%s\" attempted on line [line] and defined on line [line].\n",name);
+			break;
+		case 2:
+			printf("Identifier \"%s\" on line [line] not defined.\n",name);
 			break;
 	}
 }
@@ -154,16 +156,14 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 void resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 	if ((eval->eval == ID) || (eval->eval == ARRAYINDEX)) {
 		eval->symbol = lookUpName(eval->name,symTab);
+		if (!eval->symbol) printError(2,eval->name);
 	}
 }
 
 void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
-	struct Expression *e = expr;
-	while (e) {
-		e = e->expr;
-		resolveExpr(symTab,e);
-	}
-	if (e) resolveEval(symTab,e->eval);
+	if (!expr) return;
+	resolveExpr(symTab,expr->expr);
+	resolveEval(symTab,expr->eval);
 }
 
 
@@ -178,11 +178,13 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 	while (s) {
 		if (s->stmt == DECLARATION) {
 			createSymbolTableVarDecl(symTab,s->var);
+			resolveExpr(symTab,s->var->expr);
 		}
 		if (s->stmt == FOR) {
 			struct SymbolTable *innerStmts = addInner(symTab);
 			createSymbolTableVarDecl(innerStmts,s->loop->init);
 			createSymbolTableStatements(innerStmts,s->loop->stmts);
+			//need to resolve for init, mod, expr
 		}
 		if (s->stmt == WHILE) {
 			struct SymbolTable *innerStmts = addInner(symTab);
@@ -195,15 +197,17 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 				createSymbolTableStatements(innerStmts,c->stmts);
 				c = c->next;
 			}
+			//need to resolve if expression
 		}
 		if (s->stmt == FUNCCALL) {
-
+			//need to resolve this	
 		}
 		if (s->stmt == RETURN) {
 			resolveExpr(symTab,s->returnstmt);
 		}
 		if (s->stmt == ASSIGNMENT) {
-			
+			resolveExpr(symTab,s->var->expr);
+			//need to resolve left hand side
 		}
 
 		s = s->next;

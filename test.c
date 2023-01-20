@@ -9,7 +9,7 @@ int x() {
 	x = y;
 	x = x + y - 5 == 5;
 	if (x == 5) {
-		return 10;
+		return x + y;
 	}
 	else {
 		if (5 == 2) {
