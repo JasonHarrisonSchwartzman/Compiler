@@ -5,6 +5,13 @@
 
 extern struct Declaration *syntaxTree;
 
+
+/*
+ * Symbol contains a linked list of symbols in reverse order of appearence
+ * Inner Symbol Tables the represent statements such as conditional and loop (anything enclosed in curly braces)
+ * the level corresponds to how "deep" in the symbol table tree the current symbol table is starting at 0 for the root
+ * Outer represents the higher up symbol table which is important for determining if a symbol has already been defined
+ */
 struct SymbolTable {
 	struct Symbol *symbols;
 	struct SymbolTable **inner;//can have multiple inners
@@ -13,8 +20,11 @@ struct SymbolTable {
 	struct SymbolTable *outer;
 } SymbolTable;
 
-struct SymbolTable *symbolTables;
+struct SymbolTable *symbolTables;//the symbol table
 
+/*
+ * Allocates mem for a Symbol
+ */
 struct Symbol *createSymbol(char *name, struct Type *type, symbol_t sym, dec_t dec) {
 	struct Symbol *s = malloc(sizeof(struct Symbol));
 	s->name = name;
@@ -24,11 +34,17 @@ struct Symbol *createSymbol(char *name, struct Type *type, symbol_t sym, dec_t d
 	return s;
 }
 
+/*
+ * adds a symbol to a given symbol table
+ */
 void addSymbol(struct SymbolTable *t, struct Symbol *s) {
 	s->next = t->symbols;
 	t->symbols = s;
 }
 
+/*
+ * Adds an inner symbol table (something with curly braces) for a given symbol table
+ */
 struct SymbolTable *addInner(struct SymbolTable *t) {
 	t->inner = realloc(t->inner,sizeof(struct SymbolTable) * (++(t->numInner)));
 	t->inner[t->numInner-1] = calloc(1,sizeof(struct SymbolTable));
@@ -38,6 +54,9 @@ struct SymbolTable *addInner(struct SymbolTable *t) {
 	return t->inner[t->numInner-1];
 }
 
+/*
+ * Prints symbol table for each symbol table with corresponding levels
+ */
 void printSymbolTable(struct SymbolTable *sym) {
 	struct SymbolTable *temp = sym;
 	while (temp->symbols) {
@@ -49,6 +68,10 @@ void printSymbolTable(struct SymbolTable *sym) {
 	}
 }
 
+/*
+ * Determines whether a symbol has been defined at the current scope (within the same symbol table)
+ * Note: I might want to return a pointer rather than an int for more information
+ */
 int lookUpNameCurrentScope(char *name, struct SymbolTable *symTab) {
 	struct Symbol *tempSym = symTab->symbols;
 	while (tempSym) {
@@ -61,6 +84,9 @@ int lookUpNameCurrentScope(char *name, struct SymbolTable *symTab) {
 	return 1;
 }
 
+/*
+ * takes a var decl to create a symbol to add to current scope
+ */
 void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 	if (!lookUpNameCurrentScope(var->name,symTab)) return;
 	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR);
@@ -68,6 +94,9 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 	printf("Entered variable %s\n",var->name);
 }
 
+/*
+ * Same as above function except for functions
+ */ 
 void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func) {
 	if (!lookUpNameCurrentScope(func->name,symTab)) return;
 	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC);
@@ -75,6 +104,11 @@ void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func
 	printf("entered function %s\n",func->name);
 }
 
+/*
+ * Given the statements within a function will add symbol for variables defined OR 
+ * increase a level if inner curly braces are found (for if while)
+ * Recursively creates symbols tables for statements
+ */
 void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *statement) {
 	struct Statement *s = statement;
 	while (s) {
@@ -104,6 +138,15 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 	}
 }
 
+/*
+ * creates symbols in the current symbol table for the parameters of a function
+ * Parameters are considered to be local variables of a function at the same scope of level 1 variables
+ * 1 int foo(int x, int y) {
+ * 2	int x = 10;
+ * 3	return x;
+ * 4 }
+ * This is illegal because the x on line 2 was defined in the parameter in line 1
+ */
 void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 	if (!lookUpNameCurrentScope(param->name,symTab)) return;
 	struct Symbol *s = createSymbol(param->name,param->type,SYMBOL_LOCAL,VAR);
@@ -111,7 +154,11 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 	printf("entered param %s\n",param->name);
 }
 
-
+/*
+ * Loops through the declarations calling the appropriate createSymbolTable function
+ * adds level when it sees a function declaration and calls createSymbolTableParam for params and 
+ * createSymbolTableStatement for the statements
+ */
 void createSymbolTableDeclarations(struct SymbolTable *initial, struct Declaration *declarations) {
 	struct Declaration *d = declarations;
 	while (d) {
@@ -132,6 +179,9 @@ void createSymbolTableDeclarations(struct SymbolTable *initial, struct Declarati
 	}
 }
 
+/*
+ * Not compeleted yet
+ */ 
 int checkAll() {
 	symbolTables = calloc(1,sizeof(struct SymbolTable));
 	symbolTables->numInner = 0;
