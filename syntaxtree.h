@@ -102,6 +102,8 @@ struct VarDecl {
 	struct Type *type;
 	char *name;
 	struct Expression *expr;
+
+	struct Symbol *symbol;//for symbol table
 } VarDecl;
 
 //K1 M1
@@ -110,6 +112,8 @@ struct FuncDecl {
 	struct Type *type;
 	struct Params *params;
 	char *name;
+
+	struct Symbol *symbol;//for symbol table
 } FuncDecl;
 
 //J1
@@ -154,6 +158,8 @@ struct FunctionArgs {
 struct FunctionCall {
 	char *name;
 	struct FunctionArgs *funcargs;
+
+	struct Symbol *symbol;//for symbol table
 } FunctionCall;
 
 //U1
@@ -166,7 +172,7 @@ struct Evaluation{
 	struct Expression *expr;
 	struct FunctionCall *funccall;
 
-	struct Symbol *symbol;
+	struct Symbol *symbol;//for symbol table
 
 } Evaluation;
 
@@ -186,6 +192,8 @@ struct Params {
 	struct Type *type;
 	char *name;
 	struct Params *next;
+
+	struct Symbol *symbol;//for symbol table
 } Params;
 
 struct CondStatement {

@@ -116,7 +116,7 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 	}
 	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR);
 	addSymbol(symTab,s);
-	printf("Entered variable %s\n",var->name);
+	var->symbol = s;
 }
 
 /*
@@ -130,7 +130,7 @@ void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func
 	}
 	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC);
 	addSymbol(symTab,s);
-	printf("entered function %s\n",func->name);
+	func->symbol = s;
 }
 
 /*
@@ -150,7 +150,7 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 	}
 	struct Symbol *s = createSymbol(param->name,param->type,SYMBOL_LOCAL,VAR);
 	addSymbol(symTab,s);
-	printf("entered param %s\n",param->name);
+	param->symbol = s;
 }
 
 void resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
@@ -166,6 +166,15 @@ void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
 	resolveEval(symTab,expr->eval);
 }
 
+void resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
+	var->symbol = lookUpName(var->name,symTab);
+	if (!var->symbol) printError(2, var->name);
+}
+
+void resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
+	funccall->symbol = lookUpName(funccall->name,symTab);
+	if (!funccall->symbol) printError(2, funccall->name);
+}
 
 
 /*
@@ -177,39 +186,50 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 	struct Statement *s = statement;
 	while (s) {
 		if (s->stmt == DECLARATION) {
-			createSymbolTableVarDecl(symTab,s->var);
-			resolveExpr(symTab,s->var->expr);
-			//might need to resolve something elsee???
+			createSymbolTableVarDecl(symTab,s->var);//var decl
+			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
+			resolveExpr(symTab,s->var->expr);//right hand side of dec
 		}
 		if (s->stmt == FOR) {
 			struct SymbolTable *innerStmts = addInner(symTab);
 			createSymbolTableVarDecl(innerStmts,s->loop->init);
+			resolveAssignment(innerStmts,s->loop->mod);
+			resolveExpr(innerStmts,s->loop->mod->expr);
+			resolveExpr(innerStmts,s->loop->expr);
+
 			createSymbolTableStatements(innerStmts,s->loop->stmts);
-			//need to resolve for init, mod, expr
+			
 		}
 		if (s->stmt == WHILE) {
 			struct SymbolTable *innerStmts = addInner(symTab);
+			resolveExpr(innerStmts,s->loop->expr);
 			createSymbolTableStatements(innerStmts,s->loop->stmts);
 		}
 		if (s->stmt == IF) {
 			struct CondStatement *c = s->condstmt;
 			while (c) {
 				struct SymbolTable *innerStmts = addInner(symTab);
+				resolveExpr(innerStmts,c->expr);//resolves condition expression
 				createSymbolTableStatements(innerStmts,c->stmts);
 				c = c->next;
 			}
-			//need to resolve if expression
 		}
 		if (s->stmt == FUNCCALL) {
-			//need to resolve this	
+			resolveFuncCall(symTab,s->funccall);
+			struct FunctionArgs *f = s->funccall->funcargs;
+			while (f) {
+				resolveExpr(symTab,f->expr);
+				f = f->funcargs;
+			}
 		}
 		if (s->stmt == RETURN) {
 			resolveExpr(symTab,s->returnstmt);
 		}
 		if (s->stmt == ASSIGNMENT) {
-			resolveExpr(symTab,s->var->expr);
-			//need to resolve left hand side
-			//remember array on left hand side
+			printf("Name: %s\n",s->var->name);
+			resolveAssignment(symTab,s->var);//var assign
+			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
+			resolveExpr(symTab,s->var->expr);//right hand side of ass
 		}
 
 		s = s->next;
