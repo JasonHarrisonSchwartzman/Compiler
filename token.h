@@ -652,6 +652,9 @@ void printToken(token_t token) {
 		case VAR_I2:
 			str = "I2";
 			break;
+		case VAR_A1:
+			str = "A1";
+			break;
 		default:
 			str = "ERROR TOKEN NOT FOUND";
 			break;
