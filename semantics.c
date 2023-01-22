@@ -67,6 +67,75 @@ void printSymbolTable(struct SymbolTable *sym) {
 	}
 }
 
+
+/*TODO:
+ * Type checking
+char short int long
+double
+pointers
+functioncalls
+arrays
+Rules for types:
+Operations: + - * / % & | ^
+Comparison: == <= >= < > && || !=
+
+CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons, they will be converted to the bigger type before computed.
+
+
+
+
+ */
+
+/*
+ * Type translation given operators.
+ */
+struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
+	if (!eval2) {
+		
+	}
+	switch (*op) {
+		case PLUS:
+			break;
+		case MINUS:
+			break;
+		case MULT:
+			break;
+		case DIV:
+			break;
+		case MOD:
+			break;
+		case BITWISEAND:
+			break;
+		case BITWISEOR:
+			break;
+		case BITWISEXOR:
+			break;
+		case EQUAL:
+			break;
+		case GREATEQUAL:
+			break;
+		case LESSEQUAL:
+			break;
+		case GREAT:
+			break;
+		case LESS:
+			break;
+		case AND:
+			break;
+		case NOT:
+			break;
+		case OR:
+			break;
+	}
+	return NULL;
+}
+
+struct Type *typeCheckExpr(struct Expression *expr) {
+	if (!expr->expr) return resolveType(expr->eval,NULL,NULL);	
+	if (!expr->expr->eval->type) return resolveType(expr->expr->eval,expr->op,expr->eval);
+	return typeCheckExpr(expr->expr);
+}
+
 /*
  * Determines whether a symbol has been defined at the current scope (within the same symbol table)
  */
@@ -95,10 +164,13 @@ struct Symbol *lookUpName(char *name, struct SymbolTable *symTab) {
 void printError(int errorNum, char *name) {
 	switch(errorNum) {
 		case 1:
-			printf("Redefinition of identifier \"%s\" attempted on line [line] and defined on line [line].\n",name);
+			printf("Redeclaration of identifier \"%s\" attempted on line [line] and declared on line [line].\n",name);
 			break;
 		case 2:
-			printf("Identifier \"%s\" on line [line] not defined.\n",name);
+			printf("Identifier \"%s\" on line [line] not declared.\n",name);
+			break;
+		case 3:
+			printf("Identifier \"%s\" on line [line] is declared as a variable and is attempting to use it as a function call\n",name);
 			break;
 	}
 }
@@ -173,7 +245,14 @@ void resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 
 void resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 	funccall->symbol = lookUpName(funccall->name,symTab);
-	if (!funccall->symbol) printError(2, funccall->name);
+	if (!funccall->symbol) {
+		printError(2, funccall->name);
+		return;
+	}
+	if (funccall->symbol->dec == VAR) {
+		printError(3, funccall->name);
+		return;
+	}
 }
 
 
@@ -224,9 +303,9 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		}
 		if (s->stmt == RETURN) {
 			resolveExpr(symTab,s->returnstmt);
+			typeCheckExpr(s->returnstmt);
 		}
 		if (s->stmt == ASSIGNMENT) {
-			printf("Name: %s\n",s->var->name);
 			resolveAssignment(symTab,s->var);//var assign
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
 			resolveExpr(symTab,s->var->expr);//right hand side of ass
@@ -270,7 +349,7 @@ int checkAll() {
 	symbolTables->numInner = 0;
 	symbolTables->level = 0;
 	createSymbolTableDeclarations(symbolTables,syntaxTree);
-	printSymbolTable(symbolTables);
+	//printSymbolTable(symbolTables);
 	printf("Checked all semantics\n");
 	return 0;
 }

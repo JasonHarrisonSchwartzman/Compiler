@@ -9,9 +9,11 @@ int x() {
 	x = y;
 	x = x + y + 5 == 5;
 	if (x == 5) {
+		int x;
 		return x + y;
 	}
 	else {
+		int x;
 		if (5 == 2) {
 			int x;	
 		}

@@ -3,6 +3,10 @@
 #include "token.h"
 #include <stdlib.h>
 
+/*
+ * Includes all structures that can be created during the reduction phase of the parser. 
+ */
+
 struct Declaration *syntaxTree;
 
 typedef enum type_t {
@@ -173,6 +177,7 @@ struct Evaluation{
 	struct FunctionCall *funccall;
 
 	struct Symbol *symbol;//for symbol table
+	struct Type *type;//for type checking
 
 } Evaluation;
 
