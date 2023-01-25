@@ -2,9 +2,11 @@ CC=gcc
 CFLAGS=-Wall
 EXE=jcc
 
-all: main.o parser.o parserinit.o scanner.o semantics.o
-	$(CC) $(CFLAGS) -o $(EXE) main.o
-
+all: main.o parser.o parserinit.o scanner.o semantics.o jcc.entitlements
+	$(CC) $(CFLAGS) -o $(EXE) main.o -g
+	codesign -s - -f --entitlements jcc.entitlements jcc
+jcc.entitlements:
+	/usr/libexec/PlistBuddy -c "Add :com.apple.security.get-task-allow bool true" jcc.entitlements
 main.o: main.c parser.c parserinit.c scanner.c semantics.c
 	$(CC) $(CFLAGS) -c main.c
 

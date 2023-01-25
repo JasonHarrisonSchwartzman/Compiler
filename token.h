@@ -395,7 +395,7 @@ typedef enum token_t{
 typedef struct Token{
 	token_t tokenType;
 	char* token;
-	int line;
+	unsigned long line;
 } Token;
 
 struct Token **tokens;

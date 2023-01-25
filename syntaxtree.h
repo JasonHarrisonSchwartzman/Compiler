@@ -89,6 +89,8 @@ struct Symbol {
 	symbol_t sym;
 	dec_t dec;
 	struct Symbol *next;
+	
+	unsigned long line;
 } Symbol;
 
 
@@ -108,6 +110,7 @@ struct VarDecl {
 	struct Expression *expr;
 
 	struct Symbol *symbol;//for symbol table
+	unsigned long line;
 } VarDecl;
 
 //K1 M1
@@ -118,18 +121,22 @@ struct FuncDecl {
 	char *name;
 
 	struct Symbol *symbol;//for symbol table
+	unsigned long line;
 } FuncDecl;
 
 //J1
 struct Value {
 	value_t val_t;
 	char *value;
+
+	unsigned long line;
 } Value;
 //I1 I2
 struct Name {
 	char *name;
 	struct Expression *expr;//length of array
 	int pointer;//0 for not a pointer 1 for yes a pointer
+	unsigned long line;
 } Name;
 
 //E1
@@ -164,6 +171,7 @@ struct FunctionCall {
 	struct FunctionArgs *funcargs;
 
 	struct Symbol *symbol;//for symbol table
+	unsigned long line;
 } FunctionCall;
 
 //U1
@@ -178,6 +186,7 @@ struct Evaluation{
 
 	struct Symbol *symbol;//for symbol table
 	struct Type *type;//for type checking
+	unsigned long line;
 
 } Evaluation;
 
@@ -194,11 +203,11 @@ struct Statement {
 
 //L1
 struct Params {
-	struct Type *type;
-	char *name;
+	//struct Type *type;
+	//char *name;
 	struct Params *next;
-
-	struct Symbol *symbol;//for symbol table
+	
+	struct VarDecl *var;
 } Params;
 
 struct CondStatement {
@@ -282,6 +291,7 @@ struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
 	}
 	var->name = decl->name->name;
 	var->expr = decl->expr;
+	var->line = decl->name->line;
 	return var;
 }
 
@@ -291,20 +301,18 @@ struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
 struct Params *addParam(struct Params *params, struct Type *type, struct Name *name) {
 	struct Params *p = calloc(1,sizeof(Params));
 	p->next = params;
-	p->type = type;
-	p->type->pointer = name->pointer;
-	p->type->length = name->expr;
-	p->name = name->name;
+	p->var = addVarDecl(type,addDecl(name,name->expr));
 	return p;
 }
 
 //K1, M1
-struct FuncDecl *addFuncDecl(struct Statement *stmts, struct Type *type, struct Params *params, char *name) {
+struct FuncDecl *addFuncDecl(struct Statement *stmts, struct Type *type, struct Params *params, char *name, unsigned long line) {
 	struct FuncDecl *f = calloc(1,sizeof(FuncDecl));
 	f->statements = stmts;
 	f->type = type;
 	f->params = params;
 	f->name = name;
+	f->line = line;
 	return f;
 }
 
@@ -319,10 +327,11 @@ struct Decl *addDecl(struct Name *name, struct Expression *expr) {
 }
 
 //J1
-struct Value *addValue(value_t val_t, char *value) {
+struct Value *addValue(value_t val_t, char *value,unsigned long line) {
 	struct Value *val = calloc(1,sizeof(struct Value));
 	val->val_t = val_t;
 	val->value = value;
+	val->line = line;
 	return val;
 }
 
@@ -368,15 +377,16 @@ struct FunctionArgs *addFuncArgs(struct Expression *expr, struct FunctionArgs *f
 }
 
 //V1
-struct FunctionCall *addFuncCall(char *name, struct FunctionArgs *funcargs) {
+struct FunctionCall *addFuncCall(char *name, struct FunctionArgs *funcargs,unsigned long line) {
 	struct FunctionCall *f = calloc(1,sizeof(struct FunctionCall));
 	f->name = name;
 	f->funcargs = funcargs;
+	f->line = line;
 	return f;
 }
 
 //U1
-struct Evaluation *addEval(eval_t eval, struct Value *value, struct Expression *expr, char *name, int dereference, int reference, struct FunctionCall *funccall) {
+struct Evaluation *addEval(eval_t eval, struct Value *value, struct Expression *expr, char *name, int dereference, int reference, struct FunctionCall *funccall, unsigned long line) {
 	struct Evaluation *e = calloc(1,sizeof(struct Evaluation));
 	e->value = value;
 	e->expr = expr;
@@ -385,6 +395,7 @@ struct Evaluation *addEval(eval_t eval, struct Value *value, struct Expression *
 	e->reference = reference;
 	e->funccall = funccall;
 	e->eval = eval;
+	e->line = line;
 	return e;
 }
 
@@ -398,10 +409,11 @@ struct Expression *addExpr(struct Expression *expr, operation_t *op, struct Eval
 }
 
 //I1
-struct Name *addName(char *name, char *length, int pointer, struct Expression *expr) {
+struct Name *addName(char *name, char *length, int pointer, struct Expression *expr, unsigned long line) {
 	struct Name *n = calloc(1,sizeof(struct Name));
 	n->name = name;
-	if (length) n->expr = addExpr(NULL,NULL,addEval(VALUE,addValue(NUM,length),NULL,NULL,-1,-1,NULL));
+	n->line = line;
+	if (length) n->expr = addExpr(NULL,NULL,addEval(VALUE,addValue(NUM,length,line),NULL,NULL,-1,-1,NULL,line));
 	if (expr) n->expr = expr;
 	n->pointer = pointer;
 	return n;

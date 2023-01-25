@@ -8,6 +8,19 @@
 int lineNum = 1;
 extern struct State states[];//defined in dfa.c
 
+char **lines; //contains line of line of entire program
+unsigned long numLines = 0;
+
+void addLine(char *line) {
+	lines = realloc(lines,sizeof(char*) * (++numLines));
+	lines[numLines-1] = line;
+}
+
+void addChar(char *line, char c, int n) {
+	line = realloc(line,sizeof(char)*n);
+	line[n-1] = c;
+}
+
 /*
  * adds token with its given token type into the token array
  */
@@ -71,6 +84,7 @@ void printTokens() {
 		if (tokens[i]->tokenType == TOKEN_WHITESPACE) continue;
 		printf("%15s | ",tokens[i]->token);
 		printToken(tokens[i]->tokenType);
+		printf("%15lu | ",tokens[i]->line);
 		printf("\n");
 	}
 }
@@ -88,10 +102,6 @@ int scanner(int argc, char *argv[]) {
 	int stringLength = 0;
 	initialize();//creates dfa
 
-	/*for (int i = 0; i < states[0].numTransitions; i++) {
-		printf("%c\n",states[0].transitions[i].letter);
-	}*/
-
 	//use scanner to scan every character in input file
 	while (1) {
 		c = fgetc(file);
@@ -103,5 +113,14 @@ int scanner(int argc, char *argv[]) {
 		//printf("%s\n",string);
 	}
 	addToken(TOKEN_DOLLAR, "$", -1);
+	rewind(file);
+	
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	while ((read = getline(&line, &len, file)) != -1) {
+		lines = realloc(lines, sizeof(char*)* ++numLines);
+		lines[numLines - 1] = strdup(line);
+	}
 	return 0;
 }

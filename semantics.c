@@ -24,12 +24,13 @@ struct SymbolTable *symbolTables;//the symbol table
 /*
  * Allocates mem for a Symbol
  */
-struct Symbol *createSymbol(char *name, struct Type *type, symbol_t sym, dec_t dec) {
+struct Symbol *createSymbol(char *name, struct Type *type, symbol_t sym, dec_t dec, unsigned long line) {
 	struct Symbol *s = malloc(sizeof(struct Symbol));
 	s->name = name;
 	s->type = type;
 	s->sym = sym;
 	s->dec = dec;
+	s->line = line;
 	return s;
 }
 
@@ -70,11 +71,14 @@ void printSymbolTable(struct SymbolTable *sym) {
 
 /*TODO:
  * Type checking
-char short int long
+values: number decimal character string
+types: char short int long
+sign: signed unsigned
 double
 pointers
-functioncalls
+functioncalls which are equal to char short int long or double
 arrays
+arrays of pointers
 Rules for types:
 Operations: + - * / % & | ^
 Comparison: == <= >= < > && || !=
@@ -91,7 +95,7 @@ CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons,
  */
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
 	if (!eval2) {
-		
+		return eval1->type;
 	}
 	switch (*op) {
 		case PLUS:
@@ -161,7 +165,7 @@ struct Symbol *lookUpName(char *name, struct SymbolTable *symTab) {
 	return NULL;
 }
 
-void printError(int errorNum, char *name) {
+void printError(int errorNum, char *name,unsigned long line1, unsigned long line2) {
 	switch(errorNum) {
 		case 1:
 			printf("Redeclaration of identifier \"%s\" attempted on line [line] and declared on line [line].\n",name);
@@ -183,10 +187,10 @@ void printError(int errorNum, char *name) {
 void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 	struct Symbol *x = lookUpNameCurrentScope(var->name,symTab);
 	if (x) {
-		printError(1,x->name);
+		printError(1,x->name,-20310230123,-102391203);
 		return;
 	}
-	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR);
+	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR,var->line);
 	addSymbol(symTab,s);
 	var->symbol = s;
 }
@@ -197,10 +201,10 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func) {
 	struct Symbol *x = lookUpNameCurrentScope(func->name,symTab);
 	if (x) {
-		printError(1,x->name);
+		printError(1,x->name,-1023213902193,-21093102);
 		return;
 	}
-	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC);
+	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
 	addSymbol(symTab,s);
 	func->symbol = s;
 }
@@ -215,20 +219,20 @@ void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func
  * This is illegal because the x on line 2 was defined in the parameter in line 1
  */
 void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
-	struct Symbol *x = lookUpNameCurrentScope(param->name,symTab);
+	struct Symbol *x = lookUpNameCurrentScope(param->var->name,symTab);
 	if (x) {
-		printError(1,x->name);
+		printError(1,x->name,-1020310301231,-10230123);
 		return;
 	}
-	struct Symbol *s = createSymbol(param->name,param->type,SYMBOL_LOCAL,VAR);
+	struct Symbol *s = createSymbol(param->var->name,param->var->type,SYMBOL_LOCAL,VAR,param->var->line);
 	addSymbol(symTab,s);
-	param->symbol = s;
+	param->var->symbol = s;
 }
 
 void resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 	if ((eval->eval == ID) || (eval->eval == ARRAYINDEX)) {
 		eval->symbol = lookUpName(eval->name,symTab);
-		if (!eval->symbol) printError(2,eval->name);
+		if (!eval->symbol) printError(2,eval->name,eval->line,eval->symbol->line);
 	}
 }
 
@@ -240,17 +244,17 @@ void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
 
 void resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 	var->symbol = lookUpName(var->name,symTab);
-	if (!var->symbol) printError(2, var->name);
+	if (!var->symbol) printError(2, var->name,var->line,var->symbol->line);
 }
 
 void resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 	funccall->symbol = lookUpName(funccall->name,symTab);
 	if (!funccall->symbol) {
-		printError(2, funccall->name);
+		printError(2, funccall->name,-10230123912,-12039210312);
 		return;
 	}
 	if (funccall->symbol->dec == VAR) {
-		printError(3, funccall->name);
+		printError(3, funccall->name,-102931230,-12301293);
 		return;
 	}
 }
