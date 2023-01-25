@@ -295,7 +295,13 @@ struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
 	return var;
 }
 
-
+//H1 Q1
+struct Decl *addDecl(struct Name *name, struct Expression *expr) {
+	struct Decl *decl = calloc(1,sizeof(struct Decl));
+	decl->name = name;
+	decl->expr = expr;
+	return decl;
+}
 
 //L1
 struct Params *addParam(struct Params *params, struct Type *type, struct Name *name) {
@@ -314,16 +320,6 @@ struct FuncDecl *addFuncDecl(struct Statement *stmts, struct Type *type, struct 
 	f->name = name;
 	f->line = line;
 	return f;
-}
-
-
-
-//H1 Q1
-struct Decl *addDecl(struct Name *name, struct Expression *expr) {
-	struct Decl *decl = calloc(1,sizeof(struct Decl));
-	decl->name = name;
-	decl->expr = expr;
-	return decl;
 }
 
 //J1
