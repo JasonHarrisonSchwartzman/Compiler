@@ -6,6 +6,7 @@ int x() {
 	y();
 	signed int x = 5 + 2 + 3 / 10;
 	signed char y= 12 + x + y == x;
+	xx = 10;
 	x = y;
 	x = x + y + 5 == 5;
 	if (x == 5) {

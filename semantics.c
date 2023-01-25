@@ -168,13 +168,14 @@ struct Symbol *lookUpName(char *name, struct SymbolTable *symTab) {
 void printError(int errorNum, char *name,unsigned long line1, unsigned long line2) {
 	switch(errorNum) {
 		case 1:
-			printf("Redeclaration of identifier \"%s\" attempted on line [line] and declared on line [line].\n",name);
+			printf("Redeclaration of identifier \"%s\" attempted on line [%lu] and declared on line [%lu].\n",name,line1,line2);
 			break;
 		case 2:
-			printf("Identifier \"%s\" on line [line] not declared.\n",name);
+			printf("error 2\n");
+			printf("Identifier \"%s\" on line [%lu] not declared.\n",name,line1);
 			break;
 		case 3:
-			printf("Identifier \"%s\" on line [line] is declared as a variable and is attempting to use it as a function call\n",name);
+			printf("Identifier \"%s\" on line [%lu] is declared as a variable and is attempting to use it as a function call\n",name,line1);
 			break;
 	}
 }
@@ -187,7 +188,7 @@ void printError(int errorNum, char *name,unsigned long line1, unsigned long line
 void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 	struct Symbol *x = lookUpNameCurrentScope(var->name,symTab);
 	if (x) {
-		printError(1,x->name,-20310230123,-102391203);
+		printError(1,x->name,var->line,var->symbol->line);
 		return;
 	}
 	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR,var->line);
@@ -201,7 +202,7 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func) {
 	struct Symbol *x = lookUpNameCurrentScope(func->name,symTab);
 	if (x) {
-		printError(1,x->name,-1023213902193,-21093102);
+		printError(1,x->name,func->line,func->symbol->line);
 		return;
 	}
 	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
@@ -221,7 +222,7 @@ void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func
 void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 	struct Symbol *x = lookUpNameCurrentScope(param->var->name,symTab);
 	if (x) {
-		printError(1,x->name,-1020310301231,-10230123);
+		printError(1,x->name,param->var->line,param->var->symbol->line);
 		return;
 	}
 	struct Symbol *s = createSymbol(param->var->name,param->var->type,SYMBOL_LOCAL,VAR,param->var->line);
@@ -250,11 +251,11 @@ void resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 void resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 	funccall->symbol = lookUpName(funccall->name,symTab);
 	if (!funccall->symbol) {
-		printError(2, funccall->name,-10230123912,-12039210312);
+		printError(2, funccall->name,funccall->symbol->line,funccall->line);
 		return;
 	}
 	if (funccall->symbol->dec == VAR) {
-		printError(3, funccall->name,-102931230,-12301293);
+		printError(3, funccall->name,funccall->symbol->line,0);
 		return;
 	}
 }
