@@ -3,7 +3,7 @@
 #include <string.h>
 
 extern struct Declaration *syntaxTree;
-
+extern char **lines;
 
 /*
  * Symbol contains a linked list of symbols in reverse order of appearence
@@ -66,6 +66,10 @@ void printSymbolTable(struct SymbolTable *sym) {
 	for (int i = 0; i < temp->numInner; i++ ) {
 		printSymbolTable(temp->inner[i]);
 	}
+}
+
+void printLine(unsigned long line) {
+	printf("[%lu]: %s",line,lines[line-1]);
 }
 
 
@@ -169,6 +173,8 @@ void printError(int errorNum, char *name,unsigned long line1, unsigned long line
 	switch(errorNum) {
 		case 1:
 			printf("Redeclaration of identifier \"%s\" attempted on line [%lu] and declared on line [%lu].\n",name,line1,line2);
+			printLine(line2);
+			printLine(line1);
 			break;
 		case 2:
 			printf("error 2\n");
@@ -188,7 +194,7 @@ void printError(int errorNum, char *name,unsigned long line1, unsigned long line
 void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 	struct Symbol *x = lookUpNameCurrentScope(var->name,symTab);
 	if (x) {
-		printError(1,x->name,var->line,var->symbol->line);
+		printError(1,x->name,var->line,x->line);
 		return;
 	}
 	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR,var->line);
