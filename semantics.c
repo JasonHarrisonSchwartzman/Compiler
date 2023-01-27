@@ -5,6 +5,9 @@
 extern struct Declaration *syntaxTree;
 extern char **lines;
 
+unsigned long errorNumber = 1; //used to list all errors
+unsigned char inLoop = 0;
+
 /*
  * Symbol contains a linked list of symbols in reverse order of appearence
  * Inner Symbol Tables the represent statements such as conditional and loop (anything enclosed in curly braces)
@@ -169,21 +172,36 @@ struct Symbol *lookUpName(char *name, struct SymbolTable *symTab) {
 	return NULL;
 }
 
+/*
+ * Given the error number and information prints out error messages in terms of the semantics of the language.
+ */
 void printError(int errorNum, char *name,unsigned long line1, unsigned long line2) {
+	printf("Error #%lu:\n",errorNumber);
 	switch(errorNum) {
 		case 1:
-			printf("Redeclaration of identifier \"%s\" attempted on line [%lu] and declared on line [%lu].\n",name,line1,line2);
+			printf("Redeclaration of identifier \"%s\" attempted on line [%lu] and declared on line [%lu] within the same scope.\n",name,line1,line2);
 			printLine(line2);
 			printLine(line1);
+			printf("To fix: either rename one of the identifiers and all uses of it or declare one of the identifiers in another scope.\n");
 			break;
 		case 2:
 			printf("error 2\n");
 			printf("Identifier \"%s\" on line [%lu] not declared.\n",name,line1);
+			printLine(line1);
+			printf("To fix: declare the variable in a previous line or make this line a declaration\n");
 			break;
 		case 3:
 			printf("Identifier \"%s\" on line [%lu] is declared as a variable and is attempting to use it as a function call\n",name,line1);
+			printLine(line1);
+			printf("To fix: either the name of the function is wrong or remove the parentheses\n");
+			break;
+		case 4:
+			printf("Control flow statement outside of loop.\n");
+			printf("To fix: remove this statement or put it within a loop.\n");
 			break;
 	}
+	printf("\n");
+	errorNumber++;
 }
 
 
@@ -208,7 +226,7 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func) {
 	struct Symbol *x = lookUpNameCurrentScope(func->name,symTab);
 	if (x) {
-		printError(1,x->name,func->line,func->symbol->line);
+		printError(1,x->name,func->line,x->line);
 		return;
 	}
 	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
@@ -251,18 +269,24 @@ void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
 
 void resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 	var->symbol = lookUpName(var->name,symTab);
-	if (!var->symbol) printError(2, var->name,var->line,var->symbol->line);
+	if (!var->symbol) printError(2, var->name,var->line,0);
 }
 
 void resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 	funccall->symbol = lookUpName(funccall->name,symTab);
 	if (!funccall->symbol) {
-		printError(2, funccall->name,funccall->symbol->line,funccall->line);
+		printError(2, funccall->name,funccall->symbol->line,0);
 		return;
 	}
 	if (funccall->symbol->dec == VAR) {
 		printError(3, funccall->name,funccall->symbol->line,0);
 		return;
+	}
+}
+
+void resolveControl(statement_t stmt) {
+	if (!inLoop) {
+		printError(4,NULL,0,0);
 	}
 }
 
@@ -281,6 +305,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			resolveExpr(symTab,s->var->expr);//right hand side of dec
 		}
 		if (s->stmt == FOR) {
+			inLoop = 1;
 			struct SymbolTable *innerStmts = addInner(symTab);
 			createSymbolTableVarDecl(innerStmts,s->loop->init);
 			resolveAssignment(innerStmts,s->loop->mod);
@@ -291,6 +316,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			
 		}
 		if (s->stmt == WHILE) {
+			inLoop = 1;
 			struct SymbolTable *innerStmts = addInner(symTab);
 			resolveExpr(innerStmts,s->loop->expr);
 			createSymbolTableStatements(innerStmts,s->loop->stmts);
@@ -321,6 +347,11 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
 			resolveExpr(symTab,s->var->expr);//right hand side of ass
 		}
+		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
+			resolveControl(s->stmt);
+		}
+
+		inLoop = 0;
 
 		s = s->next;
 

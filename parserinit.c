@@ -2,6 +2,14 @@
 #include "parser.h"
 #include <stdlib.h>
 
+void printParsingError(unsigned long n) {
+	switch (n) {
+		case 1: 
+			printf("");
+			break;
+	}
+}
+
 
 void createInstanceAndVarTokens() {
 	for (int i = 0; i < NUM_INSTANCES; i++) {
