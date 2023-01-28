@@ -47,5 +47,21 @@ id[NUM] is an array of size NUM
 ~id[NUM] is an array of pointers size NUM
 
 Function declarations:
+[sign (optional)] [type] identifier (parameters) { function body }
+parameters are 0 or more [sign (optional)] [type] identifier sepearted by a comma.
 
-[sign (optional)] [type] identifier = 
+The function body can consists of statements:
+
+Conditionals:
+ if (expr) { function body }
+ elseif (expr) { function body }
+ else { function body}
+ 
+ the ordering most go if -> elseif -> else with 0 or more elseif statements. else is optional. elseif and else must directly follow if. There can be if statements without elseif or else statements.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
