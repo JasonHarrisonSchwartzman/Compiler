@@ -23,6 +23,11 @@ int main(int argc, char *argv[]) {
 		printf("ODD FAILURE\n");
 	}
 	checkAll();
+	/*signed long x = 1865000000000000;
+	unsigned long y = 140000000000000;
+	signed long z = 9223372036854775807;
+	unsigned long w = 1;
+	printf("Test:%ld\n",z+w);*/
 
 	freeRules();
 	freeInstanceAndVarTokens();

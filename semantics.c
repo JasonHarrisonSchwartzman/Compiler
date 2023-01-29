@@ -101,6 +101,7 @@ CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons,
  * Type translation given operators.
  */
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
+	printf("Resolving type\n");
 	if (!eval2) {
 		return eval1->type;
 	}
@@ -141,10 +142,36 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 	return NULL;
 }
 
+
+/*
+ * Given an expression, resolve all subexpression types given operations between two values and return the type computed when reduced all the way.
+ */
 struct Type *typeCheckExpr(struct Expression *expr) {
-	if (!expr->expr) return resolveType(expr->eval,NULL,NULL);	
-	if (!expr->expr->eval->type) return resolveType(expr->expr->eval,expr->op,expr->eval);
-	return typeCheckExpr(expr->expr);
+	struct Evaluation **evalStack = malloc(sizeof(struct Evaluation*));
+	operation_t **opStack = malloc(sizeof(operation_t *));
+	unsigned long stackIndex = 0;
+	unsigned long opStackIndex = 0;
+	struct Expression *temp = expr;
+	while (temp) {
+		struct Evaluation *e = temp->eval;
+		evalStack = realloc(evalStack,sizeof(struct Evaluation*) * ++stackIndex);
+		evalStack[stackIndex-1] = e;
+
+		operation_t *o = temp->op;
+		if (o) {
+			opStack = realloc(opStack,sizeof(operation_t *) * ++opStackIndex);
+			opStack[opStackIndex-1] = o;
+		}
+
+		temp = temp->expr;
+	}
+	unsigned long eval1 = stackIndex - 1;
+	unsigned long eval2 = stackIndex - 2;
+	unsigned long opIndex = opStackIndex - 1;
+	while (eval2 > -1) {
+		resolveType(evalStack[eval1--],opStack[opIndex--],evalStack[eval2--]);
+	}
+	return evalStack[0]->type;
 }
 
 /*
@@ -161,6 +188,11 @@ struct Symbol *lookUpNameCurrentScope(char *name, struct SymbolTable *symTab) {
 	return NULL;
 }
 
+/*
+ * looks up the name of an identifier within the symbol table
+ * begins at current scope and goes backwards to determine is symbol has been added to the table
+ * in current level or levels below it
+ */
 struct Symbol *lookUpName(char *name, struct SymbolTable *symTab) {
 	struct SymbolTable *t = symTab;
 	while (t) {
@@ -254,24 +286,35 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 	param->var->symbol = s;
 }
 
+/*
+ * Looks up in the symbol table if the symbol exists exists
+ */
 void resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
-	if ((eval->eval == ID) || (eval->eval == ARRAYINDEX)) {
+	if (eval->eval != VALUE) {
 		eval->symbol = lookUpName(eval->name,symTab);
-		if (!eval->symbol) printError(2,eval->name,eval->line,eval->symbol->line);
+		if (!eval->symbol) printError(2,eval->name,eval->line,0);
 	}
 }
-
+/*
+ * Recursively looks up all evaluations in the symbol table within the expression
+ */ 
 void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
 	if (!expr) return;
 	resolveExpr(symTab,expr->expr);
 	resolveEval(symTab,expr->eval);
 }
 
+/*
+ * Checks to see if the variable being assigned exists within the symbol table
+ */
 void resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 	var->symbol = lookUpName(var->name,symTab);
 	if (!var->symbol) printError(2, var->name,var->line,0);
 }
 
+/*
+ * determines if function call is within the symbol table and if it truly is a function
+ */
 void resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 	funccall->symbol = lookUpName(funccall->name,symTab);
 	if (!funccall->symbol) {
@@ -283,7 +326,9 @@ void resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) 
 		return;
 	}
 }
-
+/*
+ * If the control statement is not within a loop then print error.
+ */
 void resolveControl(statement_t stmt) {
 	if (!inLoop) {
 		printError(4,NULL,0,0);
@@ -340,7 +385,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		}
 		if (s->stmt == RETURN) {
 			resolveExpr(symTab,s->returnstmt);
-			typeCheckExpr(s->returnstmt);
+			typeCheckExpr(s->returnstmt); //testing type checking for return statements be sure to include this function in other lines
 		}
 		if (s->stmt == ASSIGNMENT) {
 			resolveAssignment(symTab,s->var);//var assign
