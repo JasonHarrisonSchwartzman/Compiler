@@ -106,6 +106,16 @@ void createSpaceTransitions() {
 		}
 	}
 }
+token_t tokenValues[] = { TOKEN_EOF, TOKEN_ID, TOKEN_NUM, TOKEN_DOUBLE, TOKEN_CHARCONST, TOKEN_STRINGCONST };
+int numKeywords = 15;
+int numDelimeters = 3;
+char *keywords[] = { "if", "else", "elseif", "while", "for", "int", "long", "double", "short", "char", "return", "break", "continue", "signed", "unsigned" };
+char *delimiters[] = { " ", "\t", "\n" };
+char *specialChars[] = { "=", "?", "~", "@", "==", "<=", ">=", "<", ">", ";", "&&", "||", "!=", "+", "*", "/", "-", "%", "&", "|", "^", ",", "(", ")", "{", "}", "[", "]" };
+
+void createDFA() {
+
+}
 
 /*
  * builds dfa

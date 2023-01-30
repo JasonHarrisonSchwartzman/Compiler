@@ -149,8 +149,8 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 struct Type *typeCheckExpr(struct Expression *expr) {
 	struct Evaluation **evalStack = malloc(sizeof(struct Evaluation*));
 	operation_t **opStack = malloc(sizeof(operation_t *));
-	unsigned long stackIndex = 0;
-	unsigned long opStackIndex = 0;
+	long stackIndex = 0;
+	long opStackIndex = 0;
 	struct Expression *temp = expr;
 	while (temp) {
 		struct Evaluation *e = temp->eval;
@@ -165,13 +165,22 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 
 		temp = temp->expr;
 	}
-	unsigned long eval1 = stackIndex - 1;
-	unsigned long eval2 = stackIndex - 2;
-	unsigned long opIndex = opStackIndex - 1;
+	long eval1 = stackIndex - 1;
+	long eval2 = stackIndex - 2;
+	long opIndex = opStackIndex - 1;
 	while (eval2 > -1) {
 		resolveType(evalStack[eval1--],opStack[opIndex--],evalStack[eval2--]);
 	}
 	return evalStack[0]->type;
+}
+
+/*
+ * Checking to see if assignment is legal between an expression into a variable
+ */
+struct Type *typeCheckAssignment(struct VarDecl *var, struct Expression *expr) {
+	struct Type *varType = var->type;
+	struct Type *exprType = expr->eval->type;
+	return NULL;
 }
 
 /*
@@ -217,7 +226,6 @@ void printError(int errorNum, char *name,unsigned long line1, unsigned long line
 			printf("To fix: either rename one of the identifiers and all uses of it or declare one of the identifiers in another scope.\n");
 			break;
 		case 2:
-			printf("error 2\n");
 			printf("Identifier \"%s\" on line [%lu] not declared.\n",name,line1);
 			printLine(line1);
 			printf("To fix: declare the variable in a previous line or make this line a declaration\n");
