@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "token.h"
-#include "dfa.h"
-#define NUM_STATES 125
+#define NUM_STATES 99
 
 struct Transition {
 	int state;
@@ -106,15 +106,31 @@ void createSpaceTransitions() {
 		}
 	}
 }
-token_t tokenValues[] = { TOKEN_EOF, TOKEN_ID, TOKEN_NUM, TOKEN_DOUBLE, TOKEN_CHARCONST, TOKEN_STRINGCONST };
+token_t tokenValues[] = { TOKEN_EOF, TOKEN_ID, TOKEN_NUM, TOKEN_DOUBLE, TOKEN_CHARCONST, TOKEN_STRINGCONST};
 int numKeywords = 15;
 int numDelimeters = 3;
 char *keywords[] = { "if", "else", "elseif", "while", "for", "int", "long", "double", "short", "char", "return", "break", "continue", "signed", "unsigned" };
 char *delimiters[] = { " ", "\t", "\n" };
-char *specialChars[] = { "=", "?", "~", "@", "==", "<=", ">=", "<", ">", ";", "&&", "||", "!=", "+", "*", "/", "-", "%", "&", "|", "^", ",", "(", ")", "{", "}", "[", "]" };
+int numSpecialChar = 23;
+char specialChars[] = { '~','!','@','%','^','&','*','(',')','-','+','=','{','[','}',']','/','|',';','<','>',',','?' };
+int numAlphabet = 92;
+char alphabet[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','~','!','@','%','^','&','*','(',')','-','_','+','=','{','[','}',']','/','\"','\'','|',';','<','>',',','.','?',' ','\t','\n' };
 
 void createDFA() {
+	for (int i = 0; i < numKeywords; i++) {
+		
+	}
+}
 
+void printNumTransitions() {
+	for (int i = 0; i < NUM_STATES; i++) {
+		printf("State %d: %d\n",i,states[i].numTransitions);
+	}
+	for (int i = 0; i< states[0].numTransitions; i++) {
+		printf("%c ",states[0].transitions[i].letter);
+	}
+	printf("\n");
+	exit(1);
 }
 
 /*
@@ -860,4 +876,5 @@ void initialize() {
 	// skip 92 because 92 is right paren
 	createIDTransitions(93, "");
 	createIDTransitions(94, "");
+	printNumTransitions();
 }

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "token.h"
-#include "dfa.h"
 #include "dfa.c"
 
 int lineNum = 1;
