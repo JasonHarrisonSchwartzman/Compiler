@@ -53,7 +53,7 @@ int takeTransition(int startState, char letter, int *endState) {
 		}
 	}
 	printf("state %d\n", startState);
-	printf("Error!!! This character caused it %c\n",letter);
+	printf("Error!!! This character caused it %c ascii: %d\n",letter,(int)letter);
 	return -1;
 }
 
@@ -111,8 +111,9 @@ int numKeywords = 15;
 int numDelimeters = 3;
 char *keywords[] = { "if", "else", "elseif", "while", "for", "int", "long", "double", "short", "char", "return", "break", "continue", "signed", "unsigned" };
 char *delimiters[] = { " ", "\t", "\n" };
-int numSpecialChar = 23;
+int numSpecialChars = 23;
 char specialChars[] = { '~','!','@','%','^','&','*','(',')','-','+','=','{','[','}',']','/','|',';','<','>',',','?' };
+unsigned long specialCharStates[] = { };
 int numAlphabet = 92;
 char alphabet[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','~','!','@','%','^','&','*','(',')','-','_','+','=','{','[','}',']','/','\"','\'','|',';','<','>',',','.','?',' ','\t','\n' };
 
@@ -876,5 +877,8 @@ void initialize() {
 	// skip 92 because 92 is right paren
 	createIDTransitions(93, "");
 	createIDTransitions(94, "");
+	for (int i = 0; i < numSpecialChars; i++) {
+		
+	}
 	printNumTransitions();
 }
