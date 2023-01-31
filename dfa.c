@@ -198,8 +198,24 @@ void initialize() {
 
 	states[97].token = TOKEN_CHARCONST;
 
-	// if
 	addTransition(0, 'i', 1, 0);
+	addTransition(0, 'e', 3, 0);
+	addTransition(0, 'f', 7, 0);
+	addTransition(0, 'd', 17, 0);
+	addTransition(0, 'c', 23, 0);
+	addTransition(0, 'w', 10, 0);
+	addTransition(0, 'l', 27, 0);
+	addTransition(0, 'b', 55, 0);
+	addTransition(0, 's', 31, 0);
+	addTransition(0, 'u', 41, 0);
+	addTransition(0, 'r', 49, 0);
+	createSpaceTransitions();
+	addTransition(0, ' ', 82, 1);
+	addTransition(0, '\n', 82, 1);
+	addTransition(0, '\t', 82, 1);
+	createIDTransitions(0, "iefwdclsuvrb");
+	
+	
 	addTransition(1, 'f', 2, 0);
 
 	addTransition(81, 'i', 1, 1);
@@ -217,8 +233,8 @@ void initialize() {
 	addTransition(2, '\r', 82, 1);
 
 
-	// else
-	addTransition(0, 'e', 3, 0);
+
+	
 	addTransition(3, 'l', 4, 0);
 	addTransition(4, 's', 5, 0);
 	addTransition(5, 'e', 6, 0);
@@ -248,8 +264,8 @@ void initialize() {
 	addTransition(6, '\r', 82, 1);
 
 
-	// for
-	addTransition(0, 'f', 7, 0);
+
+	
 	addTransition(7, 'o', 8, 0);
 	addTransition(8, 'r', 9, 0);
 
@@ -262,9 +278,7 @@ void initialize() {
 	addTransition(9, '\t', 82, 1);
 	addTransition(9, '\r', 82, 1);
 
-
-	// while
-	addTransition(0, 'w', 10, 0);
+	
 	addTransition(10, 'h', 11, 0);
 	addTransition(11, 'i', 12, 0);
 	addTransition(12, 'l', 13, 0);
@@ -286,7 +300,6 @@ void initialize() {
 
 
 	// double
-	addTransition(0, 'd', 17, 0);
 	addTransition(17, 'o', 18, 0);
 	addTransition(18, 'u', 19, 0);
 	addTransition(19, 'b', 20, 0);
@@ -302,8 +315,6 @@ void initialize() {
 	addTransition(22, '\r', 82, 1);
 
 
-	// char
-	addTransition(0, 'c', 23, 0);
 	addTransition(23, 'h', 24, 0);
 	addTransition(24, 'a', 25, 0);
 	addTransition(25, 'r', 26, 0);
@@ -318,8 +329,6 @@ void initialize() {
 	addTransition(26, '\r', 82, 1);
 
 
-	// long
-	addTransition(0, 'l', 27, 0);
 	addTransition(27, 'o', 28, 0);
 	addTransition(28, 'n', 29, 0);
 	addTransition(29, 'g', 30, 0);
@@ -334,8 +343,6 @@ void initialize() {
 	addTransition(30, '\r', 82, 1);
 
 
-	// short
-	addTransition(0, 's', 31, 0);
 	addTransition(31, 'h', 32, 0);
 	addTransition(32, 'o', 33, 0);
 	addTransition(33, 'r', 34, 0);
@@ -363,9 +370,6 @@ void initialize() {
 	addTransition(40, '\t', 82, 1);
 	addTransition(40, '\r', 82, 1);
 
-
-	// unsigned
-	addTransition(0, 'u', 41, 0);
 	addTransition(41, 'n', 42, 0);
 	addTransition(42, 's', 43, 0);
 	addTransition(43, 'i', 44, 0);
@@ -383,9 +387,6 @@ void initialize() {
 	addTransition(48, '\t', 82, 1);
 	addTransition(48, '\r', 82, 1);
 
-
-	// return
-	addTransition(0, 'r', 49, 0);
 	addTransition(49, 'e', 50, 0);
 	addTransition(50, 't', 51, 0);
 	addTransition(51, 'u', 52, 0);
@@ -402,9 +403,6 @@ void initialize() {
 	addTransition(54, '\r', 82, 1);
 	addTransition(54, ';', 85, 1);
 	
-
-	// break
-	addTransition(0, 'b', 55, 0);
 	addTransition(55, 'r', 56, 0);
 	addTransition(56, 'e', 57, 0);
 	addTransition(57, 'a', 58, 0);
@@ -537,12 +535,6 @@ void initialize() {
 	addTransition(79, '\n', 82, 1);
 	addTransition(79, '\t', 82, 1);
 	addTransition(79, '\r', 82, 1);
-
-	// whitespaces
-	createSpaceTransitions();
-	addTransition(0, ' ', 82, 1);
-	addTransition(0, '\n', 82, 1);
-	addTransition(0, '\t', 82, 1);
 
 	// assign
 	addTransition(79, '=', 81, 1);
@@ -781,8 +773,6 @@ void initialize() {
 	addTransition(100, '\r', 82, 1);
 
 
-
-	createIDTransitions(0, "iefwdclsuvrb");
 	createIDTransitions(1, "f");
 	createIDTransitions(2, "");
 	createIDTransitions(3, "l");
@@ -877,8 +867,5 @@ void initialize() {
 	// skip 92 because 92 is right paren
 	createIDTransitions(93, "");
 	createIDTransitions(94, "");
-	for (int i = 0; i < numSpecialChars; i++) {
-		
-	}
 	printNumTransitions();
 }
