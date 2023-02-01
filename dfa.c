@@ -142,9 +142,98 @@ void printNumTransitions() {
  */
 void initialize() {
 	states[0].token = TOKEN_EOF;
-
-	states[1].token = TOKEN_ID;
-
+	
+	for (int i = 1; i <= 53; i++) {
+		states[i].token = TOKEN_ID;
+	}
+	states[54].token = TOKEN_IF;
+	states[55].token = TOKEN_ELSE;
+	states[56].token = TOKEN_ELSEIF;
+	states[57].token = TOKEN_WHILE;
+	states[58].token = TOKEN_FOR;
+	states[59].token = TOKEN_INT;
+	states[60].token = TOKEN_LONG;
+	states[61].token = TOKEN_DOUBLE;
+	states[62].token = TOKEN_SHORT;
+	states[63].token = TOKEN_CHAR;
+	states[64].token = TOKEN_RETURN;
+	states[65].token = TOKEN_BREAK;
+	states[66].token = TOKEN_CONTINUE;
+	states[67].token = TOKEN_SIGNED;
+	states[68].token = TOKEN_UNSIGNED;
+	states[69].token = TOKEN_ID;
+	states[70].token = TOKEN_PLUS;
+	states[71].token = TOKEN_MINUS;
+	states[72].token = TOKEN_ASSIGN;
+	states[73].token = TOKEN_SEMICOLON;
+	states[74].token = TOKEN_LEFTBRACKET;
+	states[75].token = TOKEN_RIGHTBRACKET;
+	states[76].token = TOKEN_LEFTPAREN;
+	states[77].token = TOKEN_RIGHTPAREN;
+	states[78].token = TOKEN_LEFTCURLY;
+	states[79].token = TOKEN_RIGHTCURLY;
+	
+	
+	
+	/*
+	i
+	e
+	el
+	els
+	elsei
+	w
+	wh
+	whi
+	whil
+	f
+	fo
+	in
+	l
+	lo
+	lon
+	d
+	do
+	dou
+	doub
+	doubl
+	s
+	sh
+	sho
+	shor
+	c
+	ch
+	cha
+	r
+	re
+	ret
+	retu
+	retur
+	b
+	br
+	bre
+	brea
+	co
+	con
+	cont
+	conti
+	contin
+	continu
+	si
+	sig
+	sign
+	signe
+	u
+	un
+	uns
+	unsi
+	unsig
+	unsign
+	unsigne
+	
+	
+	*/
+	
+	
 	states[2].token = TOKEN_IF;
 
 	states[3].token = TOKEN_ID;
@@ -220,41 +309,48 @@ void initialize() {
 	
 	
 	addTransition(1, 'f', 2, 0);
-
-	addTransition(81, 'i', 1, 1);
-	addTransition(82, 'i', 1, 1);
-	addTransition(85, 'i', 1, 1);
-
 	addTransition(1, ' ', 82, 1);
 	addTransition(1, '\n', 82, 1);
 	addTransition(1, '\t', 82, 1);
 	addTransition(1, '\r', 82, 1);
-
+	addTransition(1, 'n', 15, 0);
+	createIDTransitions(1, "f");
+	
 	addTransition(2, ' ', 82, 1);
 	addTransition(2, '\n', 82, 1);
 	addTransition(2, '\t', 82, 1);
 	addTransition(2, '\r', 82, 1);
+	addTransition(2, '(', 91, 1);
+	createIDTransitions(2, "");
+	
+	addTransition(3, 'l', 4, 0);
+	addTransition(3, ' ', 82, 1);
+	addTransition(3, '\n', 82, 1);
+	addTransition(3, '\t', 82, 1);
+	addTransition(3, '\r', 82, 1);
+	createIDTransitions(3, "l");
+	
+	addTransition(4, 's', 5, 0);
+	addTransition(4, ' ', 82, 1);
+	addTransition(4, '\n', 82, 1);
+	addTransition(4, '\t', 82, 1);
+	addTransition(4, '\r', 82, 1);
+	createIDTransitions(4, "s");
+	
+	addTransition(81, 'i', 1, 1);
+	addTransition(82, 'i', 1, 1);
+	addTransition(85, 'i', 1, 1);
 
 
 
 	
-	addTransition(3, 'l', 4, 0);
-	addTransition(4, 's', 5, 0);
 	addTransition(5, 'e', 6, 0);
 
 	addTransition(81, 'e', 3, 1);
 	addTransition(82, 'e', 3, 1);
 	addTransition(85, 'e', 3, 1);
 
-	addTransition(3, ' ', 82, 1);
-	addTransition(3, '\n', 82, 1);
-	addTransition(3, '\t', 82, 1);
-	addTransition(3, '\r', 82, 1);
 
-	addTransition(4, ' ', 82, 1);
-	addTransition(4, '\n', 82, 1);
-	addTransition(4, '\t', 82, 1);
-	addTransition(4, '\r', 82, 1);
 
 	addTransition(5, ' ', 82, 1);
 	addTransition(5, '\n', 82, 1);
@@ -291,9 +387,6 @@ void initialize() {
 	addTransition(82, 'w', 10, 1);
 	addTransition(85, 'w', 10, 1);
 
-
-	// int
-	addTransition(1, 'n', 15, 0);
 	addTransition(15, 't', 16, 0);
 
 	addTransition(16, ' ', 82, 1);
@@ -712,8 +805,6 @@ void initialize() {
 		}
 	}
 	
-	// if
-	addTransition(2, '(', 91, 1);
 
 	// elseif
 	addTransition(68, '(', 91, 1);
@@ -775,11 +866,6 @@ void initialize() {
 	addTransition(100, '\t', 82, 1);
 	addTransition(100, '\r', 82, 1);
 
-
-	createIDTransitions(1, "f");
-	createIDTransitions(2, "");
-	createIDTransitions(3, "l");
-	createIDTransitions(4, "s");
 	createIDTransitions(5, "e");
 	createIDTransitions(6, "");
 	createIDTransitions(7, "o");
