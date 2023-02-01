@@ -172,124 +172,93 @@ void initialize() {
 	states[77].token = TOKEN_RIGHTPAREN;
 	states[78].token = TOKEN_LEFTCURLY;
 	states[79].token = TOKEN_RIGHTCURLY;
+	states[80].token = TOKEN_GREAT;
+	states[81].token = TOKEN_LESS;
+	states[82].token = TOKEN_MULT;
+	states[83].token = TOKEN_DIV;
+	states[84].token = TOKEN_MOD;
+	states[85].token = TOKEN_TILDE;
+	states[86].token = TOKEN_AT;
+	states[87].token = TOKEN_COMMA;
+	states[88].token = TOKEN_BITWISEAND;
+	states[89].token = TOKEN_BITWISEOR;
+	states[90].token = TOKEN_BITWISEXOR;
+	states[91].token = TOKEN_QUESTIONMARK;
+	states[92].token = TOKEN_EQUAL;
+	states[93].token = TOKEN_LESSEQUAL;
+	states[94].token = TOKEN_GREATEQUAL;
+	states[95].token = TOKEN_AND;
+	states[96].token = TOKEN_OR;
+	states[97].token = TOKEN_NOT;
+	
+	states[98].token = TOKEN_CHARCONST;
+	states[99].token = TOKEN_STRINGCONST;
+	
+	states[100].token = TOKEN_NUM;
+	states[101].token = TOKEN_DECIMAL;
+	
+	states[102].token = TOKEN_WHITESPACE;
 	
 	
 	
 	/*
-	i
-	e
-	el
-	els
-	elsei
-	w
-	wh
-	whi
-	whil
-	f
-	fo
-	in
-	l
-	lo
-	lon
-	d
-	do
-	dou
-	doub
-	doubl
-	s
-	sh
-	sho
-	shor
-	c
-	ch
-	cha
-	r
-	re
-	ret
-	retu
-	retur
-	b
-	br
-	bre
-	brea
-	co
-	con
-	cont
-	conti
-	contin
-	continu
-	si
-	sig
-	sign
-	signe
-	u
-	un
-	uns
-	unsi
-	unsig
-	unsign
-	unsigne
+1.     i
+2.     e
+3.     el
+4.      els
+5.      elsei
+6.      w
+7.	wh
+8.	whi
+9.	whil
+10.	f
+11.	fo
+12.	in
+13.	l
+14.	lo
+15.	lon
+16.	d
+17.	do
+18.	dou
+19.	doub
+20.	doubl
+21.	s
+22.	sh
+23.	sho
+24.	shor
+25.	c
+26.	ch
+27.	cha
+28.	r
+29.	re
+30.	ret
+31.	retu
+32.	retur
+33.	b
+34.	br
+35.	bre
+36.	brea
+37.	co
+38.	con
+39.	cont
+40.	conti
+41.	contin
+42.	continu
+43.	si
+44.	sig
+45.	sign
+46.	signe
+47.	u
+48.	un
+49.	uns
+50.	unsi
+51.	unsig
+52.	unsign
+53.	unsigne
 	
 	
 	*/
 	
-	
-	states[2].token = TOKEN_IF;
-
-	states[3].token = TOKEN_ID;
-	states[4].token = TOKEN_ID;
-	states[5].token = TOKEN_ID;
-
-	states[6].token = TOKEN_ELSE;
-	states[9].token = TOKEN_FOR;
-	states[14].token = TOKEN_WHILE;
-	states[16].token = TOKEN_INT;
-	states[22].token = TOKEN_DOUBLE;
-	states[26].token = TOKEN_CHAR;
-	states[30].token = TOKEN_LONG;
-	states[35].token = TOKEN_SHORT;
-	states[40].token = TOKEN_SIGNED;
-	states[48].token = TOKEN_UNSIGNED;
-	states[54].token = TOKEN_RETURN;
-	states[59].token = TOKEN_BREAK;
-	states[66].token = TOKEN_CONTINUE;
-
-	states[67].token = TOKEN_ID;
-
-	states[68].token = TOKEN_ELSEIF;
-
-	states[69].token = TOKEN_EQUAL;
-	states[70].token = TOKEN_LESS;
-	states[71].token = TOKEN_LESSEQUAL;
-	states[72].token = TOKEN_GREAT;
-	states[73].token = TOKEN_GREATEQUAL;
-	states[75].token = TOKEN_NOT;
-	states[76].token = TOKEN_BITWISEAND;
-	states[77].token = TOKEN_AND;
-	states[78].token = TOKEN_BITWISEXOR;
-
-	states[79].token = TOKEN_NUM;
-	states[80].token = TOKEN_ID;
-	states[81].token = TOKEN_ASSIGN;
-	states[82].token = TOKEN_WHITESPACE;
-	states[83].token = TOKEN_PLUS;
-	states[84].token = TOKEN_MINUS;
-	states[85].token = TOKEN_SEMICOLON;
-	states[86].token = TOKEN_MULT;
-	states[87].token = TOKEN_DIV;
-	states[88].token = TOKEN_MOD;
-
-	states[89].token = TOKEN_BITWISEOR;
-	states[90].token = TOKEN_OR;
-
-	states[91].token = TOKEN_LEFTPAREN;
-	states[92].token = TOKEN_RIGHTPAREN;
-
-	states[93].token = TOKEN_LEFTCURLY;
-	states[94].token = TOKEN_RIGHTCURLY;
-
-	states[97].token = TOKEN_CHARCONST;
-
 	addTransition(0, 'i', 1, 0);
 	addTransition(0, 'e', 3, 0);
 	addTransition(0, 'f', 7, 0);
