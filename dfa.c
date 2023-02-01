@@ -81,6 +81,9 @@ void createIDTransitions(int startState, char blacklist[]) {
 		}
 	}
 }
+void createTransitions(int startState, int endState, int numBlackList) {
+
+}
 
 // Handles from space to next char
 void createSpaceTransitions() {
@@ -213,7 +216,7 @@ void initialize() {
 	addTransition(0, ' ', 82, 1);
 	addTransition(0, '\n', 82, 1);
 	addTransition(0, '\t', 82, 1);
-	createIDTransitions(0, "iefwdclsuvrb");
+	createIDTransitions(0, "iefwdclsurb");
 	
 	
 	addTransition(1, 'f', 2, 0);
