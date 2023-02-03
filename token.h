@@ -402,6 +402,14 @@ typedef struct Token{
 struct Token **tokens;
 int numTokens;
 
+unsigned long numLines = 0;
+
+char **lines; //contains line of line of entire program
+void addLine(char *line) {
+	lines = realloc(lines,sizeof(char*) * (++numLines));
+	lines[numLines-1] = line;
+}
+
 void printLine(unsigned long line) {
 	printf("[%lu]: %s",line,lines[line-1]);
 }
