@@ -401,6 +401,11 @@ typedef struct Token{
 
 struct Token **tokens;
 int numTokens;
+
+void printLine(unsigned long line) {
+	printf("[%lu]: %s",line,lines[line-1]);
+}
+
 void printToken(token_t token) {
 	char *str;
 	switch(token) {
