@@ -41,6 +41,11 @@ void addTransition(int startState, char letter, int endState, int delimeter) {
 	states[startState].numTransitions++;
 }
 
+
+/*
+ * Handles the errors caused by a missing transition from a state meaning that the language does not accept
+ * the combinations of letters.
+ */
 void transitionError(int startState, char letter) {
 	if (letter == '.') {
 		if (startState == 101) printf("Decimals can only have 1 '.' character\n");
@@ -103,51 +108,18 @@ void addSpecialCharacterTransitions(int s) {
 	addTransition(s, '?', 91, 1);
 	addTransition(s, '!', 97, 1);
 }
-void createTransitions(int startState, int endState, int numBlackList) {
-	
-}
 
-// Handles from space to next char
-void createSpaceTransitions() {
-	for (int i = 0; i < 127; i++) {
-		// assign
-		if (i == 61) {
-			addTransition(82, i, 81, 1);
-			continue;
-		}
-		// space
-		if (i == 10 || i == 32) {
-			addTransition(82, i, 82, 0);
-			continue;
-		}
-
-		char *ptr = strchr("iefwdclsuvrb", i);
-		if (!ptr) {
-			// a-z and A-Z
-			if ((i >= 65 && i <= 90) || (i >= 97 && i <= 122)) {
-				addTransition(82, i, 80, 1);
-				addTransition(85, i, 80, 1);
-			}
-		}
-	}
-}
-token_t tokenValues[] = { TOKEN_EOF, TOKEN_ID, TOKEN_NUM, TOKEN_DOUBLE, TOKEN_CHARCONST, TOKEN_STRINGCONST};
+//variables are not used but help visualize the components of the DFA
 int numKeywords = 15;
-int numDelimeters = 3;
+int numDelimeters = 4;
 char *keywords[] = { "if", "else", "elseif", "while", "for", "int", "long", "double", "short", "char", "return", "break", "continue", "signed", "unsigned" };
-char *delimiters[] = { " ", "\t", "\n" };
+char *delimiters[] = { " ", "\t", "\n", "\r" };
 int numSpecialChars = 23;
 char specialChars[] = { '~','!','@','%','^','&','*','(',')','-','+','=','{','[','}',']','/','|',';','<','>',',','?' };
-unsigned long specialCharStates[] = { };
 int numAlphabet = 94;
 char alphabet[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','~','!','@','%','^','&','*','(',')','-','_','`','+','=','{','[','}',']','/','\"','\'','|',';','<','>',',','.','?',' ','\t','\n','\r'};
 
-void createDFA() {
-	for (int i = 0; i < numKeywords; i++) {
-		
-	}
-}
-
+// for debugging
 void printNumTransitions() {
 	for (int i = 0; i < NUM_STATES; i++) {
 		printf("State %d: %d\n",i,states[i].numTransitions);
@@ -156,7 +128,7 @@ void printNumTransitions() {
 		printf("i: %d c: %c\n",i,states[98].transitions[i].letter);
 	}
 	printf("\n");
-	exit(1);
+	//exit(1);
 }
 
 /*

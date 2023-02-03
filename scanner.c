@@ -41,7 +41,7 @@ void addToken(token_t tokenType, char *token, int lineNum) {
  * 2. if the letter transition to the new state is NOT a delimeter add it to the current string
  */
 char* scan(char *curString, int *curStringLength, char c, int *state) {
-	if (c == '\n') lineNum++;
+	//if (c == '\n') lineNum++;
 	//printf("Start state: %d\n",*state);
 	int currentState = *state;
 	if (!takeTransition(*state,c,state)) {
@@ -60,6 +60,7 @@ char* scan(char *curString, int *curStringLength, char c, int *state) {
 		curString = realloc(curString, sizeof(char));
 		curString[0] = c;
 		*curStringLength = 1;
+		if (c == '\n') lineNum++;
 		//printf("Did i do this right: %s\n",tokens[0]->token);
 		return curString;
 	}

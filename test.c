@@ -20,3 +20,23 @@ int x() {
 		}
 	}
 }
+char asdf = 'c';
+double y(int x, int y, char ~x) {
+	while(x - y & 4) {
+		if (x - 5) {
+			return y;
+		}
+		elseif (y - 5 == 2) {
+			return 10;	
+		}
+		else {
+			if (10 == 2) {
+				if (10) {
+					return y;
+				}
+			}
+			break;
+		}
+	}
+	asdf = c - 10;
+}
