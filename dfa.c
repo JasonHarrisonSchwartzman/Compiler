@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "token.h"
-#define NUM_STATES 99
+#define NUM_STATES 103
 
 struct Transition {
 	int state;
@@ -41,6 +41,10 @@ void addTransition(int startState, char letter, int endState, int delimeter) {
 	states[startState].numTransitions++;
 }
 
+void transitionError(int startState, char letter) {
+
+}
+
 /*
  * returns if transition taken is a delimeter (1 if it is) (0 if it is not) 
  * if transition DNE return -1 (it shouldn't happen in theory)
@@ -54,35 +58,49 @@ int takeTransition(int startState, char letter, int *endState) {
 	}
 	printf("state %d\n", startState);
 	printf("Error!!! This character caused it %c ascii: %d\n",letter,(int)letter);
+	exit(1);
 	return -1;
 }
 
-void createIDTransitions(int startState, char blacklist[]) {
-	for (int i = 0; i < 127; i++) {
-		// handles 0-9
-		if (startState != 0 && startState != 82) {
-			if (i >= 48 && i <= 57) {
-				char *ptr = strchr(blacklist, i);
-				if (!ptr) {
-					addTransition(startState, i, 80, 0);
-				}
-			}
-		}
-		// handles a-z and A-Z
-		if ((i >= 65 && i <= 90) || (i >= 97 && i <= 122)) {
-			char *ptr = strchr(blacklist, i);
-			if (!ptr) {
-				if (startState == 91 || startState == 93) {
-					addTransition(startState, i, 80, 1);
-				} else {
-					addTransition(startState, i, 80, 0);
-				}
-			}
+void addIDTransitions(int startState, char blacklist[]) {
+	for (char c = '_'; c <= 'z'; c++) {
+		char *ptr = strchr(blacklist, c);
+		if (!ptr) {
+			addTransition(startState, c, 69, 0);
 		}
 	}
+	for (char c = 'A'; c <= 'Z'; c++) {
+		addTransition(startState, c, 69, 0);
+	}
+}
+
+void addSpecialCharacterTransitions(int s) {
+	addTransition(s, '+', 70, 1);
+	addTransition(s, '-', 71, 1);
+	addTransition(s, '=', 72, 1);
+	addTransition(s, ';', 73, 1);
+	addTransition(s, '[', 74, 1);
+	addTransition(s, ']', 75, 1);
+	addTransition(s, '(', 76, 1);
+	addTransition(s, ')', 77, 1);
+	addTransition(s, '{', 78, 1);
+	addTransition(s, '}', 79, 1);
+	addTransition(s, '>', 80, 1);
+	addTransition(s, '<', 81, 1);
+	addTransition(s, '*', 82, 1);
+	addTransition(s, '/', 83, 1);
+	addTransition(s, '%', 84, 1);
+	addTransition(s, '~', 85, 1);
+	addTransition(s, '@', 86, 1);
+	addTransition(s, ',', 87, 1);
+	addTransition(s, '&', 88, 1);
+	addTransition(s, '|', 89, 1);
+	addTransition(s, '^', 90, 1);
+	addTransition(s, '?', 91, 1);
+	addTransition(s, '!', 97, 1);
 }
 void createTransitions(int startState, int endState, int numBlackList) {
-
+	
 }
 
 // Handles from space to next char
@@ -117,8 +135,8 @@ char *delimiters[] = { " ", "\t", "\n" };
 int numSpecialChars = 23;
 char specialChars[] = { '~','!','@','%','^','&','*','(',')','-','+','=','{','[','}',']','/','|',';','<','>',',','?' };
 unsigned long specialCharStates[] = { };
-int numAlphabet = 92;
-char alphabet[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','~','!','@','%','^','&','*','(',')','-','_','+','=','{','[','}',']','/','\"','\'','|',';','<','>',',','.','?',' ','\t','\n' };
+int numAlphabet = 94;
+char alphabet[] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','0','1','2','3','4','5','6','7','8','9','~','!','@','%','^','&','*','(',')','-','_','`','+','=','{','[','}',']','/','\"','\'','|',';','<','>',',','.','?',' ','\t','\n','\r'};
 
 void createDFA() {
 	for (int i = 0; i < numKeywords; i++) {
@@ -130,8 +148,8 @@ void printNumTransitions() {
 	for (int i = 0; i < NUM_STATES; i++) {
 		printf("State %d: %d\n",i,states[i].numTransitions);
 	}
-	for (int i = 0; i< states[0].numTransitions; i++) {
-		printf("%c ",states[0].transitions[i].letter);
+	for (int i = 0; i< states[70].numTransitions; i++) {
+		printf("%c ",states[70].transitions[i].letter);
 	}
 	printf("\n");
 	exit(1);
@@ -199,8 +217,244 @@ void initialize() {
 	
 	states[102].token = TOKEN_WHITESPACE;
 	
+	for (int i = 0; i < NUM_STATES - 1; i++) {
+		addTransition(i, ' ', 102, 1);
+		addTransition(i, '\n',102, 1);
+		addTransition(i, '\t',102, 1);
+		addTransition(i, '\r',102, 1);
+	}
+	for (int i = 0; i <= 69; i++) {
+		addSpecialCharacterTransitions(i);
+	}
 	
+
+	for (int i = 0; i < NUM_STATES - 1; i++) {
+		if ((i == 98) || (i == 99)) continue;
+		addTransition(i, '\'', 98, 1);
+		addTransition(i, '\"', 99, 1);
+	} 
+
+	for (int i = 54; i <= 69; i++) {
+		addIDTransitions(i, "");
+	}
+
+	for (int i = 70; i <= 97; i++) {
+		addIDTransitions(i, "iewfldscrbu");
+	}
 	
+	addTransition(0, 'i', 1, 0);
+	addTransition(0, 'e', 2, 0);
+	addTransition(0, 'w', 6, 0);
+	addTransition(0, 'f', 10, 0);
+	addTransition(0, 'l', 13, 0);
+	addTransition(0, 'd', 16, 0);
+	addTransition(0, 's', 21, 0);
+	addTransition(0, 'c', 25, 0);
+	addTransition(0, 'r', 28, 0);
+	addTransition(0, 'b', 33, 0);
+	addTransition(0, 'u', 47, 0);
+	addIDTransitions(0, "iewfldscrbu");
+	for (char i = '0'; i <= '9'; i++) {
+		addTransition(0, i, 100, 0);
+	}
+
+	for (int i = 1; i <= 69; i++) {
+		for (char c = '0'; c <= '9'; c++) {
+			addTransition(i, c, 69, 0);
+		}
+	}
+
+	for (int i = 70; i <= 97; i++) {
+		for (char c = '0'; c <= '9'; c++) {
+			if (i == 71) {
+				addTransition(71, c, 100, 0);
+			}
+			else {
+				addTransition(i, c, 100, 1);
+			}
+		}
+	}
+
+
+	addTransition(1, 'n', 12, 0);
+	addTransition(1, 'f', 54, 0);
+	addIDTransitions(1, "nf");
+
+	addTransition(2, 'l', 3, 0);
+	addIDTransitions(2, "l");
+
+	addTransition(3, 's', 4, 0);
+	addIDTransitions(3, "s");
+
+	addTransition(4, 'e', 55, 0);
+	addIDTransitions(4, "e");
+
+	addTransition(5, 'f', 56, 0);
+	addIDTransitions(5, "f");
+
+	addTransition(6, 'h', 7, 0);
+	addIDTransitions(6, "h");
+
+	addTransition(7, 'i', 8, 0);
+	addIDTransitions(7, "i");
+
+	addTransition(8, 'l', 9, 0);
+	addIDTransitions(8, "l");
+
+	addTransition(9, 'e', 57, 0);
+	addIDTransitions(9, "e");
+
+	addTransition(10, 'o', 11, 0);
+	addIDTransitions(10, "o");
+
+	addTransition(11, 'r', 58, 0);
+	addIDTransitions(11, "r");
+
+	addTransition(12, 't', 59, 0);
+	addIDTransitions(12, "t");
+
+	addTransition(13, 'o', 14, 0);
+	addIDTransitions(13, "o");
+
+	addTransition(14, 'n', 15, 0);
+	addIDTransitions(14, "n");
+
+	addTransition(15, 'g', 60, 0);
+	addIDTransitions(15, "g");
+
+	addTransition(16, 'o', 17, 0);
+	addIDTransitions(16, "o");
+
+	addTransition(17, 'u', 18, 0);
+	addIDTransitions(17, "u");
+
+	addTransition(18, 'b', 19, 0);
+	addIDTransitions(18, "b");
+
+	addTransition(19, 'l', 20, 0);
+	addIDTransitions(19, "l");
+
+	addTransition(20, 'e', 61, 0);
+	addIDTransitions(20, "e");
+
+	addTransition(21, 'h', 22, 0);
+	addTransition(21, 'i', 43, 0);
+	addIDTransitions(21, "hi"); 
+
+	addTransition(22, 'o', 23, 0);
+	addIDTransitions(22, "o");
+
+	addTransition(23, 'r', 24, 0);
+	addIDTransitions(23, "r");
+
+	addTransition(24, 't', 62, 0);
+	addIDTransitions(24, "t");
+
+	addTransition(25, 'h', 26, 0);
+	addTransition(25, 'o', 37, 0);
+	addIDTransitions(25, "ho");
+
+	addTransition(26, 'a', 27, 0);
+	addIDTransitions(26, "a");
+
+	addTransition(27, 'r', 63, 0);
+	addIDTransitions(27, "r");
+
+	addTransition(28, 'e', 29, 0);
+	addIDTransitions(28, "e");
+
+	addTransition(29, 't', 30, 0);
+	addIDTransitions(29, "t");
+
+	addTransition(30, 'u', 31, 0);
+	addIDTransitions(30, "u");
+	
+	addTransition(31, 'r', 32, 0);
+	addIDTransitions(31, "r");
+
+	addTransition(32, 'n', 64, 0);
+	addIDTransitions(32, "n");
+
+	addTransition(33, 'r', 34, 0);
+	addIDTransitions(33, "r");
+	
+	addTransition(34, 'e', 35, 0);
+	addIDTransitions(34, "e");
+
+	addTransition(35, 'a', 36, 0);
+	addIDTransitions(35, "a");
+
+	addTransition(36, 'k', 65, 0);
+	addIDTransitions(36, "k");
+
+	addTransition(37, 'n', 38, 0);
+	addIDTransitions(37, "n");
+
+	addTransition(38, 't', 39, 0);
+	addIDTransitions(38, "t");
+
+	addTransition(39, 'i', 40, 0);
+	addIDTransitions(39, "i");
+
+	addTransition(40, 'n', 41, 0);
+	addIDTransitions(40, "n");
+
+	addTransition(41, 'u', 42, 0);
+	addIDTransitions(41, "u");
+
+	addTransition(42, 'e', 66, 0);
+	addIDTransitions(42, "e");
+
+	addTransition(43, 'g', 44, 0);
+	addIDTransitions(43, "g");
+
+	addTransition(44, 'n', 45, 0);
+	addIDTransitions(44, "n");
+
+	addTransition(45, 'e', 46, 0);
+	addIDTransitions(45, "e");
+
+	addTransition(46, 'd', 67, 0);
+	addIDTransitions(46, "d");
+
+	addTransition(47, 'n', 48, 0);
+	addIDTransitions(47, "n");
+
+	addTransition(48, 's', 49, 0);
+	addIDTransitions(48, "s");
+
+	addTransition(49, 'i', 50, 0);
+	addIDTransitions(49, "i");
+
+	addTransition(50, 'g', 51, 0);
+	addIDTransitions(50, "g");
+
+	addTransition(51, 'n', 52, 0);
+	addIDTransitions(51, "n");
+
+	addTransition(52, 'e', 53, 0);
+	addIDTransitions(52, "e");
+
+	addTransition(53, 'd', 68, 0);
+	addIDTransitions(53, "d");
+
+	for (int i = 70; i <= 97; i++) {
+		addTransition(i, 'i', 1, 1);
+		addTransition(i, 'e', 2, 1);
+		addTransition(i, 'w', 6, 1);
+		addTransition(i, 'f', 10, 1);
+		addTransition(i, 'l', 13, 1);
+		addTransition(i, 'd', 16, 1);
+		addTransition(i, 's', 21, 1);
+		addTransition(i, 'c', 25, 1);
+		addTransition(i, 'r', 28, 1);
+		addTransition(i, 'b', 33, 1);
+		addTransition(i, 'u', 47, 1);
+	}
+	for (int i = 0; i < states[0].numTransitions; i++) {
+		addTransition(102, states[0].transitions[i].letter, states[0].transitions[i].state, 1);
+	}
+
 	/*
 1.     i
 2.     e
@@ -258,7 +512,7 @@ void initialize() {
 	
 	
 	*/
-	
+/*	
 	addTransition(0, 'i', 1, 0);
 	addTransition(0, 'e', 3, 0);
 	addTransition(0, 'f', 7, 0);
@@ -925,5 +1179,6 @@ void initialize() {
 	// skip 92 because 92 is right paren
 	createIDTransitions(93, "");
 	createIDTransitions(94, "");
+	*/
 	printNumTransitions();
 }
