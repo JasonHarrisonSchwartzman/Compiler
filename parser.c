@@ -14,7 +14,7 @@
  */
 
 /*
- * Prints stack with integers instead of meaningful characters I will probably change this eventually
+ * Prints stack with integers instead of meaningful characters I will probably change this eventually (also only used for debugging)
  */
 void printStack() {
 	for (int i = 0; i <= stackTopPointer; i++) {
@@ -64,6 +64,10 @@ void *pop() {
 		stack[stackTopPointer]->var = 0;
 		return stack[stackTopPointer]->ptr;
 	}
+}
+
+void parseError() {
+	
 }
 
 /*
@@ -319,6 +323,7 @@ int parse() {
 			reduce(instances[state].actions[actionIndex].instance);
 		}
 		else {
+			//printLine(tokens[tokenIndex]->line);
 			printf("Token not found %s NUM: %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
 			printToken(tokens[tokenIndex]->tokenType);
 			printf("\n");

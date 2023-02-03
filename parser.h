@@ -4,7 +4,7 @@
 #define NUM_ACTIONS 48
 #define NUM_GOTO 33
 #define NUM_INSTANCES 300
-#define TOTAL_TOKENS 50
+#define TOTAL_TOKENS 51
 #include "token.h"
 
 struct StackItem {
