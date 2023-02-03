@@ -7,14 +7,6 @@
 int lineNum = 1;
 extern struct State states[];//defined in dfa.c
 
-char **lines; //contains line of line of entire program
-unsigned long numLines = 0;
-
-void addLine(char *line) {
-	lines = realloc(lines,sizeof(char*) * (++numLines));
-	lines[numLines-1] = line;
-}
-
 void addChar(char *line, char c, int n) {
 	line = realloc(line,sizeof(char)*n);
 	line[n-1] = c;
