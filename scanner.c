@@ -27,6 +27,37 @@ void addToken(token_t tokenType, char *token, unsigned long lineNum, unsigned lo
 	numTokens++;
 		
 }
+
+/*
+ * Handles the errors caused by a missing transition from a state meaning that the language does not accept
+ * the combinations of letters.
+ */
+void transitionError(int startState, char letter) {
+	if (letter == '.') {
+		if (startState == 101) printf("Decimals can only have 1 '.' character\n");
+		else printf("Character '.' can only be used within a valid decimal token\n");
+	}
+}
+
+/*
+ * returns if transition taken is a delimeter (1 if it is) (0 if it is not) 
+ * if transition DNE return -1 (it shouldn't happen in theory)
+ */
+int takeTransition(int startState, char letter, int *endState) {
+	for (int i = 0; i < states[startState].numTransitions; i++) {
+		if (states[startState].transitions[i].letter == letter) {
+			*endState = states[startState].transitions[i].state;
+			return states[startState].transitions[i].delimeter;
+		}
+	}
+	printf("state %d\n", startState);
+	printf("Error!!! This character caused it %c ascii: %d\n",letter,(int)letter);
+	//exit(1);
+	transitionError(startState, letter);
+	return -1;
+}
+
+
 /*
  * SCANNER
  * given the current string, length of string, new letter, and current state
