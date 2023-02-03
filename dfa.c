@@ -42,7 +42,10 @@ void addTransition(int startState, char letter, int endState, int delimeter) {
 }
 
 void transitionError(int startState, char letter) {
-
+	if (letter == '.') {
+		if (startState == 101) printf("Decimals can only have 1 '.' character\n");
+		else printf("Character '.' can only be used within a valid decimal token\n");
+	}
 }
 
 /*
@@ -56,9 +59,10 @@ int takeTransition(int startState, char letter, int *endState) {
 			return states[startState].transitions[i].delimeter;
 		}
 	}
-	printf("state %d\n", startState);
-	printf("Error!!! This character caused it %c ascii: %d\n",letter,(int)letter);
+	//printf("state %d\n", startState);
+	//printf("Error!!! This character caused it %c ascii: %d\n",letter,(int)letter);
 	//exit(1);
+	transitionError(startState, letter);
 	return -1;
 }
 
@@ -549,6 +553,6 @@ void initialize() {
 50.	unsi
 51.	unsig
 52.	unsign
-53.	unsigne
+53.	unsigne */
 	printNumTransitions();
 }
