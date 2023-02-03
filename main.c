@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 	scanner(argc, argv);
 	printTokens();
 	initializeRules();
-	printRules();
+	//printRules();
 	createInstanceAndVarTokens();
 	initializeInstances();
 	int result = parse();
