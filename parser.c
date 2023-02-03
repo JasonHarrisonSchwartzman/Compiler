@@ -323,7 +323,7 @@ int parse() {
 			reduce(instances[state].actions[actionIndex].instance);
 		}
 		else {
-			//printLine(tokens[tokenIndex]->line);
+			printLine(tokens[tokenIndex]->line);
 			printf("Token not found %s NUM: %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
 			printToken(tokens[tokenIndex]->tokenType);
 			printf("\n");

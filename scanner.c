@@ -5,6 +5,7 @@
 #include "dfa.c"
 
 int lineNum = 1;
+unsigned long tokenNum = 0;
 extern struct State states[];//defined in dfa.c
 
 void addChar(char *line, char c, int n) {
@@ -15,12 +16,13 @@ void addChar(char *line, char c, int n) {
 /*
  * adds token with its given token type into the token array
  */
-void addToken(token_t tokenType, char *token, int lineNum) {
+void addToken(token_t tokenType, char *token, unsigned long lineNum, unsigned long tokenIndex) {
 	tokens = realloc(tokens,sizeof(Token)*(numTokens+1));
 	Token *t = malloc(sizeof(Token));
 	t->token = token;
 	t->tokenType = tokenType;
 	t->line = lineNum;
+	t->tokenIndex = tokenIndex;
 	tokens[numTokens] = t;
 	numTokens++;
 		
@@ -33,8 +35,6 @@ void addToken(token_t tokenType, char *token, int lineNum) {
  * 2. if the letter transition to the new state is NOT a delimeter add it to the current string
  */
 char* scan(char *curString, int *curStringLength, char c, int *state) {
-	//if (c == '\n') lineNum++;
-	//printf("Start state: %d\n",*state);
 	int currentState = *state;
 	if (!takeTransition(*state,c,state)) {
 		//printf("New state: %d\n",*state);
@@ -47,13 +47,15 @@ char* scan(char *curString, int *curStringLength, char c, int *state) {
 		curString[(*curStringLength)++] = '\0';
 		char *token = malloc(sizeof(char) * *curStringLength);
 		strcpy(token,curString);
-		//printf("Generated token: %s\n",curString);
-		addToken(states[currentState].token, token,lineNum);
+		printf("tokeNum: %lu\n",tokenNum);
+		addToken(states[currentState].token, token,lineNum, tokenNum++);
 		curString = realloc(curString, sizeof(char));
 		curString[0] = c;
 		*curStringLength = 1;
-		if (c == '\n') lineNum++;
-		//printf("Did i do this right: %s\n",tokens[0]->token);
+		if (c == '\n') {
+			lineNum++;
+			tokenNum = 0;
+		}
 		return curString;
 	}
 }
@@ -77,6 +79,7 @@ void printTokens() {
 		printf("%15s | ",tokens[i]->token);
 		printToken(tokens[i]->tokenType);
 		printf("%15lu | ",tokens[i]->line);
+		printf("%15lu | ",tokens[i]->tokenIndex);
 		printf("\n");
 	}
 }
@@ -98,13 +101,13 @@ int scanner(int argc, char *argv[]) {
 	while (1) {
 		c = fgetc(file);
 		if (feof(file)) {
-			addToken(states[state].token, string, lineNum);
+			addToken(states[state].token, string, lineNum, tokenNum);
 			break;
 		}
 		string = scan(string, &stringLength, c, &state);
 		//printf("%s\n",string);
 	}
-	addToken(TOKEN_DOLLAR, "$", -1);
+	addToken(TOKEN_DOLLAR, "$", -1, -1);
 	rewind(file);
 	
 	char *line = NULL;

@@ -1,6 +1,7 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 #include <stdio.h>
+#include <stdlib.h>
 /**
  * Contains instances, nonterminal variables and tokens
  * Helpful to combine all into one type for the stack in the parser
@@ -397,6 +398,7 @@ typedef struct Token{
 	token_t tokenType;
 	char* token;
 	unsigned long line;
+	unsigned long tokenIndex;
 } Token;
 
 struct Token **tokens;

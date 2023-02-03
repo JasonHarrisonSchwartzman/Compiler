@@ -64,8 +64,8 @@ int takeTransition(int startState, char letter, int *endState) {
 			return states[startState].transitions[i].delimeter;
 		}
 	}
-	//printf("state %d\n", startState);
-	//printf("Error!!! This character caused it %c ascii: %d\n",letter,(int)letter);
+	printf("state %d\n", startState);
+	printf("Error!!! This character caused it %c ascii: %d\n",letter,(int)letter);
 	//exit(1);
 	transitionError(startState, letter);
 	return -1;
@@ -526,5 +526,5 @@ void initialize() {
 51.	unsig
 52.	unsign
 53.	unsigne */
-	printNumTransitions();
+	//printNumTransitions();
 }
