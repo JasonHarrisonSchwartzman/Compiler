@@ -71,10 +71,6 @@ void printSymbolTable(struct SymbolTable *sym) {
 	}
 }
 
-void printLine(unsigned long line) {
-	printf("[%lu]: %s",line,lines[line-1]);
-}
-
 
 /*TODO:
  * Type checking
