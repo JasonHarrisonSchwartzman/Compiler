@@ -174,8 +174,8 @@ struct Type *typeCheckExpr(struct Expression *expr) {
  * Checking to see if assignment is legal between an expression into a variable
  */
 struct Type *typeCheckAssignment(struct VarDecl *var, struct Expression *expr) {
-	struct Type *varType = var->type;
-	struct Type *exprType = expr->eval->type;
+	//struct Type *varType = var->type;
+	//struct Type *exprType = expr->eval->type;
 	return NULL;
 }
 

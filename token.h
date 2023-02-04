@@ -394,6 +394,11 @@ typedef enum token_t{
 	VAR_A1 = 384,
 	VAR_ERROR = 385
 } token_t;
+
+/*
+ * Token structure. 
+ * Each token contains a string representation, a token type, the line it is on and the token index within the line
+ */
 typedef struct Token{
 	token_t tokenType;
 	char* token;
@@ -401,21 +406,26 @@ typedef struct Token{
 	unsigned long tokenIndex;
 } Token;
 
-struct Token **tokens;
-int numTokens;
+struct Token **tokens;//contains stream of tokens 
+int numTokens;//number of tokens in stream
 
-unsigned long numLines = 0;
+unsigned long numLines = 0;//number of lines in program
+char **lines; //contains line to line of entire program
 
-char **lines; //contains line of line of entire program
+//adds line to lines array 
 void addLine(char *line) {
 	lines = realloc(lines,sizeof(char*) * (++numLines));
 	lines[numLines-1] = line;
 }
 
+//prints line from lines array
 void printLine(unsigned long line) {
 	printf("[%lu]: %s",line,lines[line-1]);
 }
 
+/*
+ * Converts token enum to english for debugging
+ */
 void printToken(token_t token) {
 	char *str;
 	switch(token) {

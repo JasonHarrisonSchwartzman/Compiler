@@ -7,6 +7,10 @@
 
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);
+	if (!scannerPass) {
+		printf("SCANNER FAILURE.\n");
+		exit(1);
+	}
 	printTokens();
 	initializeRules();
 	//printRules();
@@ -17,10 +21,10 @@ int main(int argc, char *argv[]) {
 		printf("SUCCESS!\n");
 	}
 	else if (result == 0) {
-	 	printf("FAILURE\n");
+	 	printf("PARSER FAILURE.\n");
 	}
 	else {
-		printf("ODD FAILURE\n");
+		printf("ODD PARSER FAILURE\n");
 	}
 	checkAll();
 	/*signed long x = 1865000000000000;
