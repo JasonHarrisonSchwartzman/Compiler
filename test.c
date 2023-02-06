@@ -1,3 +1,7 @@
+double test(int x, int y, char ~z) {
+
+}
+
 int x = 10;
 long y = 5;
 int id = 10;

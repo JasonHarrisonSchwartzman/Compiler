@@ -6,7 +6,7 @@
 
 int scannerPass = 1;//if there are no errors this won't change else it'll be 0
 
-int lineNum = 1;//current line number being read
+unsigned long lineNum = 1;//current line number being read
 unsigned long tokenNum = 0;//current token index within line
 
 extern struct State states[];//defined in dfa.c
@@ -35,13 +35,23 @@ void transitionError(int startState, char letter, char *curString, int curLength
 
 	char *c = malloc(sizeof(char)*curLength);
 	strncpy(c, curString, curLength);
-	printf("Adding character '%c' to string '%s' will result in an invalid token\n",letter,c);
+	printf("Adding character '%c' to string '%s' will result in an invalid token\n",letter, curLength > 0 ? c : "");
 	if (letter == '.') {
 		if (startState == 101) printf("Decimals can only have 1 '.' character\n");
 		else printf("Character '.' can only be used within a valid decimal token\n");
 	}
 	printLine(lineNum);
 	//TODO: neatly print out another line that points to the error in this line (like gcc)
+	for (int i = 0; i < lineNum/10 + 5; i++) printf(" ");
+	unsigned long tokenIndex;
+	for (tokenIndex = 0; tokenIndex < numTokens; tokenIndex++) {
+		if (tokens[tokenIndex]->line == lineNum) break;
+	}
+	for ( ; tokenIndex < numTokens; tokenIndex++) {
+		for (int i = 0; i < strlen(tokens[tokenIndex]->token); i++) printf(" ");
+	}
+	for (int i = 0; i < curLength -1 ; i++) printf(" ");
+	printf("^");
 	printf("\n");
 }
 
