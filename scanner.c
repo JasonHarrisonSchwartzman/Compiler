@@ -26,6 +26,10 @@ void addToken(token_t tokenType, char *token, unsigned long lineNum, unsigned lo
 		
 }
 
+int isWhitespace(char *c) {
+	return (strcmp(c, "\t") == 0) || (strcmp(c, "\n") == 0) || (strcmp(c, "\r") == 0) || (strcmp(c, " ") == 0);
+}
+
 /*
  * Handles the errors caused by a missing transition from a state meaning that the language does not accept
  * the combinations of letters.
@@ -35,22 +39,35 @@ void transitionError(int startState, char letter, char *curString, int curLength
 
 	char *c = malloc(sizeof(char)*curLength);
 	strncpy(c, curString, curLength);
-	printf("Adding character '%c' to string '%s' will result in an invalid token\n",letter, curLength > 0 ? c : "");
+
+	//general error message
+	printf("Adding character '%c' to string '%s' will result in an invalid token\n",letter, (curLength == 0) || isWhitespace(c) ? "" : c);
+
+	//more specific error message
 	if (letter == '.') {
 		if (startState == 101) printf("Decimals can only have 1 '.' character\n");
 		else printf("Character '.' can only be used within a valid decimal token\n");
 	}
+
 	printLine(lineNum);
-	//TODO: neatly print out another line that points to the error in this line (like gcc)
 	for (int i = 0; i < lineNum/10 + 5; i++) printf(" ");
 	unsigned long tokenIndex;
 	for (tokenIndex = 0; tokenIndex < numTokens; tokenIndex++) {
-		if (tokens[tokenIndex]->line == lineNum) break;
+		if (tokens[tokenIndex]->line == lineNum) {
+			break;
+		}
 	}
 	for ( ; tokenIndex < numTokens; tokenIndex++) {
+		if (strcmp(tokens[tokenIndex]->token,"\t") == 0) {
+			printf("\t");
+			continue;
+		}
 		for (int i = 0; i < strlen(tokens[tokenIndex]->token); i++) printf(" ");
 	}
-	for (int i = 0; i < curLength -1 ; i++) printf(" ");
+	if (curString[0] == '\t') printf("\t");
+	for (int i = 0; i < curLength -1 ; i++) {
+		printf(" ");
+	}
 	printf("^");
 	printf("\n");
 }
