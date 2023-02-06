@@ -428,6 +428,7 @@ struct Statement *addStatement(statement_t stmt, struct VarDecl *vardecl, struct
 }
 
 struct Statement *addStatements(struct Statement *stmt, struct Statement *next) {
+	printf("Test\n");
 	stmt->next = next;
 	return stmt;
 }

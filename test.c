@@ -1,5 +1,5 @@
 double test(int x, int y, char ~z) {
-
+	return y;
 }
 
 int x = 10;

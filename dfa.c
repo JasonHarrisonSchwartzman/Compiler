@@ -193,9 +193,13 @@ void initialize() {
 		addTransition(i, '\'', 98, 1);
 		addTransition(i, '\"', 99, 1);
 	} 
-
+	//addTransition(55, 
 	for (int i = 54; i <= 69; i++) {
-		addIDTransitions(i, "", 0);
+		if (i == 55) {
+			addTransition(55, 'i', 5, 0);
+			addIDTransitions(i, "i", 0);
+		}
+		else addIDTransitions(i, "", 0);
 	}
 
 	for (int i = 70; i <= 97; i++) {

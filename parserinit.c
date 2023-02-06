@@ -361,6 +361,7 @@ void initializeInstances() {
 	//instance 15
 	addInstanceAction(15,STEP_REDUCE,7,TOKEN_ID);
 	addInstanceAction(15,STEP_REDUCE,7,TOKEN_LEFTBRACKET);
+	addInstanceAction(15,STEP_REDUCE,7,TOKEN_TILDE);
 	//instance 16
 	addInstanceAction(16,STEP_REDUCE,1,TOKEN_DOLLAR);
 	//instance 17
@@ -421,7 +422,7 @@ void initializeInstances() {
 	addInstanceAction(28,STEP_SHIFT,37,TOKEN_SEMICOLON);
 	addInstanceAction(28,STEP_SHIFT,38,TOKEN_LEFTCURLY);
 	//instance 29
-	addInstanceAction(29,STEP_SHIFT,121,TOKEN_NUM);
+	addInstanceAction(29,STEP_SHIFT,121,TOKEN_ID);
 	addInstanceAction(29,STEP_SHIFT,20,TOKEN_TILDE);
 	addInstanceGoto(29,VAR_I1,39);
 	//instance 30
@@ -688,7 +689,7 @@ void initializeInstances() {
 	addInstanceGoto(62,VAR_E1,29);
 	addInstanceGoto(62,VAR_F1,14);
 	addInstanceGoto(62,VAR_G1,15);
-	addInstanceGoto(62,VAR_L1,82);
+	addInstanceGoto(62,VAR_L1,87);
 	//instance 63
 	addInstanceAction(63,STEP_REDUCE,20,TOKEN_ASSIGN);
 	addInstanceAction(63,STEP_REDUCE,20,TOKEN_SEMICOLON);

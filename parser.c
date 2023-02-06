@@ -20,10 +20,14 @@ void printStack() {
 	for (int i = 0; i <= stackTopPointer; i++) {
 		printf("%d ", stack[i]->instance);
 		if (stack[i]->token != NULL) {
-			printf("%d ",stack[i]->token->tokenType);
+			printToken(stack[i]->token->tokenType);
+			printf(" ");
+			//printf("%d ",stack[i]->token->tokenType);
 		}
 		if (stack[i]->var != 0) {
-			printf("%d ",stack[i]->var);
+			printToken(stack[i]->var);
+			printf(" ");
+			//printf("%d ",stack[i]->var);
 		}
 	}
 	printf("\n");
@@ -60,6 +64,11 @@ void *pop() {
 		return NULL;
 	}
 	else {
+		if (stack[stackTopPointer]->ptr == NULL) {
+			printf("Variable contains a NULL pointer: ");
+			printToken(stack[stackTopPointer]->var);
+			printf("\n");
+		}
 		stack[stackTopPointer]->token = NULL;
 		stack[stackTopPointer]->var = 0;
 		return stack[stackTopPointer]->ptr;
@@ -153,7 +162,7 @@ void *callSemanticRule(void *param[], int rule) {
 		case 33:
 			return addStatement(IF,NULL,NULL,NULL,NULL,param[0]);
 		case 34:
-			return NULL;
+			return addStatement(((struct Loop*)param[0])->stmt, NULL, NULL, NULL, param[0],NULL);
 		case 35:
 			return addStatement(RETURN,NULL,NULL,param[0],NULL,NULL);
 		case 36:
@@ -279,6 +288,7 @@ void *callSemanticRule(void *param[], int rule) {
 void reduce(int rule) {
 	printf("Reduce by %d\n",rule);
 	int ruleLength = rules[rule].length;
+	printf("Rule length %d\n",ruleLength);
 	void *pointers[ruleLength];
 	int num = ruleLength - 1;
 	void *p;
@@ -323,6 +333,7 @@ int parse() {
 			reduce(instances[state].actions[actionIndex].instance);
 		}
 		else {
+			//debug
 			printLine(tokens[tokenIndex]->line);
 			printf("Token not found %s NUM: %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
 			printToken(tokens[tokenIndex]->tokenType);

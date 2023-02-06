@@ -32,7 +32,7 @@ int isWhitespace(char *c) {
 
 /*
  * Handles the errors caused by a missing transition from a state meaning that the language does not accept
- * the combinations of letters.
+ * the combinations of letters. However, it should be noted that invalid characters will be added to the current string, in other words they are ignored.
  */
 void transitionError(int startState, char letter, char *curString, int curLength) {
 	scannerPass = 0;
@@ -69,7 +69,7 @@ void transitionError(int startState, char letter, char *curString, int curLength
 		printf(" ");
 	}
 	printf("^");
-	printf("\n");
+	printf("\n\n");
 }
 
 /*
