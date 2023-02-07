@@ -282,7 +282,7 @@ void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func
 void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 	struct Symbol *x = lookUpNameCurrentScope(param->var->name,symTab);
 	if (x) {
-		printError(1,x->name,param->var->line,param->var->symbol->line);
+		printError(1,x->name,param->var->line,x->line);
 		return;
 	}
 	struct Symbol *s = createSymbol(param->var->name,param->var->type,SYMBOL_LOCAL,VAR,param->var->line);
