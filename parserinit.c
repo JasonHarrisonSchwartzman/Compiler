@@ -2,6 +2,12 @@
 #include "parser.h"
 #include <stdlib.h>
 
+/**
+ * Where parser.c is the algorithm for parsing, this file builds all of the data structures being used such as the grammar and the PDA
+ */
+
+
+//not finished yet TODO
 void printParsingError(unsigned long n) {
 	switch (n) {
 		case 1: 
@@ -10,7 +16,7 @@ void printParsingError(unsigned long n) {
 	}
 }
 
-
+//creates instance and variable tokens to be pushed onto the stack when needed
 void createInstanceAndVarTokens() {
 	for (int i = 0; i < NUM_INSTANCES; i++) {
 		instanceTokens[i] = malloc(sizeof(Token));
@@ -22,6 +28,7 @@ void createInstanceAndVarTokens() {
 	}
 }
 
+//note to future self: you did not take care of memory leeks
 void freeInstanceAndVarTokens() {
 	for (int i = 0; i < NUM_INSTANCES; i++) {
 		free(instanceTokens[i]);
@@ -31,6 +38,7 @@ void freeInstanceAndVarTokens() {
 	}
 }
 
+//adding a rule to the grammar
 void addRule(int item, token_t var, int length, token_t symbol[length]) {
 	rules[item].var = var;
 	rules[item].length = length;
@@ -40,6 +48,7 @@ void addRule(int item, token_t var, int length, token_t symbol[length]) {
 	}
 }
 
+//for debugging
 void printRule(struct Rule rule) {
 	printToken(rule.var);
 	printf("->");
@@ -50,6 +59,7 @@ void printRule(struct Rule rule) {
 	printf("\n");
 }
 
+//for debugging 
 void printRules() {
 	printf("----------GRAMMAR-----------\n");
 	for (int i = 0; i < NUM_RULES; i++) {
@@ -57,6 +67,7 @@ void printRules() {
 	}
 }
 
+//note to future self: you did not take care of mem leeks yet
 void freeRules() {
 	for (int i = 0; i < NUM_RULES; i++) {
 		free(rules[i].symbols);
@@ -247,7 +258,9 @@ void initializeRules() {
 	addRule(89, VAR_I2, 4, rule89);
 
 }
-
+/*
+ * These two functions help add actions and gotoActions for each instance
+ */
 void addInstanceAction(int instanceNum, Step step, int num, token_t token) {
 	instances[instanceNum].actions[token-NUM_INSTANCES].step = step;
 	instances[instanceNum].actions[token-NUM_INSTANCES].instance = num;
@@ -256,6 +269,7 @@ void addInstanceGoto(int instanceNum, token_t gotoNum, int gotoInstance) {
 	instances[instanceNum].gotoAction[gotoNum-(NUM_INSTANCES+TOTAL_TOKENS)] = gotoInstance;
 }
 
+//HUGE method contains the entire PDA for the SLR parsing method
 void initializeInstances() {
 	//instance 0
 	addInstanceAction(0,STEP_SHIFT,4,TOKEN_INT);

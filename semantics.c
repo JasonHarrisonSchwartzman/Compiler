@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * This file deals with the semantics of the language after being given a syntax tree from the parser.
+ * Some semantics include the symbol table, expression resolution, etc.
+ */
+
 extern struct Declaration *syntaxTree;
 extern char **lines;
 

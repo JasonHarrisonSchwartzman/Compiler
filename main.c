@@ -5,6 +5,10 @@
 #include "semantics.c"
 #include <stdio.h>
 
+/**
+ * Putting everything together the main file is the command and control of the various parts of the compiler.
+ */
+
 int main(int argc, char *argv[]) {
 	scanner(argc, argv);
 	if (!scannerPass) {
@@ -22,16 +26,13 @@ int main(int argc, char *argv[]) {
 	}
 	else if (result == 0) {
 	 	printf("PARSER FAILURE.\n");
+		exit(1);
 	}
 	else {
 		printf("ODD PARSER FAILURE\n");
+		exit(1);
 	}
 	checkAll();
-	/*signed long x = 1865000000000000;
-	unsigned long y = 140000000000000;
-	signed long z = 9223372036854775807;
-	unsigned long w = 1;
-	printf("Test:%ld\n",z+w);*/
 
 	freeRules();
 	freeInstanceAndVarTokens();

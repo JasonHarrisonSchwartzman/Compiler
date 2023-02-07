@@ -41,6 +41,7 @@ void addTransition(int startState, char letter, int endState, int delimeter) {
 	states[startState].numTransitions++;
 }
 
+//adding transitions for alpha characters (and _ and `) given a blacklist of what to not include and whether these transitions are delimeters
 void addIDTransitions(int startState, char blacklist[], int delimeter) {
 	for (char c = '_'; c <= 'z'; c++) {
 		char *ptr = strchr(blacklist, c);
@@ -98,7 +99,6 @@ void printNumTransitions() {
 		printf("i: %d c: %c\n",i,states[98].transitions[i].letter);
 	}
 	printf("\n");
-	//exit(1);
 }
 
 /*
@@ -193,7 +193,7 @@ void initialize() {
 		addTransition(i, '\'', 98, 1);
 		addTransition(i, '\"', 99, 1);
 	} 
-	//addTransition(55, 
+
 	for (int i = 54; i <= 69; i++) {
 		if (i == 55) {
 			addTransition(55, 'i', 5, 0);
@@ -500,5 +500,4 @@ void initialize() {
 51.	unsig
 52.	unsign
 53.	unsigne */
-	//printNumTransitions();
 }

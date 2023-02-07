@@ -4,6 +4,15 @@
 #include "token.h"
 #include "dfa.c"
 
+/**
+ * Utilizing the DFA created in dfa.c, the scanner will walk through the DFA taking transitions based on the input string (the program).
+ * The scanner will accumulate a string based on an input until a delimeter is read. The delimeter is a field of the transition struct. 
+ * Once a delimeter is read the current state's token is added to the token stream. 
+ * When an error is found, meaning there is not a valid transition for the character being read, the compiler will print the line it occured on.
+ * These invalid characters are ignored and the scanner continues to scan the input to try to find more errors.
+ * However, the compiler will not proceed to the next phase (parsing).
+ */
+
 int scannerPass = 1;//if there are no errors this won't change else it'll be 0
 
 unsigned long lineNum = 1;//current line number being read
@@ -26,6 +35,7 @@ void addToken(token_t tokenType, char *token, unsigned long lineNum, unsigned lo
 		
 }
 
+//tabs, newlines, spaces, and carriage return
 int isWhitespace(char *c) {
 	return (strcmp(c, "\t") == 0) || (strcmp(c, "\n") == 0) || (strcmp(c, "\r") == 0) || (strcmp(c, " ") == 0);
 }
@@ -52,11 +62,13 @@ void transitionError(int startState, char letter, char *curString, int curLength
 	printLine(lineNum);
 	for (int i = 0; i < lineNum/10 + 5; i++) printf(" ");
 	unsigned long tokenIndex;
+	//find the current line number the error is on
 	for (tokenIndex = 0; tokenIndex < numTokens; tokenIndex++) {
 		if (tokens[tokenIndex]->line == lineNum) {
 			break;
 		}
 	}
+	//within the line number get the length of each token to print out spaces to line up with the invalid character
 	for ( ; tokenIndex < numTokens; tokenIndex++) {
 		if (strcmp(tokens[tokenIndex]->token,"\t") == 0) {
 			printf("\t");
@@ -64,11 +76,11 @@ void transitionError(int startState, char letter, char *curString, int curLength
 		}
 		for (int i = 0; i < strlen(tokens[tokenIndex]->token); i++) printf(" ");
 	}
-	if (curString[0] == '\t') printf("\t");
+	if (curString[0] == '\t') printf("\t");//if a tab character is in the token stream a tab character must be printed to cover the same spacing
 	for (int i = 0; i < curLength -1 ; i++) {
 		printf(" ");
 	}
-	printf("^");
+	printf("^");//this should point to the invalid character in the line above
 	printf("\n\n");
 }
 
@@ -83,9 +95,6 @@ int takeTransition(int startState, char letter, int *endState, char *curString, 
 			return states[startState].transitions[i].delimeter;
 		}
 	}
-	//printf("state %d\n", startState);
-	//printf("Error!!! This character caused it %c ascii: %d\n",letter,(int)letter);
-	//exit(1);
 	transitionError(startState, letter, curString, curLength);
 	return -1;
 }
@@ -101,7 +110,7 @@ int takeTransition(int startState, char letter, int *endState, char *curString, 
 char* scan(char *curString, int *curStringLength, char c, int *state) {
 	int currentState = *state;
 	if (!takeTransition(*state,c,state,curString,*curStringLength)) { //illegal transition
-		//but add the character anyway 
+		//but add the character anyway to the token string 
 		curString = realloc(curString, sizeof(char) * (*curStringLength + 1));
 		curString[(*curStringLength)++] = c;	
 		return curString;
@@ -132,6 +141,7 @@ char* scan(char *curString, int *curStringLength, char c, int *state) {
 }
 
 /*
+ * Note to future self: You have not taken care of memory leaks
  * No mem leeks
  */
 void freeTokens() {
@@ -141,6 +151,7 @@ void freeTokens() {
 	}
 	free(tokens);
 }
+
 /*
  * Prints tokens array in a somewhat organized manner for debugging
  */
@@ -165,6 +176,7 @@ int scanner(int argc, char *argv[]) {
 
 	char c;//character that will be read
 	int state = 0;//start state
+
 	char *string = malloc(sizeof(char));//current characters being read
 	int stringLength = 0;
 
@@ -173,6 +185,7 @@ int scanner(int argc, char *argv[]) {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
+	//generating the lines array containing all lines from the program (used for printing the line an error occurred)
 	while ((read = getline(&line, &len, file)) != -1) {
 		lines = realloc(lines, sizeof(char*)* ++numLines);
 		lines[numLines - 1] = strdup(line);
@@ -183,11 +196,11 @@ int scanner(int argc, char *argv[]) {
 	while (1) {
 		c = fgetc(file);
 		if (feof(file)) {
-			addToken(states[state].token, string, lineNum, tokenNum);//generate token for whatever is leftover
+			addToken(states[state].token, string, lineNum, tokenNum);//generate token for whatever is leftover at the EOF
 			break;
 		}
 		string = scan(string, &stringLength, c, &state);
 	}
-	addToken(TOKEN_DOLLAR, "$", -1, -1);//adding empty token to token stream
+	addToken(TOKEN_DOLLAR, "$", -1, -1);//adding empty token to token stream (used in parser)
 	return 0;
 }

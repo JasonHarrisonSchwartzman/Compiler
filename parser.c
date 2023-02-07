@@ -5,6 +5,10 @@
 #include "parserinit.c"
 #include "parser.h"
 
+/**
+ * This file contains the algorithm for the SLR parsing method given the output to the scanner (the token stream)
+ */
+
 /*
  * How the stack is set up for SLR Parsing:
  * Each element in the stack contains an instance followed by a nonterminal variable or token
@@ -64,17 +68,18 @@ void *pop() {
 		return NULL;
 	}
 	else {
-		if (stack[stackTopPointer]->ptr == NULL) {
+		/*if (stack[stackTopPointer]->ptr == NULL) {
 			printf("Variable contains a NULL pointer: ");
 			printToken(stack[stackTopPointer]->var);
 			printf("\n");
-		}
+		}*/
 		stack[stackTopPointer]->token = NULL;
 		stack[stackTopPointer]->var = 0;
 		return stack[stackTopPointer]->ptr;
 	}
 }
 
+//not finished yet TODO
 void parseError() {
 	
 }
@@ -333,7 +338,7 @@ int parse() {
 			reduce(instances[state].actions[actionIndex].instance);
 		}
 		else {
-			//debug
+			//add error handling TODO
 			printLine(tokens[tokenIndex]->line);
 			printf("Token not found %s NUM: %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
 			printToken(tokens[tokenIndex]->tokenType);

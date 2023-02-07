@@ -4,7 +4,7 @@
 #include <stdlib.h>
 /**
  * Contains instances, nonterminal variables and tokens
- * Helpful to combine all into one type for the stack in the parser
+ * Helpful (in my opinion) to combine all into one type for the stack in the parser
  */
 typedef enum token_t{
 	I_0 = 0,
