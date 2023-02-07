@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-Wall
 EXE=jcc
 
-all: main.o parser.o parserinit.o scanner.o dfa.o semantics.o
+jcc: main.o parser.o parserinit.o scanner.o dfa.o semantics.o
 	$(CC) $(CFLAGS) -o $(EXE) main.o -g
 main.o: main.c parser.c parserinit.c scanner.c semantics.c dfa.c
 	$(CC) $(CFLAGS) -c main.c
