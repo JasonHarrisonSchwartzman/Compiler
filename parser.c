@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "token.h"
 #include "syntaxtree.h"
 #include "parserinit.c"
@@ -77,6 +78,34 @@ void *pop() {
 		stack[stackTopPointer]->var = 0;
 		return stack[stackTopPointer]->ptr;
 	}
+}
+void printParserError(Token *token) {
+	int i;
+	printLine(token->line);
+	for (int x = 0; x < token->line/10 + 4; x++) printf(" ");
+	for (i = 0; i < numTokens; i++) {
+		
+		if(tokens[i]->line == token->line) break;	
+	}
+	int whitespace = 0;
+	for ( ; i < numTokens; i++) {
+		if (tokens[i]->tokenIndex == token->tokenIndex) break;
+		if ((tokens[i]->token[0] == '\t') || (tokens[i]->token[0] == ' ')) {
+			if (whitespace) {
+				continue;
+			}
+			whitespace = 1;
+			printf(" ");
+		}
+		else {
+			for(int j = 0; j < strlen(tokens[i]->token); j++) {
+				printf(" ");
+			}
+			whitespace = 0;
+		}
+	}
+	printf("^");
+	printf("\n\n");
 }
 
 //not finished yet TODO
@@ -339,7 +368,8 @@ int parse() {
 		}
 		else {
 			//add error handling TODO
-			printLine(tokens[tokenIndex]->line);
+			printParserError(tokens[tokenIndex]);
+			//printLine(tokens[tokenIndex]->line);
 			printf("Token not found %s NUM: %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
 			printToken(tokens[tokenIndex]->tokenType);
 			printf("\n");

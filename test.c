@@ -1,6 +1,15 @@
 double test(int x, int y, char ~z) {
 	return y;
 }
+char asdf(char x[10], double ~z, int ~y[5]) {
+	x[1] = 10;
+	x[z + x] = x[10 + 5] + @z + ?x;
+	while (x[z+x]) {
+		while (10) {
+			int x[10] = 10;
+		}
+	}
+}
 
 int x = 10;
 long y = 5;

@@ -4,7 +4,7 @@ EXE=jcc
 
 jcc: main.o parser.o parserinit.o scanner.o dfa.o semantics.o
 	$(CC) $(CFLAGS) -o $(EXE) main.o -g
-main.o: main.c parser.c parserinit.c scanner.c semantics.c dfa.c
+main.o: main.c parser.c parserinit.c scanner.c semantics.c dfa.c token.h
 	$(CC) $(CFLAGS) -c main.c
 
 semantics.o: semantics.c syntaxtree.h

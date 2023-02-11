@@ -37,7 +37,7 @@ void addToken(token_t tokenType, char *token, unsigned long lineNum, unsigned lo
 
 //tabs, newlines, spaces, and carriage return
 int isWhitespace(char *c) {
-	return (strcmp(c, "\t") == 0) || (strcmp(c, "\n") == 0) || (strcmp(c, "\r") == 0) || (strcmp(c, " ") == 0);
+	return ( c[0] == ' ' || c[0] == '\n' || c[0] == '\r' || c[0] == '\t' || (strcmp(c, "") == 0) || (c == NULL) || (strcmp(c, "\t") == 0) || (strcmp(c, "\n") == 0) || (strcmp(c, "\r") == 0) || (strcmp(c, " ") == 0));
 }
 
 /*
@@ -47,7 +47,7 @@ int isWhitespace(char *c) {
 void transitionError(int startState, char letter, char *curString, int curLength) {
 	scannerPass = 0;
 
-	char *c = malloc(sizeof(char)*curLength);
+	char *c = calloc(1,sizeof(char)*curLength);
 	strncpy(c, curString, curLength);
 
 	//general error message

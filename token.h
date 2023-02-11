@@ -2,6 +2,7 @@
 #define TOKEN_H
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 /**
  * Contains instances, nonterminal variables and tokens
  * Helpful (in my opinion) to combine all into one type for the stack in the parser
@@ -420,7 +421,29 @@ void addLine(char *line) {
 
 //prints line from lines array
 void printLine(unsigned long line) {
-	printf("[%lu]: %s",line,lines[line-1]);
+	int lineLength = strlen(lines[line -1]);
+	char *str = malloc(lineLength + 1);
+	int i = 0;
+	int whiteSpace = 0;
+	char *lineStr = lines[line-1];
+	while (i < lineLength) {
+		char c;
+		if ((lineStr[i] == '\t') || (lineStr[i] == ' ')) {
+			if (whiteSpace) {
+				i++;
+				continue;
+			}
+			whiteSpace = 1;
+			c = ' ';
+		}
+		else {
+			c = lineStr[i];
+			whiteSpace = 0;
+		}
+		str = strncat(str, &c, 1);
+		i++;	
+	}
+	printf("[%lu]: %s",line,str);
 }
 
 /*
