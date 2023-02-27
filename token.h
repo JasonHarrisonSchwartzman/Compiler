@@ -424,7 +424,7 @@ void printLine(unsigned long line) {
 	int lineLength = strlen(lines[line -1]);
 	char *str = malloc(lineLength + 1);
 	int i = 0;
-	int whiteSpace = 0;
+	int whiteSpace = 1;
 	char *lineStr = lines[line-1];
 	while (i < lineLength) {
 		char c;

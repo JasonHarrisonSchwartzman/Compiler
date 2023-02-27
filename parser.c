@@ -90,14 +90,17 @@ void printParserError(Token *token) {
 	int whitespace = 0;
 	for ( ; i < numTokens; i++) {
 		if (tokens[i]->tokenIndex == token->tokenIndex) break;
-		if ((tokens[i]->token[0] == '\t') || (tokens[i]->token[0] == ' ')) {
-			if (whitespace) {
-				continue;
-			}
+		//TODO uncomment out stuff if you need it and allow tabs to not ruin lineup
+		if (tokens[i]->tokenType == TOKEN_WHITESPACE) {
+			//printf("%d",whitespace);
+			//if (whitespace) {
+			//	continue;
+			//}
 			whitespace = 1;
 			printf(" ");
 		}
 		else {
+			//printf("%x ", tokens[i]->token[0]);
 			for(int j = 0; j < strlen(tokens[i]->token); j++) {
 				printf(" ");
 			}
