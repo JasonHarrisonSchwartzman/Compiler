@@ -60,7 +60,7 @@ void transitionError(int startState, char letter, char *curString, int curLength
 	}
 
 	printLine(lineNum);
-	for (int i = 0; i < lineNum/10 + 6; i++) printf(" ");
+	for (int i = 0; i < lineNum/10 + 4; i++) printf(" ");
 	unsigned long tokenIndex;
 	//find the current line number the error is on
 	for (tokenIndex = 0; tokenIndex < numTokens; tokenIndex++) {
@@ -69,24 +69,23 @@ void transitionError(int startState, char letter, char *curString, int curLength
 		}
 	}
 	//within the line number get the length of each token to print out spaces to line up with the invalid character
-	int whitespace = 1;
 	for ( ; tokenIndex < numTokens; tokenIndex++) {
-		if (tokens[tokenIndex]->tokenType == TOKEN_WHITESPACE) {
-			if (whitespace) continue;
+		printToken(tokens[tokenIndex]->tokenType);
+		/*if (tokens[tokenIndex]->tokenType == TOKEN_WHITESPACE) {
 			printf(" ");
-			whitespace = 1;
-			continue;
 		}
-		/*if (strcmp(tokens[tokenIndex]->token,"\t") == 0) {
+		if (strcmp(tokens[tokenIndex]->token,"\t") == 0) {
 			printf("\t");
 			continue;
-		}*/
-		for (int i = 0; i < strlen(tokens[tokenIndex]->token); i++) {
-			whitespace = 0;
-			printf(" ");
 		}
+		else {
+			for (int i = 0; i < strlen(tokens[tokenIndex]->token); i++) {
+				printf(" ");
+			}
+		}*/
 	}
-	if (curString[0] == '\t') printf("\t");//if a tab character is in the token stream a tab character must be printed to cover the same spacing
+	printf("|");
+	//if (curString[0] == '\t') printf("\t");//if a tab character is in the token stream a tab character must be printed to cover the same spacing
 	for (int i = 0; i < curLength -1 ; i++) {
 		printf(" ");
 	}
