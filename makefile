@@ -2,25 +2,27 @@ CC=gcc
 CFLAGS=-Wall
 EXE=jcc
 
-jcc: main.o parser.o parserinit.o scanner.o dfa.o semantics.o
-	$(CC) $(CFLAGS) -o $(EXE) main.o -g
-main.o: main.c parser.c parserinit.c scanner.c semantics.c dfa.c token.h
-	$(CC) $(CFLAGS) -c main.c
+jcc: obj/main.o obj/parser.o obj/parserinit.o obj/scanner.o obj/dfa.o obj/semantics.o
+	$(CC) $(CFLAGS) -o $(EXE) obj/main.o -g
 
-semantics.o: semantics.c syntaxtree.h
-	$(CC) $(CLFAGS) -c semantics.c
+obj/main.o: main.c parser.c parserinit.c scanner.c semantics.c dfa.c token.h
+	$(CC) $(CFLAGS) -c main.c -o obj/main.o
 
-parser.o: parser.c parserinit.c token.h syntaxtree.h
-	$(CC) $(CFLAGS) -c parser.c
+obj/semantics.o: semantics.c syntaxtree.h
+	$(CC) $(CFLAGS) -c semantics.c -o obj/semantics.o
 
-parserinit.o: parserinit.c parser.h token.h
-	$(CC) $(CFLAGS) -c parserinit.c
+obj/parser.o: parser.c parserinit.c token.h syntaxtree.h
+	$(CC) $(CFLAGS) -c parser.c -o obj/parser.o
 
-scanner.o: scanner.c dfa.c token.h
-	$(CC) $(CFLAGS) -c scanner.c
+obj/parserinit.o: parserinit.c parser.h token.h
+	$(CC) $(CFLAGS) -c parserinit.c -o obj/parserinit.o
 
-dfa.o: dfa.c token.h
-	$(CC) $(CFLAGS) -c dfa.c
+obj/scanner.o: scanner.c dfa.c token.h
+	$(CC) $(CFLAGS) -c scanner.c -o obj/scanner.o
+
+obj/dfa.o: dfa.c token.h
+	$(CC) $(CFLAGS) -c dfa.c -o obj/dfa.o
 
 clean:
-	rm *.o $(EXE)
+	rm obj/*.o $(EXE)
+
