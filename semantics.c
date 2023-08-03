@@ -20,7 +20,7 @@ unsigned char inLoop = 0;
  * Outer represents the higher up symbol table which is important for determining if a symbol has already been defined
  */
 struct SymbolTable {
-	struct Symbol *symbols;
+	struct Symbol *symbols;//linked list of symbols at current level
 	struct SymbolTable **inner;//can have multiple inners
 	unsigned long numInner;
 	unsigned long level;
