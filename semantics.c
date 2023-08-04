@@ -104,7 +104,8 @@ CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons,
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
 	printf("Resolving type\n");
 	if (!eval2) {
-		return eval1->type;
+		printf("eval 1 type: %p\n",eval1->type);
+		return eval1->type = eval1->symbol->type;
 	}
 	switch (*op) {
 		case PLUS:
@@ -169,9 +170,10 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 	long eval1 = stackIndex - 1;
 	long eval2 = stackIndex - 2;
 	long opIndex = opStackIndex - 1;
-	while (eval2 > -1) {
+	while (eval1 > -1) {
 		resolveType(evalStack[eval1--],opStack[opIndex--],evalStack[eval2--]);
 	}
+	printf("Type: %d\n",evalStack[0]->type->dataType);
 	return evalStack[0]->type;
 }
 
@@ -445,7 +447,7 @@ int checkAll() {
 	symbolTables->numInner = 0;
 	symbolTables->level = 0;
 	createSymbolTableDeclarations(symbolTables,syntaxTree);
-	//printSymbolTable(symbolTables);
+	printSymbolTable(symbolTables);
 	printf("Checked all semantics\n");
-	return 0;
+	return 1;
 }

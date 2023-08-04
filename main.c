@@ -32,7 +32,13 @@ int main(int argc, char *argv[]) {
 		printf("ODD PARSER FAILURE\n");
 		exit(1);
 	}
-	checkAll();
+	int semanticResult = checkAll();
+	if (semanticResult == 1) {
+		printf("SEMANTIC SUCCESS\n");
+	}
+	else {
+		printf("SEMANTIC FAILURE\n");
+	}
 
 	freeRules();
 	freeInstanceAndVarTokens();
