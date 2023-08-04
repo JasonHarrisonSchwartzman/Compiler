@@ -159,7 +159,7 @@ void initialize() {
 	states[99].token = TOKEN_STRINGCONST;
 	
 	states[100].token = TOKEN_NUM;
-	states[101].token = TOKEN_DECIMAL;
+	states[101].token = TOKEN_NUM; //decimals
 	
 	states[102].token = TOKEN_WHITESPACE;
 	

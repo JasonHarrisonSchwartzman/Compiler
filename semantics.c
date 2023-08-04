@@ -96,13 +96,32 @@ CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons,
  */
 
 /*
- * Type translation given operators.
+* Infers type of a literal value
+*/
+struct Type *inferLiteral(char* val) {
+	return NULL;
+}
+
+
+/*
+* Gets type of eval (VALUE or other)
+*/
+struct Type *getType(struct Evaluation *eval) {
+	if (eval->eval == VALUE) {
+		return inferLiteral(eval->value->value);
+	}
+	else {
+		return eval->symbol->type;
+	}
+}
+/*
+ * Type translation given operators and 1 or 2 Evaluations.
  */
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
 	printf("Resolving type\n");
 	if (!eval2) {
 		//printf("eval 1 type: %p\n",eval1->type);
-		return eval1->type = eval1->symbol->type;
+		return eval1->type = getType(eval1);
 	}
 	printf("First eval: %s\n", eval1->name);
 	switch (*op) {
