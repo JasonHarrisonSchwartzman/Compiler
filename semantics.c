@@ -93,9 +93,6 @@ Comparison: == <= >= < > && || !=
 
 CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons, they will be converted to the bigger type before computed.
 
-
-
-
  */
 
 /*
@@ -107,6 +104,7 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		//printf("eval 1 type: %p\n",eval1->type);
 		return eval1->type = eval1->symbol->type;
 	}
+	printf("First eval: %s\n", eval1->name);
 	switch (*op) {
 		case PLUS:
 			break;
@@ -173,8 +171,8 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 	while (eval2 > -1) {
 		resolveType(evalStack[eval1--],opStack[opIndex--],evalStack[eval2--]);
 	}
-	resolveType(evalStack[eval1--],NULL,NULL);
-	printf("Type: %d\n",evalStack[0]->type->dataType);
+	resolveType(evalStack[eval1--],NULL,NULL); //resolves single expressions
+	printf("Type: %d Name: %s\n",evalStack[0]->type->dataType,evalStack[0]->name);
 	free(opStack);
 	struct Type *ret = evalStack[0]->type;
 	free(evalStack);
