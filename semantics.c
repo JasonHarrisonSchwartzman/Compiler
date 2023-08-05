@@ -96,6 +96,9 @@ CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons,
 
  */
 
+/*
+* For inferring literals
+*/
 type_t determineSmallestType(char *str) {
     char *endptr;  // Pointer to store the end of conversion
 	long value = strtol(str, &endptr, 10);
@@ -187,7 +190,7 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		return eval1->type = getType(eval1);
 	}
 	printf("First eval: %s\n", eval1->name);
-	switch (*op) {
+	/*switch (*op) {
 		case PLUS:
 			break;
 		case MINUS:
@@ -221,7 +224,26 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		case OR:
 			break;
 	}
-	return NULL;
+	*/
+	struct Type *type1 = getType(eval1);
+	struct Type *type2 = getType(eval2);
+
+	if (type1->dataType >= type2->dataType) {//the biggest data type takes precedence
+		type2->dataType = type1->dataType;
+	}
+	else {
+		type1->dataType = type2->dataType;
+	}
+	if (type1->sign == SIGNED || type2->sign == SIGNED) {//sign takes precedence
+		type1->sign = SIGNED;
+		type2->sign = SIGNED;
+	}
+	if (type1->pointer || type2->pointer) {//both become points
+		type1->pointer = 1;
+		type2->pointer = 1;
+	}
+
+	return type2;
 }
 
 

@@ -10,10 +10,10 @@
 struct Declaration *syntaxTree;
 
 typedef enum type_t {
+	CHAR,
+	SHORT,
 	INT,
 	LONG,
-	SHORT,
-	CHAR,
 	DOUBLE
 } type_t;
 
