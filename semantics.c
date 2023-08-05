@@ -287,9 +287,24 @@ struct Type *typeCheckExpr(struct Expression *expr) {
  * Checking to see if assignment is legal between an expression into a variable
  */
 struct Type *typeCheckAssignment(struct VarDecl *var, struct Expression *expr) {
-	//struct Type *varType = var->type;
-	//struct Type *exprType = expr->eval->type;
-	return NULL;
+	printf("TYpe check assignment\n");
+	struct Type *varType = var->type;
+	struct Type *exprType = typeCheckExpr(expr);
+	printf("Type checking assignment for: %s\n",var->name);
+	printf("%p\n",exprType);
+	exprType->sign = varType->sign;
+	printf("lesdjflkasjdfl;ad\n");
+	exprType->pointer = varType->pointer;
+	printf("deadass\n");
+	if (varType->dataType >= exprType->dataType) {//the biggest data type takes precedence
+		exprType->dataType = varType->dataType;
+		printf("Variable type data looks good\n");
+	}
+	else {
+		printf("Variable type data loss (left side has smaller data type than the right).\n");
+	}
+
+	return varType;
 }
 
 /*
@@ -426,6 +441,7 @@ void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
  */
 void resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 	var->symbol = lookUpName(var->name,symTab);
+	var->type = var->symbol->type;
 	if (!var->symbol) printError(2, var->name,var->line,0);
 }
 
@@ -462,6 +478,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 	struct Statement *s = statement;
 	while (s) {
 		if (s->stmt == DECLARATION) {
+			printf("RESOLVING DECLARATION of %s\n", s->var->name);
 			createSymbolTableVarDecl(symTab,s->var);//var decl
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
 			resolveExpr(symTab,s->var->expr);//right hand side of dec
@@ -501,13 +518,17 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			}
 		}
 		if (s->stmt == RETURN) {
+			printf("RESOLVING RETURN\n");
 			resolveExpr(symTab,s->returnstmt);
 			typeCheckExpr(s->returnstmt); //testing type checking for return statements be sure to include this function in other lines
 		}
 		if (s->stmt == ASSIGNMENT) {
+			printf("RESOLVING ASSIGNMENT\n");
 			resolveAssignment(symTab,s->var);//var assign
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
 			resolveExpr(symTab,s->var->expr);//right hand side of ass
+
+			typeCheckAssignment(s->var,s->var->expr);
 		}
 		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
 			resolveControl(s->stmt);
