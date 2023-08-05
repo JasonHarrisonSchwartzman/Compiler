@@ -1,6 +1,7 @@
 #include "syntaxtree.h"
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 /**
  * This file deals with the semantics of the language after being given a syntax tree from the parser.
@@ -95,11 +96,73 @@ CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons,
 
  */
 
+type_t determineSmallestType(char *str) {
+    char *endptr;  // Pointer to store the end of conversion
+	long value = strtol(str, &endptr, 10);
+	if (endptr == str) {
+        printf("No valid digits were found.\n");
+		return -1;
+    } 
+	else if (*endptr != '\0') {
+        printf("Invalid character encountered: %c\n", *endptr);
+		return -1;
+    } 
+	else if (value < SCHAR_MAX && value > SCHAR_MIN) {
+		printf("Inferred type of number: %ld | CHAR\n", value);
+		return CHAR;
+	}
+	else if (value < SHRT_MAX && value > SHRT_MIN) {
+		printf("Inferred type of number: %ld | SHORT\n", value);
+        return SHORT;
+    } 
+	else if (value < INT_MAX && value > INT_MIN) {
+		printf("Inferred type of number: %ld | INT\n", value);
+		return INT;
+	}
+	else {
+		printf("Inferred type of number: %ld | LONG\n", value);
+        return LONG;
+    }
+}
+
 /*
 * Infers type of a literal value
 */
-struct Type *inferLiteral(char* val) {
-	return NULL;
+struct Type *inferLiteral(struct Value *value) {
+	char *val = value->value;
+	printf("Literal to infer: %s\n",val);
+	if (value->val_t == NUM) {
+		struct Type *type = malloc(sizeof(struct Type));
+		type->pointer = 0;
+		type->length = NULL;
+		type->sign = SIGNED;
+
+		if (memchr(val, '.', sizeof(val)) != NULL) {
+			type->dataType = DOUBLE;
+			printf("DOUBLE\n");
+		}
+		else {
+			type->dataType = determineSmallestType(val);
+		}
+		type->dataType = CHAR;
+		return type;
+	}
+	else if(value->val_t == CHARCONST) {
+		struct Type *type = malloc(sizeof(struct Type));
+		type->dataType = CHAR;
+		type->sign = UNSIGNED;
+		type->pointer = 0;
+		type->length = NULL;
+		return type;
+	}
+	else { //STRING
+		struct Type *type = malloc(sizeof(struct Type));
+		type->dataType = LONG;
+		type->sign = UNSIGNED;
+		type->pointer = 1;
+		type->length = NULL;
+		return type;
+	}
 }
 
 
@@ -108,7 +171,7 @@ struct Type *inferLiteral(char* val) {
 */
 struct Type *getType(struct Evaluation *eval) {
 	if (eval->eval == VALUE) {
-		return inferLiteral(eval->value->value);
+		return inferLiteral(eval->value);
 	}
 	else {
 		return eval->symbol->type;
