@@ -482,6 +482,10 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			createSymbolTableVarDecl(symTab,s->var);//var decl
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
 			resolveExpr(symTab,s->var->expr);//right hand side of dec
+
+			printf("before\n");
+			if (s->var->expr) typeCheckAssignment(s->var,s->var->expr);
+			printf("after\n");
 		}
 		if (s->stmt == FOR) {
 			inLoop = 1;
@@ -491,6 +495,9 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			resolveExpr(innerStmts,s->loop->mod->expr);
 			resolveExpr(innerStmts,s->loop->expr);
 
+			typeCheckAssignment(s->loop->mod,s->loop->mod->expr);
+			typeCheckExpr(s->loop->expr);
+
 			createSymbolTableStatements(innerStmts,s->loop->stmts);
 			
 		}
@@ -498,6 +505,9 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			inLoop = 1;
 			struct SymbolTable *innerStmts = addInner(symTab);
 			resolveExpr(innerStmts,s->loop->expr);
+
+			typeCheckExpr(s->loop->expr);
+
 			createSymbolTableStatements(innerStmts,s->loop->stmts);
 		}
 		if (s->stmt == IF) {
@@ -505,6 +515,9 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			while (c) {
 				struct SymbolTable *innerStmts = addInner(symTab);
 				resolveExpr(innerStmts,c->expr);//resolves condition expression
+
+				typeCheckExpr(c->expr);
+
 				createSymbolTableStatements(innerStmts,c->stmts);
 				c = c->next;
 			}
@@ -514,20 +527,27 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			struct FunctionArgs *f = s->funccall->funcargs;
 			while (f) {
 				resolveExpr(symTab,f->expr);
+
+				typeCheckExpr(f->expr);
+
 				f = f->funcargs;
 			}
 		}
 		if (s->stmt == RETURN) {
 			printf("RESOLVING RETURN\n");
 			resolveExpr(symTab,s->returnstmt);
-			typeCheckExpr(s->returnstmt); //testing type checking for return statements be sure to include this function in other lines
+			//remember to change this line to typeCheck return for function return type
+			typeCheckExpr(s->returnstmt); 
+			//testing type checking for return statements be sure to include this function in other lines
 		}
 		if (s->stmt == ASSIGNMENT) {
-			printf("RESOLVING ASSIGNMENT\n");
+			printf("RESOLVING ASSIGNMENT of %s\n",s->var->name);
 			resolveAssignment(symTab,s->var);//var assign
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
 			resolveExpr(symTab,s->var->expr);//right hand side of ass
-
+			printf("TYPE CHECKING ASSIGNMENT\n");
+			
+			
 			typeCheckAssignment(s->var,s->var->expr);
 		}
 		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
