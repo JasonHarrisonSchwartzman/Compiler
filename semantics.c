@@ -177,6 +177,7 @@ struct Type *getType(struct Evaluation *eval) {
 		return inferLiteral(eval->value);
 	}
 	else {
+		printf("hi\n");
 		return eval->symbol->type;
 	}
 }
@@ -420,20 +421,26 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 
 /*
  * Looks up in the symbol table if the symbol exists exists
+ * Return 0 if you cannot find symbol else return 1
  */
-void resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
+int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 	if (eval->eval != VALUE) {
 		eval->symbol = lookUpName(eval->name,symTab);
-		if (!eval->symbol) printError(2,eval->name,eval->line,0);
+		if (!eval->symbol) {
+			printError(2,eval->name,eval->line,0);
+			return 0;
+		}
+		return 1;
 	}
+	return 1;
 }
 /*
  * Recursively looks up all evaluations in the symbol table within the expression
+ * Return 1 if all found or 0 if one is not found
  */ 
-void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
-	if (!expr) return;
-	resolveExpr(symTab,expr->expr);
-	resolveEval(symTab,expr->eval);
+int resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
+	if (!expr) return 0;
+	return 1 * resolveExpr(symTab,expr->expr) * resolveEval(symTab,expr->eval);
 }
 
 /*
@@ -486,22 +493,21 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			printf("RESOLVING DECLARATION of %s\n", s->var->name);
 			createSymbolTableVarDecl(symTab,s->var);//var decl
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
-			resolveExpr(symTab,s->var->expr);//right hand side of dec
+			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of dec
 
-			printf("before\n");
-			if (s->var->expr) typeCheckAssignment(s->var,s->var->expr);
-			printf("after\n");
+			if (s->var->expr && resolvedExpr) typeCheckAssignment(s->var,s->var->expr);
 		}
 		if (s->stmt == FOR) {
 			inLoop = 1;
 			struct SymbolTable *innerStmts = addInner(symTab);
 			createSymbolTableVarDecl(innerStmts,s->loop->init);
-			resolveAssignment(innerStmts,s->loop->mod);
-			resolveExpr(innerStmts,s->loop->mod->expr);
-			resolveExpr(innerStmts,s->loop->expr);
 
-			typeCheckAssignment(s->loop->mod,s->loop->mod->expr);
-			typeCheckExpr(s->loop->expr);
+			int resolvedAss = resolveAssignment(innerStmts,s->loop->mod);
+			int resolvedExpr1 = resolveExpr(innerStmts,s->loop->mod->expr);
+			int resolvedExpr2 = resolveExpr(innerStmts,s->loop->expr);
+
+			if (resolvedAss && resolvedExpr1) typeCheckAssignment(s->loop->mod,s->loop->mod->expr);
+			if (resolvedExpr2) typeCheckExpr(s->loop->expr);
 
 			createSymbolTableStatements(innerStmts,s->loop->stmts);
 			
@@ -509,9 +515,9 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		if (s->stmt == WHILE) {
 			inLoop = 1;
 			struct SymbolTable *innerStmts = addInner(symTab);
-			resolveExpr(innerStmts,s->loop->expr);
+			int resolvedExpr = resolveExpr(innerStmts,s->loop->expr);
 
-			typeCheckExpr(s->loop->expr);
+			if (resolvedExpr) typeCheckExpr(s->loop->expr);
 
 			createSymbolTableStatements(innerStmts,s->loop->stmts);
 		}
@@ -519,9 +525,9 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			struct CondStatement *c = s->condstmt;
 			while (c) {
 				struct SymbolTable *innerStmts = addInner(symTab);
-				resolveExpr(innerStmts,c->expr);//resolves condition expression
+				int resolvedExpr = resolveExpr(innerStmts,c->expr);//resolves condition expression
 
-				typeCheckExpr(c->expr);
+				if (resolvedExpr) typeCheckExpr(c->expr);
 
 				createSymbolTableStatements(innerStmts,c->stmts);
 				c = c->next;
@@ -531,29 +537,31 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			resolveFuncCall(symTab,s->funccall);
 			struct FunctionArgs *f = s->funccall->funcargs;
 			while (f) {
-				resolveExpr(symTab,f->expr);
+				int resolvedExpr = resolveExpr(symTab,f->expr);
 
-				typeCheckExpr(f->expr);
+				if (resolvedExpr) typeCheckExpr(f->expr);
 
 				f = f->funcargs;
 			}
 		}
 		if (s->stmt == RETURN) {
 			printf("RESOLVING RETURN\n");
-			resolveExpr(symTab,s->returnstmt);
+			int resolvedExpr = resolveExpr(symTab,s->returnstmt);
+			printf("Expression resolve?: %d\n",resolvedExpr);
+
 			//remember to change this line to typeCheck return for function return type
-			typeCheckExpr(s->returnstmt); 
+			if (resolvedExpr) typeCheckExpr(s->returnstmt); 
 			//testing type checking for return statements be sure to include this function in other lines
 		}
 		if (s->stmt == ASSIGNMENT) {
 			printf("RESOLVING ASSIGNMENT of %s\n",s->var->name);
 			int resolvedAss = resolveAssignment(symTab,s->var);//var assign
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
-			resolveExpr(symTab,s->var->expr);//right hand side of ass
+			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of ass
 			printf("TYPE CHECKING ASSIGNMENT\n");
 			
 			
-			if (resolvedAss) typeCheckAssignment(s->var,s->var->expr); //if assignment is resolved you can type check
+			if (resolvedAss && resolvedExpr) typeCheckAssignment(s->var,s->var->expr); //if assignment is resolved you can type check
 		}
 		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
 			resolveControl(s->stmt);
