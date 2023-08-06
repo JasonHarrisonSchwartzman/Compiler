@@ -287,19 +287,13 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 /*
  * Checking to see if assignment is legal between an expression into a variable
  */
-struct Type *typeCheckAssignment(struct VarDecl *var, struct Expression *expr) {
-	printf("TYpe check assignment\n");
-	struct Type *varType = var->type;
+struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) {
+	printf("Type check assignment\n");
 	struct Type *exprType = typeCheckExpr(expr);
-	printf("Type checking assignment for: %s\n",var->name);
-	printf("%p\n",exprType);
 	exprType->sign = varType->sign;
-	printf("lesdjflkasjdfl;ad\n");
 	exprType->pointer = varType->pointer;
-	printf("deadass\n");
 	if (varType->dataType >= exprType->dataType) {//the biggest data type takes precedence
 		exprType->dataType = varType->dataType;
-		printf("Variable type data looks good\n");
 	}
 	else {
 		printf("Variable type data loss (left side has smaller data type than the right).\n");
@@ -486,7 +480,7 @@ void resolveControl(statement_t stmt) {
  * increase a level if inner curly braces are found (for if while)
  * Recursively creates symbols tables for statements
  */
-void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *statement) {
+void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *statement, struct Type *returnType) {
 	struct Statement *s = statement;
 	while (s) {
 		if (s->stmt == DECLARATION) {
@@ -495,7 +489,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
 			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of dec
 
-			if (s->var->expr && resolvedExpr) typeCheckAssignment(s->var,s->var->expr);
+			if (s->var->expr && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr);
 		}
 		if (s->stmt == FOR) {
 			inLoop = 1;
@@ -506,10 +500,10 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			int resolvedExpr1 = resolveExpr(innerStmts,s->loop->mod->expr);
 			int resolvedExpr2 = resolveExpr(innerStmts,s->loop->expr);
 
-			if (resolvedAss && resolvedExpr1) typeCheckAssignment(s->loop->mod,s->loop->mod->expr);
+			if (resolvedAss && resolvedExpr1) typeCheckAssignment(s->loop->mod->type,s->loop->mod->expr);
 			if (resolvedExpr2) typeCheckExpr(s->loop->expr);
 
-			createSymbolTableStatements(innerStmts,s->loop->stmts);
+			createSymbolTableStatements(innerStmts,s->loop->stmts,returnType);
 			
 		}
 		if (s->stmt == WHILE) {
@@ -519,7 +513,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 
 			if (resolvedExpr) typeCheckExpr(s->loop->expr);
 
-			createSymbolTableStatements(innerStmts,s->loop->stmts);
+			createSymbolTableStatements(innerStmts,s->loop->stmts,returnType);
 		}
 		if (s->stmt == IF) {
 			struct CondStatement *c = s->condstmt;
@@ -529,7 +523,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 
 				if (resolvedExpr) typeCheckExpr(c->expr);
 
-				createSymbolTableStatements(innerStmts,c->stmts);
+				createSymbolTableStatements(innerStmts,c->stmts,returnType);
 				c = c->next;
 			}
 		}
@@ -550,7 +544,10 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			printf("Expression resolve?: %d\n",resolvedExpr);
 
 			//remember to change this line to typeCheck return for function return type
-			if (resolvedExpr) typeCheckExpr(s->returnstmt); 
+			if (resolvedExpr) {
+				typeCheckExpr(s->returnstmt); 
+				typeCheckAssignment(returnType,s->returnstmt);
+			}
 			//testing type checking for return statements be sure to include this function in other lines
 		}
 		if (s->stmt == ASSIGNMENT) {
@@ -561,7 +558,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			printf("TYPE CHECKING ASSIGNMENT\n");
 			
 			
-			if (resolvedAss && resolvedExpr) typeCheckAssignment(s->var,s->var->expr); //if assignment is resolved you can type check
+			if (resolvedAss && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr); //if assignment is resolved you can type check
 		}
 		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
 			resolveControl(s->stmt);
@@ -593,7 +590,7 @@ void createSymbolTableDeclarations(struct SymbolTable *initial, struct Declarati
 				createSymbolTableParams(inFunc,tempParam);
 				tempParam = tempParam->next;
 			}
-			createSymbolTableStatements(inFunc,d->funcdecl->statements);
+			createSymbolTableStatements(inFunc,d->funcdecl->statements,d->funcdecl->type);
 		}
 		d = d->next;
 	}
