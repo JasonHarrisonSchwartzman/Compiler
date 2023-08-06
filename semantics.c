@@ -438,11 +438,16 @@ void resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
 
 /*
  * Checks to see if the variable being assigned exists within the symbol table
+ * Return 0 if you cannot find symbol else return 1 (Success)
  */
-void resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
+int resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 	var->symbol = lookUpName(var->name,symTab);
+	if (!var->symbol) {
+		printError(2, var->name,var->line,0);
+		return 0;
+	}
 	var->type = var->symbol->type;
-	if (!var->symbol) printError(2, var->name,var->line,0);
+	return 1;
 }
 
 /*
@@ -542,13 +547,13 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		}
 		if (s->stmt == ASSIGNMENT) {
 			printf("RESOLVING ASSIGNMENT of %s\n",s->var->name);
-			resolveAssignment(symTab,s->var);//var assign
+			int resolvedAss = resolveAssignment(symTab,s->var);//var assign
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
 			resolveExpr(symTab,s->var->expr);//right hand side of ass
 			printf("TYPE CHECKING ASSIGNMENT\n");
 			
 			
-			typeCheckAssignment(s->var,s->var->expr);
+			if (resolvedAss) typeCheckAssignment(s->var,s->var->expr); //if assignment is resolved you can type check
 		}
 		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
 			resolveControl(s->stmt);
