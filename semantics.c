@@ -12,7 +12,7 @@ extern struct Declaration *syntaxTree;
 extern char **lines;
 
 unsigned long errorNumber = 1; //used to list all errors
-unsigned char inLoop = 0;
+unsigned char inLoop = 0;//if currently in loop
 
 /*
  * Symbol contains a linked list of symbols in reverse order of appearence
@@ -297,6 +297,7 @@ struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) 
 	}
 	else {
 		printf("Variable type data loss (left side has smaller data type than the right).\n");
+		return NULL;
 	}
 
 	return varType;
@@ -597,7 +598,7 @@ void createSymbolTableDeclarations(struct SymbolTable *initial, struct Declarati
 }
 
 /*
- * Not compeleted yet
+ * Mostly done
  */ 
 int checkAll() {
 	symbolTables = calloc(1,sizeof(struct SymbolTable));
@@ -606,5 +607,6 @@ int checkAll() {
 	createSymbolTableDeclarations(symbolTables,syntaxTree);
 	printSymbolTable(symbolTables);
 	printf("Checked all semantics\n");
-	return 1;
+	if (errorNumber == 1) return 1;
+	else return 0;
 }
