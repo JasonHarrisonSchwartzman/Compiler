@@ -64,6 +64,9 @@ struct dag_node {
     } u;
 };
 
+void createDAG() {
+    
+}
 
 
 /*
