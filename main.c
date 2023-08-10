@@ -3,6 +3,7 @@
 #include "scanner.c"
 #include "parser.c"
 #include "semantics.c"
+#include "ir.c"
 #include <stdio.h>
 
 /**
