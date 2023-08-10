@@ -1,7 +1,25 @@
+#include "syntaxtree.h"
+
+
+
+extern struct Declaration *syntaxTree;
+
 typedef enum {
+    DAG_PROGRAM, //init
+
+    DAG_RETURN,
     DAG_ASSIGN,
     DAG_DEREF,
     DAG_REF,
+    DAG_ARRAYINDEX,
+
+    DAG_BREAK,
+    DAG_CONTINUE,
+    DAG_IF,
+    DAG_ELSE,
+    DAG_FOR,
+    DAG_WHILE,
+    
 
     DAG_ADD,
     DAG_MULT,
@@ -45,3 +63,12 @@ struct dag_node {
         int integer_value;
     } u;
 };
+
+
+
+/*
+    FUNCDEC
+x
+
+
+*/
