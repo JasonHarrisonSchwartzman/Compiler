@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	createDAG();
-
+	printf("DAG finished\n");
 	freeRules();
 	freeInstanceAndVarTokens();
 	// //freeTokens();seg fault

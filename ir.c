@@ -94,7 +94,7 @@ struct dag_node *createNode2(dag_kind_t kind, struct dag_node *left, struct dag_
     return d;
 }
 
-dag_kind_t getType(struct Type *type) {
+dag_kind_t getTypeDAG(struct Type *type) {
     if (type->pointer) return DAG_POINTER;
     switch (type->dataType) {
         case CHAR:
@@ -116,10 +116,21 @@ struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *d
         struct dag_node *d;
         switch(expr->eval->eval) {
             case VALUE:
-                d = createNode2(getType(expr->eval->type), NULL, NULL, (union payload){.name = expr->eval->name});
+                d = createNode2(getTypeDAG(expr->eval->type), NULL, NULL, (union payload){.name = expr->eval->name});
+                break;
+            case DEREF:
+                break;
+            case REF:
+                break;
+            case ID:
+                break;
+            case ARRAYINDEX:
+                break;
+            case FUNCRETURN:
                 break;
         }
     }
+    return NULL;
 }
 
 struct dag_node *createDAGvar(struct VarDecl *var, struct dag_node *dag) {
