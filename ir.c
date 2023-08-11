@@ -76,7 +76,15 @@ struct dag_node {
 
 struct dag_node *dag;
 
-struct dag_node *createNode(dag_kind_t kind, struct dag_node *left, struct dag_node *right, union payload payload) {
+struct dag_node *createNode1(dag_kind_t kind, struct dag_node *left, struct dag_node *right) {
+    struct dag_node *d = malloc(sizeof(struct dag_node));
+    d->kind = kind;
+    d->left = left;
+    d->right = right;
+    return d;
+}
+
+struct dag_node *createNode2(dag_kind_t kind, struct dag_node *left, struct dag_node *right, union payload payload) {
     struct dag_node *d = malloc(sizeof(struct dag_node));
     d->kind = kind;
     d->left = left;
@@ -85,8 +93,15 @@ struct dag_node *createNode(dag_kind_t kind, struct dag_node *left, struct dag_n
     return d;
 }
 
-void createDAGvar(struct VarDecl *var, struct dag_node *dag) {
+struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *dag) {
 
+}
+
+struct dag_node *createDAGvar(struct VarDecl *var, struct dag_node *dag) {
+    struct dag_node *d = createNode1(DAG_ASSIGN,NULL,NULL);
+    d->left = createNode2(DAG_NAME,NULL,NULL,(union payload){.name = var->name});
+    d->right = createDAGexpression(var->expr,d);
+    return d;
 }
 
 /**
