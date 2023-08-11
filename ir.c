@@ -144,10 +144,12 @@ struct dag_node *createDAGvar(struct VarDecl *var, struct dag_node *dag) {
  * Creates a DAG for intermediate representation given the syntax tree
 */
 void createDAG() {
+    printf("test\n");
     struct Declaration *d = syntaxTree;
     while (d) {
 
         if (d->dec == VAR) {
+            printf("hi mom\n");
             createDAGvar(d->vardecl, dag);
         }
         else {
