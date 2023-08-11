@@ -13,6 +13,7 @@ typedef enum {
     DAG_REF,
     DAG_ARRAYINDEX,
     DAG_FUNCTIONCALL,
+    DAG_POINTER,
 
     DAG_BREAK,
     DAG_CONTINUE,
@@ -93,8 +94,32 @@ struct dag_node *createNode2(dag_kind_t kind, struct dag_node *left, struct dag_
     return d;
 }
 
-struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *dag) {
+dag_kind_t getType(struct Type *type) {
+    if (type->pointer) return DAG_POINTER;
+    switch (type->dataType) {
+        case CHAR:
+            return type->sign == SIGNED ? DAG_CHAR_VAL : DAG_UCHAR_VAL;
+        case SHORT:
+            return type->sign == SIGNED ? DAG_SHORT_VAL : DAG_USHORT_VAL;
+        case INT:
+            return type->sign == SIGNED ? DAG_INT_VAL : DAG_UINT_VAL;
+        case LONG:
+            return type->sign == SIGNED ? DAG_LONG_VAL : DAG_ULONG_VAL;
+        case DOUBLE:
+            return type->sign == SIGNED ? DAG_DOUBLE_VAL : DAG_UDOUBLE_VAL;
+    }
+    return -1;
+}
 
+struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *dag) {
+    if (!expr->expr) {
+        struct dag_node *d;
+        switch(expr->eval->eval) {
+            case VALUE:
+                d = createNode2(getType(expr->eval->type), NULL, NULL, (union payload){.name = expr->eval->name});
+                break;
+        }
+    }
 }
 
 struct dag_node *createDAGvar(struct VarDecl *var, struct dag_node *dag) {
