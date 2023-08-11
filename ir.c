@@ -1,17 +1,18 @@
 #include "syntaxtree.h"
 
-
-
 extern struct Declaration *syntaxTree;
 
 typedef enum {
     DAG_PROGRAM, //init
+
+    DAG_FUNCTIONDEC,
 
     DAG_RETURN,
     DAG_ASSIGN,
     DAG_DEREF,
     DAG_REF,
     DAG_ARRAYINDEX,
+    DAG_FUNCTIONCALL,
 
     DAG_BREAK,
     DAG_CONTINUE,
@@ -53,19 +54,62 @@ typedef enum {
 } dag_kind_t;
 //DAG constructed by post-order traversal of the AST
 //search nodes to re-use
+
+union payload {
+    const char *name;
+    double double_value;
+    int int_value;
+    short short_value;
+    char char_value;
+    long long_value;
+    unsigned int uint_value;
+    unsigned short ushort_value;
+    unsigned char uchar_value;
+    unsigned long ulong_value;
+};
 struct dag_node {
     dag_kind_t kind;
     struct dag_node *left;
     struct dag_node *right;
-    union {
-        const char *name;
-        double float_value;
-        int integer_value;
-    } u;
+    union payload payload;
 };
 
+struct dag_node *dag;
+
+struct dag_node *createNode(dag_kind_t kind, struct dag_node *left, struct dag_node *right, union payload payload) {
+    struct dag_node *d = malloc(sizeof(struct dag_node));
+    d->kind = kind;
+    d->left = left;
+    d->right = right;
+    d->payload = payload;
+    return d;
+}
+
+void createDAGvar(struct VarDecl *var, struct dag_node *dag) {
+
+}
+
+/**
+ * Creates a DAG for intermediate representation given the syntax tree
+*/
 void createDAG() {
-    
+    struct Declaration *d = syntaxTree;
+    while (d) {
+
+        if (d->dec == VAR) {
+            createDAGvar(d->vardecl, dag);
+        }
+        else {
+
+        }
+
+
+        d = d->next;
+    }
+}
+
+void printDAG() {
+
 }
 
 
