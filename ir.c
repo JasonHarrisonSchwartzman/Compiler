@@ -105,6 +105,7 @@ struct dag_node *createNode2(dag_kind_t kind, struct dag_node *left, struct dag_
  * Converts a type struct into a DAG_KIND_T type
 */
 dag_kind_t getTypeDAG(struct Type *type) {
+    if (!type) printf("TYPE NULL WHEN GETTING TYPE ERROR\n");
     if (type->pointer) return DAG_POINTER;
     switch (type->dataType) {
         case CHAR:
@@ -148,6 +149,7 @@ union payload getPayload(dag_kind_t dagKind, struct Evaluation *eval) {
         default:
             break;
     }
+    printf("oh no\n");
 }
 
 /**
@@ -160,7 +162,9 @@ struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *d
             case VALUE:
                 printf("try\n");
                 //expr->eval->value->value
-                d = createNode2(getTypeDAG(expr->eval->type), NULL, NULL, (union payload){.name = expr->eval->name});
+                dag_kind_t dagKind = getTypeDAG(expr->eval->symbol->type);
+                printf("dag kind\n");
+                d = createNode2(dagKind, NULL, NULL, getPayload(dagKind,expr->eval));
                 printf("node for value created\n");
                 break;
             case DEREF:
