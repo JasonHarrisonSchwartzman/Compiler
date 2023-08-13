@@ -75,7 +75,8 @@ struct dag_node {
     union payload payload;
 };
 
-struct dag_node *dag; // DAG of program
+struct dag_node **dag; // DAG of program
+int numDAG = 0; //number of DAGs (either global variables or functions)
 
 /**
  * Creates a DAG node without a payload
@@ -202,6 +203,15 @@ struct dag_node *createDAGvar(struct VarDecl *var, struct dag_node *dag) {
     return d;
 }
 
+struct dag_node *createDAGfunc(struct FuncDecl *func, struct dag_node *dag) {
+
+}
+
+void addDagNode() {
+    numDAG++;
+    dag = realloc(dag,numDAG * sizeof(struct dag_node));
+}
+
 /**
  * Creates a DAG for intermediate representation given the syntax tree
 */
@@ -212,10 +222,12 @@ void createDAG() {
 
         if (d->dec == VAR) {
             printf("hi mom\n");
-            createDAGvar(d->vardecl, dag);
+            addDagNode();
+            dag[numDAG-1] = createDAGvar(d->vardecl, dag);
         }
         else {
-
+            addDagNode();
+            dag[numDAG-1] = createDAGfunc(d->funcdecl,dag);
         }
 
 
