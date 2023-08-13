@@ -75,8 +75,11 @@ struct dag_node {
     union payload payload;
 };
 
-struct dag_node *dag;
+struct dag_node *dag; // DAG of program
 
+/**
+ * Creates a DAG node without a payload
+*/
 struct dag_node *createNode1(dag_kind_t kind, struct dag_node *left, struct dag_node *right) {
     struct dag_node *d = malloc(sizeof(struct dag_node));
     d->kind = kind;
@@ -85,6 +88,9 @@ struct dag_node *createNode1(dag_kind_t kind, struct dag_node *left, struct dag_
     return d;
 }
 
+/**
+ * Creates DAG node with a payload
+*/
 struct dag_node *createNode2(dag_kind_t kind, struct dag_node *left, struct dag_node *right, union payload payload) {
     printf("test\n");
     struct dag_node *d = malloc(sizeof(struct dag_node));
@@ -95,6 +101,9 @@ struct dag_node *createNode2(dag_kind_t kind, struct dag_node *left, struct dag_
     return d;
 }
 
+/**
+ * Converts a type struct into a DAG_KIND_T type
+*/
 dag_kind_t getTypeDAG(struct Type *type) {
     if (type->pointer) return DAG_POINTER;
     switch (type->dataType) {
@@ -141,6 +150,9 @@ union payload getPayload(dag_kind_t dagKind, struct Evaluation *eval) {
     }
 }
 
+/**
+ * Creates a DAG node representing an expression
+*/
 struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *dag) {
     if (!expr->expr) {
         struct dag_node *d;
@@ -172,6 +184,9 @@ struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *d
     return NULL;
 }
 
+/**
+ * Creates a DAG node representing a variable assignment
+*/
 struct dag_node *createDAGvar(struct VarDecl *var, struct dag_node *dag) {
     struct dag_node *d = createNode1(DAG_ASSIGN,NULL,NULL);
     printf("node created\n");
