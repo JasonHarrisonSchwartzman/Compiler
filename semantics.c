@@ -378,6 +378,8 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR,var->line);
 	addSymbol(symTab,s);
 	var->symbol = s;
+	//typeCheckExpr(var->expr);
+	//typeCheckAssignment(var->type,var->expr);
 }
 
 /*
@@ -582,6 +584,8 @@ void createSymbolTableDeclarations(struct SymbolTable *initial, struct Declarati
 	while (d) {
 		if (d->dec == VAR) {
 			createSymbolTableVarDecl(initial,d->vardecl);
+			//resolve type of right side of equal sign
+			typeCheckExpr(d->vardecl->expr);
 		}
 		else {
 			createSymbolTableFuncDecl(initial,d->funcdecl);

@@ -161,8 +161,9 @@ struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *d
         switch(expr->eval->eval) {
             case VALUE:
                 printf("try\n");
+                printf("Value: %s\n",expr->eval->value->value);
                 //expr->eval->value->value
-                dag_kind_t dagKind = getTypeDAG(expr->eval->symbol->type);
+                dag_kind_t dagKind = getTypeDAG(expr->eval->type);
                 printf("dag kind\n");
                 d = createNode2(dagKind, NULL, NULL, getPayload(dagKind,expr->eval));
                 printf("node for value created\n");
