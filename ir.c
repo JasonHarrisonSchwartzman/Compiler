@@ -47,7 +47,7 @@ typedef enum {
     DAG_SHORT_VAL,
     DAG_LONG_VAL,
     DAG_CHAR_VAL,
-    DAG_UDOUBLE_VAL,
+    //DAG_UDOUBLE_VAL, no such thing as unsigned double in c who knew?
     DAG_UINT_VAL,
     DAG_USHORT_VAL,
     DAG_ULONG_VAL,
@@ -86,6 +86,7 @@ struct dag_node *createNode1(dag_kind_t kind, struct dag_node *left, struct dag_
 }
 
 struct dag_node *createNode2(dag_kind_t kind, struct dag_node *left, struct dag_node *right, union payload payload) {
+    printf("test\n");
     struct dag_node *d = malloc(sizeof(struct dag_node));
     d->kind = kind;
     d->left = left;
@@ -106,9 +107,36 @@ dag_kind_t getTypeDAG(struct Type *type) {
         case LONG:
             return type->sign == SIGNED ? DAG_LONG_VAL : DAG_ULONG_VAL;
         case DOUBLE:
-            return type->sign == SIGNED ? DAG_DOUBLE_VAL : DAG_UDOUBLE_VAL;
+            return DAG_DOUBLE_VAL; //no such thing as unsigned double
     }
     return -1;
+}
+
+
+union payload getPayload(dag_kind_t dagKind, struct Evaluation *eval) {
+char *endptr;
+    switch(dagKind) {
+        case DAG_CHAR_VAL:
+            return (union payload){.char_value = *(eval->value->value)};
+        case DAG_UCHAR_VAL:
+            return (union payload){.uchar_value = *(eval->value->value)};
+        case DAG_SHORT_VAL:
+            return (union payload){.short_value = (short)strtol(eval->value->value,&endptr,10)};
+        case DAG_USHORT_VAL:
+            return (union payload){.ushort_value = (unsigned short)strtoul(eval->value->value,&endptr,10)};
+        case DAG_INT_VAL:
+            return (union payload){.int_value = (int)strtol(eval->value->value,&endptr,10)};
+        case DAG_UINT_VAL:
+            return (union payload){.uint_value = (unsigned int)strtoul(eval->value->value,&endptr,10)};
+        case DAG_LONG_VAL:
+            return (union payload){.long_value = (long)strtol(eval->value->value,&endptr,10)};
+        case DAG_ULONG_VAL:
+            return (union payload){.ulong_value = (unsigned long)strtoul(eval->value->value,&endptr,10)};
+        case DAG_DOUBLE_VAL:
+            return (union payload){.double_value = (double)strtod(eval->value->value, &endptr)};
+        default:
+            break;
+    }
 }
 
 struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *dag) {
@@ -116,27 +144,39 @@ struct dag_node *createDAGexpression(struct Expression *expr, struct dag_node *d
         struct dag_node *d;
         switch(expr->eval->eval) {
             case VALUE:
+                printf("try\n");
+                //expr->eval->value->value
                 d = createNode2(getTypeDAG(expr->eval->type), NULL, NULL, (union payload){.name = expr->eval->name});
+                printf("node for value created\n");
                 break;
             case DEREF:
+                d = NULL;
                 break;
             case REF:
+                d = NULL;
                 break;
             case ID:
+                d = NULL;
                 break;
             case ARRAYINDEX:
+                d = NULL;
                 break;
             case FUNCRETURN:
+                d = NULL;
                 break;
         }
+        return d;
     }
     return NULL;
 }
 
 struct dag_node *createDAGvar(struct VarDecl *var, struct dag_node *dag) {
     struct dag_node *d = createNode1(DAG_ASSIGN,NULL,NULL);
+    printf("node created\n");
     d->left = createNode2(DAG_NAME,NULL,NULL,(union payload){.name = var->name});
+    printf("node added\n");
     d->right = createDAGexpression(var->expr,d);
+    printf("done\n");
     return d;
 }
 
