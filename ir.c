@@ -112,9 +112,11 @@ dag_kind_t getTypeDAG(struct Type *type) {
     return -1;
 }
 
-
+/**
+ * Converts the string storing the value to the actual value and returns a union payload
+*/
 union payload getPayload(dag_kind_t dagKind, struct Evaluation *eval) {
-char *endptr;
+    char *endptr;
     switch(dagKind) {
         case DAG_CHAR_VAL:
             return (union payload){.char_value = *(eval->value->value)};
