@@ -203,10 +203,19 @@ struct dag_node *createDAGvar(struct VarDecl *var, struct dag_node *dag) {
     return d;
 }
 
+/**
+ * Creates a DAG node representing a function declaration
+*/
 struct dag_node *createDAGfunc(struct FuncDecl *func, struct dag_node *dag) {
+    struct dag_node *d = createNode1(DAG_FUNCTIONDEC,NULL,NULL);
+    d->left = createNode2(DAG_NAME,NULL,NULL,(union payload){.name = func->name});
+    d->left->left = createNode1(getTypeDAG(func->type),NULL,NULL); //return type
 
 }
 
+/**
+ * Allocates memeory for another DAG
+*/
 void addDagNode() {
     numDAG++;
     dag = realloc(dag,numDAG * sizeof(struct dag_node));
