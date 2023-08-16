@@ -2,6 +2,8 @@
 
 extern struct Declaration *syntaxTree;
 
+
+//all types of nodes within the DAG 
 typedef enum {
     DAG_PROGRAM, //init
 
@@ -72,6 +74,7 @@ struct dag_node {
     dag_kind_t kind;
     struct dag_node *left;
     struct dag_node *right;
+    struct dag_node *next; //for control flow
     union payload payload;
 };
 
