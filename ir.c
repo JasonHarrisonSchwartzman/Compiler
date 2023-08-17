@@ -207,6 +207,14 @@ struct dag_node *createDAGvar(struct VarDecl *var, struct dag_node *dag) {
     return d;
 }
 
+struct dag_node *createDAGparams(struct Params *params, struct dag_node *dag) {
+    struct Params *p = params;
+    while (params->var) {
+        
+        p = p->next;
+    }
+}
+
 /**
  * Creates a DAG node representing a function declaration
 */
