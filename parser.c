@@ -93,9 +93,9 @@ void printParserError(Token *token) {
 		//TODO uncomment out stuff if you need it and allow tabs to not ruin lineup
 		if (tokens[i]->tokenType == TOKEN_WHITESPACE) {
 			//printf("%d",whitespace);
-			//if (whitespace) {
+			if (whitespace) {
 			//	continue;
-			//}
+			}
 			whitespace = 1;
 			printf(" ");
 		}
