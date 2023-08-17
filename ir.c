@@ -154,6 +154,7 @@ union payload getPayload(dag_kind_t dagKind, struct Evaluation *eval) {
             break;
     }
     printf("oh no\n");
+    return (union payload){.name = NULL};
 }
 
 /**
@@ -214,6 +215,7 @@ struct dag_node *createDAGfunc(struct FuncDecl *func, struct dag_node *dag) {
     d->left = createNode2(DAG_NAME,NULL,NULL,(union payload){.name = func->name});
     d->left->left = createNode1(getTypeDAG(func->type),NULL,NULL); //return type
 
+    return NULL;
 }
 
 /**
@@ -235,11 +237,11 @@ void createDAG() {
         if (d->dec == VAR) {
             printf("hi mom\n");
             addDagNode();
-            dag[numDAG-1] = createDAGvar(d->vardecl, dag);
+            dag[numDAG-1] = createDAGvar(d->vardecl, dag[numDAG-1]);
         }
         else {
             addDagNode();
-            dag[numDAG-1] = createDAGfunc(d->funcdecl,dag);
+            dag[numDAG-1] = createDAGfunc(d->funcdecl,dag[numDAG-1]);
         }
 
 
