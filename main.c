@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 		printf("SEMANTIC FAILURE\n");
 		exit(1);
 	}
-	createDAG();
+	createIR();
 	printf("DAG finished\n");
 	freeRules();
 	freeInstanceAndVarTokens();
