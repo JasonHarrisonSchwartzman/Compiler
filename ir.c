@@ -64,13 +64,6 @@ union value {
     unsigned char uchar_value;
     unsigned long ulong_value;
 };
-struct dag_node {
-    dag_kind_t kind;
-    struct dag_node *left;
-    struct dag_node *right;
-    struct dag_node *next; //for control flow
-    union payload payload;
-};
 enum op {
     MULT,
     DIV,
@@ -94,13 +87,18 @@ enum op {
 
 struct argument {
     char *name;
-    unsigned long value;
-}
+    union value value;
+};
+
+struct result {
+    char *name;
+
+};
 struct quad {
-    arg1;
-    arg2;
-    operation;
-    result;
+    struct argument *arg1;
+    struct argument *arg2;
+    enum op operation;
+    struct result *result;
 } quad;
 
 
