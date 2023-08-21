@@ -53,14 +53,41 @@ struct result {
     char *name;
 
 };
-struct quad {
+struct Quad {
     struct argument *arg1;
     struct argument *arg2;
     enum op operation;
     struct result *result;
-} quad;
+} Quad;
 
+struct Quad **quads;
+int numQuads = 0;
+
+void createQuadVar(struct VarDecl *var) {
+
+}
+
+void createQuadFunc(struct Func *func) {
+
+}
+
+void addQuad(struct Quad *quad) {
+    quads = realloc(quads,sizeof(struct Quad) * (1 + numQuads));
+    numQuads++;
+}
 
 void createIR() {
+    struct Declaration *d = syntaxTree;
+    while (d) {
 
+        if (d->dec == VAR) {
+            createQuadVar(d->vardecl);
+        }
+        else {
+            createQuadFunc(d->funcdecl);
+        }
+
+
+        d = d->next;
+    }
 }
