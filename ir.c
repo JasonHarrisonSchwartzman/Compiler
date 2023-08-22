@@ -64,6 +64,11 @@ struct quad {
 struct quad **quads;
 int numQuads = 0;
 
+int temp = 0;
+
+/***
+ * Allocates memory for quads
+*/
 struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op operation, struct result *result) {
     struct quad *q = malloc(sizeof(struct quad));
     q->arg1 = arg1;
@@ -71,6 +76,10 @@ struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op op
     q->operation = operation;
     q->result = result;
     return q;
+}
+
+struct argument *createArg(char *name, enum val_t val) {
+    return NULL;
 }
 
 void createQuadVar(struct VarDecl *var) {
@@ -81,12 +90,17 @@ void createQuadFunc(struct Func *func) {
 
 }
 
+/**
+ * Adds quad to quad array
+*/
 void addQuad(struct Quad *quad) {
     quads = realloc(quads,sizeof(struct quad) * (1 + numQuads));
     quads[numQuads] = quad;
     numQuads++;
 }
-
+/**
+ * Converts operation enum to a string and prints it
+*/
 void opToString(enum op) {
     switch(op) {
         case OP_MULT:
@@ -148,6 +162,9 @@ void opToString(enum op) {
     }
 }
 
+/**
+ * Prints value of value union
+*/
 void printValue(enum val_t val, union value value) {
     switch (val) {
         case VAL_CHAR:
@@ -182,6 +199,9 @@ void printValue(enum val_t val, union value value) {
     }
 }
 
+/**
+ * Prints quads
+*/
 void printQuads() {
     for (int i = 0; i < numQuads; i++) {
         printf("Op: ");
@@ -203,6 +223,10 @@ void printQuads() {
         printf(" | Result: %s\n",quads[i]->result->name);
     }
 }
+
+/**
+ * Creates the full IR
+*/
 void createIR() {
     struct Declaration *d = syntaxTree;
     while (d) {
