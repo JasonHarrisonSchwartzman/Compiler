@@ -78,8 +78,44 @@ struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op op
     return q;
 }
 
-struct argument *createArg(char *name, enum val_t val) {
-    return NULL;
+struct argument *createArg(char *name, enum val_t val, long value) {
+    struct argument *a = malloc(sizeof(struct argument));
+    if (name) a->name = name;
+    else {
+        a->val_t = val;
+        switch (val) {
+            case VAL_CHAR:
+                a->value.char_value = (char)value;
+                break;
+            case VAL_UCHAR:
+                a->value.uchar_value = (unsigned char)value;
+                break;
+            case VAL_SHORT:
+                a->value.short_value = (short)value;
+                break;
+            case VAL_USHORT:
+                a->value.ushort_value = (unsigned short)value;
+                break;
+            case VAL_INT:
+                a->value.int_value = (int)value;
+                break;
+            case VAL_UINT:
+                a->value.uint_value = (unsigned int)value;
+                break;
+            case VAL_LONG:
+                a->value.long_value = (long)value;
+                break;
+            case VAL_ULONG:
+                a->value.ulong_value = (unsigned long)value;
+                break;
+            case VAL_DOUBLE:
+                a->value.double_value = (double)value;
+                break;
+            default:
+                printf("VAL NOT FOUND\n");
+        }
+    }
+    return a;
 }
 
 void createQuadVar(struct VarDecl *var) {
