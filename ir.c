@@ -28,6 +28,7 @@ enum val_t {
     VAL_UINT,
     VAL_LONG,
     VAL_ULONG,
+    VAL_DOUBLE,
 };
 
 union value {
@@ -53,18 +54,27 @@ struct result {
     char *name;
 
 };
-struct Quad {
+struct quad {
     struct argument *arg1;
     struct argument *arg2;
     enum op operation;
     struct result *result;
-} Quad;
+} quad;
 
-struct Quad **quads;
+struct quad **quads;
 int numQuads = 0;
 
-void createQuadVar(struct VarDecl *var) {
+struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op operation, struct result *result) {
+    struct quad *q = malloc(sizeof(struct quad));
+    q->arg1 = arg1;
+    q->arg2 = arg2;
+    q->operation = operation;
+    q->result = result;
+    return q;
+}
 
+void createQuadVar(struct VarDecl *var) {
+    
 }
 
 void createQuadFunc(struct Func *func) {
@@ -72,10 +82,127 @@ void createQuadFunc(struct Func *func) {
 }
 
 void addQuad(struct Quad *quad) {
-    quads = realloc(quads,sizeof(struct Quad) * (1 + numQuads));
+    quads = realloc(quads,sizeof(struct quad) * (1 + numQuads));
+    quads[numQuads] = quad;
     numQuads++;
 }
 
+void opToString(enum op) {
+    switch(op) {
+        case OP_MULT:
+            printf("MULT");
+            break;
+        case OP_DIV:
+            printf("DIV");
+            break;
+        case OP_ADD:
+            printf("ADD");
+            break;
+        case OP_SUB:
+            printf("SUB");
+            break;
+        case OP_EQ:
+            printf("EQ");
+            break;
+        case OP_LEQ:
+            printf("LEQ");
+            break;
+        case OP_GEQ:
+            printf("GEQ");
+            break;
+        case OP_NEQ:
+            printf("NEQ");
+            break;
+        case OP_LESS:
+            printf("LESS");
+            break;
+        case OP_GREAT:
+            printf("GREAT");
+            break;
+        case OP_OR:
+            printf("OR");
+            break;
+        case OP_AND:
+            printf("AND");
+            break;
+        case OP_ASSIGN:
+            printf("ASSIGN");
+            break;
+        case OP_BITOR:
+            printf("BITOR");
+            break;
+        case OP_BITAND:
+            printf("BITAND");
+            break;
+        case OP_BITXOR:
+            printf("BITXOR");
+            break;
+        case OP_CALL:
+            printf("CALL");
+            break;
+        case OP_JUMPIF:
+            printf("JUMPIF");
+            break;
+        default:
+            printf("OP NOT FOUND");
+    }
+}
+
+void printValue(enum val_t val, union value value) {
+    switch (val) {
+        case VAL_CHAR:
+            printf("%c",value.char_value);
+            break;
+        case VAL_UCHAR:
+            printf("%u",value.uchar_value);
+            break;
+        case VAL_SHORT:
+            printf("%hd",value.short_value);
+            break;
+        case VAL_USHORT:
+            printf("%hu",value.ushort_value);
+            break;
+        case VAL_INT:
+            printf("%d",value.int_value);
+            break;
+        case VAL_UINT:
+            printf("%u",value.uint_value);
+            break;
+        case VAL_LONG:
+            printf("%ld",value.long_value);
+            break;
+        case VAL_ULONG:
+            printf("%lu",value.ulong_value);
+            break;
+        case VAL_DOUBLE:
+            printf("%f",value.double_value);
+            break;
+        default: 
+            printf("VALUE NOT FOUND");
+    }
+}
+
+void printQuads() {
+    for (int i = 0; i < numQuads; i++) {
+        printf("Op: ");
+        opToString(quads[i]->operation);
+        printf(" | Arg1: ");
+        if (!quads[i]->arg1->name) {
+            printValue(quads[i]->arg1->val_t,quads[i]->arg1->value);
+        }
+        else {
+            printf("%s",quads[i]->arg1->name);
+        }
+        printf(" | Arg2: ");
+        if (!quads[i]->arg2->name) {
+            printValue(quads[i]->arg2->val_t,quads[i]->arg2->value);
+        }
+        else {
+            printf("%s",quads[i]->arg2->name);
+        }
+        printf(" | Result: %s\n",quads[i]->result->name);
+    }
+}
 void createIR() {
     struct Declaration *d = syntaxTree;
     while (d) {
