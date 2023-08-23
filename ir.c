@@ -1,3 +1,5 @@
+#include "syntaxtree.h"
+
 enum op {
     OP_MULT,
     OP_DIV,
@@ -50,15 +52,11 @@ struct argument {
     union value value;
 };
 
-struct result {
-    char *name;
-
-};
 struct quad {
     struct argument *arg1;
     struct argument *arg2;
     enum op operation;
-    struct result *result;
+    char *result;
 } quad;
 
 struct quad **quads;
@@ -69,7 +67,7 @@ int temp = 0;
 /***
  * Allocates memory for quads
 */
-struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op operation, struct result *result) {
+struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op operation, char *result) {
     struct quad *q = malloc(sizeof(struct quad));
     q->arg1 = arg1;
     q->arg2 = arg2;
@@ -122,14 +120,14 @@ void createQuadVar(struct VarDecl *var) {
     
 }
 
-void createQuadFunc(struct Func *func) {
+void createQuadFunc(struct FuncDecl *func) {
 
 }
 
 /**
  * Adds quad to quad array
 */
-void addQuad(struct Quad *quad) {
+void addQuad(struct quad *quad) {
     quads = realloc(quads,sizeof(struct quad) * (1 + numQuads));
     quads[numQuads] = quad;
     numQuads++;
@@ -137,7 +135,7 @@ void addQuad(struct Quad *quad) {
 /**
  * Converts operation enum to a string and prints it
 */
-void opToString(enum op) {
+void opToString(enum op op) {
     switch(op) {
         case OP_MULT:
             printf("MULT");
@@ -256,7 +254,7 @@ void printQuads() {
         else {
             printf("%s",quads[i]->arg2->name);
         }
-        printf(" | Result: %s\n",quads[i]->result->name);
+        printf(" | Result: %s\n",quads[i]->result);
     }
 }
 
