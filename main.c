@@ -42,7 +42,8 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	createIR();
-	printf("DAG finished\n");
+	printQuads();
+	printf("IR finished\n");
 	freeRules();
 	freeInstanceAndVarTokens();
 	// //freeTokens();seg fault
