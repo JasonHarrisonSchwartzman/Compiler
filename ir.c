@@ -19,6 +19,7 @@ typedef enum op {
     OP_BITXOR,
     OP_CALL,
     OP_JUMPIF,
+    OP_MOD,
 } op;
 
 typedef enum val_t {
@@ -89,12 +90,22 @@ char *createResultName(int num) {
 
 
 char *createName(char *c, int num) {
-    if (strcmp(c,'t') == 0) {
+    if (strcmp(c,"t") == 0) {
         return createTempName(num);
     }
     else {
         return createResultName(num);
     }
+}
+
+char *getTempName(int num) {
+    int totalLength = snprintf(NULL, 0, "t%d", num) + 1;
+    char *result = (char *)malloc(totalLength);
+    if (result != NULL) {
+        snprintf(result, totalLength, "t%d", num);
+    }
+    temp++;
+    return result;
 }
 /**
  * 
@@ -115,11 +126,12 @@ struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op op
 /**
  * Adds quad to quad array
 */
-void addQuad(struct quad *quad) {
+char *addQuad(struct quad *quad) {
     quads = realloc(quads,sizeof(struct quad) * (1 + numQuads));
     quads[numQuads] = quad;
     numQuads++;
     printf("ADDED QUAD WITH RESULT: %s\n", quad->result);
+    return quad->result;
 }
 
 /**
@@ -201,9 +213,47 @@ struct argument *evalToArg(struct Evaluation *eval) {
     return NULL;
 }
 
+op getQuadOp(operation_t op) {
+    switch(op) {
+        case PLUS:
+            return OP_ADD;
+        case MINUS:
+            return OP_SUB;
+        case MULT:
+            return OP_MULT;
+        case DIV:
+            return OP_DIV;
+        case MOD:
+            return OP_MOD;
+        case BITWISEAND:
+            return OP_BITAND;
+        case BITWISEOR:
+            return OP_BITOR;
+        case BITWISEXOR:
+            return OP_BITXOR;
+        case EQUAL:
+            return OP_EQ;
+        case GREATEQUAL:
+            return OP_GEQ;
+        case LESSEQUAL:
+            return OP_LEQ;
+        case LESS:
+            return OP_LESS;
+        case GREAT:
+            return OP_GREAT;
+        case AND:
+            return OP_AND;
+        case NOT:
+            return OP_NEQ;
+        case OR:
+            return OP_OR;
+        default:
+            return -1;
+    }
+}
 /**
  * Creates a quad for a variable declaration
- * /**
+ * 
  * a = b + c + d + e;
  * 
  * t1 = b + c;
@@ -217,11 +267,17 @@ void createQuadVar(struct VarDecl *var) {
         addQuad(createQuad(evalToArg(e->eval), NULL, OP_ASSIGN, var->name));
         return;
     }
+    //a b c d
+    //a b -> t1
+    //t1 c -> t2
+    //t2 d -> t3
+    char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
+    e = e->expr->expr;
     while (e) {
-        
+        tempName = addQuad(createQuad(createArg(tempName,-1,0),evalToArg(e->eval),getQuadOp(*e->op),createName("t",temp)));
         e = e->expr;
     }
-    addQuad(createQuad(createArg(temp,getTypeQuad(var->type),0), NULL, OP_ASSIGN, var->name));
+    addQuad(createQuad(createArg(tempName,getTypeQuad(var->type),0), NULL, OP_ASSIGN, var->name));
 }
 
 void createQuadFunc(struct FuncDecl *func) {
