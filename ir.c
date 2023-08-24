@@ -1,6 +1,6 @@
 #include "syntaxtree.h"
 
-enum op {
+typedef enum op {
     OP_MULT,
     OP_DIV,
     OP_ADD,
@@ -21,7 +21,7 @@ enum op {
     OP_JUMPIF,
 } op;
 
-enum val_t {
+typedef enum val_t {
     VAL_CHAR,
     VAL_UCHAR,
     VAL_SHORT,
@@ -31,7 +31,8 @@ enum val_t {
     VAL_LONG,
     VAL_ULONG,
     VAL_DOUBLE,
-};
+    VAL_POINTER,
+} val_t;
 
 union value {
     const char *name;
@@ -116,8 +117,52 @@ struct argument *createArg(char *name, enum val_t val, long value) {
     return a;
 }
 
+val_t getTypeQuad(struct Type *type) {
+    if (!type) printf("TYPE NULL WHEN GETTING TYPE ERROR\n");
+    if (type->pointer) return VAL_POINTER;
+    switch (type->dataType) {
+        case CHAR:
+            return type->sign == SIGNED ? VAL_CHAR : VAL_UCHAR;
+        case SHORT:
+            return type->sign == SIGNED ? VAL_SHORT : VAL_USHORT;
+        case INT:
+            return type->sign == SIGNED ? VAL_INT : VAL_UINT;
+        case LONG:
+            return type->sign == SIGNED ? VAL_LONG : VAL_ULONG;
+        case DOUBLE:
+            return VAL_DOUBLE; //no such thing as unsigned double
+    }
+    return -1;
+}
+/**
+ * a = b + c + d + e;
+ * 
+ * t1 = b + c;
+ * t2 = t1 + d;
+ * t3 = t2 + e;
+ * a = t3
+*/
+
+/**
+ * Creates an argument struct given an eval
+*/
+struct argument *evalToArg(struct Evaluation *eval) {
+    if (eval->eval == ID) {
+        return createArg(eval->name,getTypeQuad(eval->type),0);
+    }
+    if (eval->eval == VALUE) {
+        return createArg(NULL,getTypeQuad(eval->type),strtol(eval->value->value,NULL,10));
+    }
+    return NULL;
+}
 void createQuadVar(struct VarDecl *var) {
-    
+    struct Expression *e = var->expr;
+    if (!e->expr) {
+        createQuad(evalToArg(e->eval), NULL, OP_ASSIGN, var->name);
+    }
+    while (e) {
+        
+    }
 }
 
 void createQuadFunc(struct FuncDecl *func) {
