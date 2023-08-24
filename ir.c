@@ -66,6 +66,41 @@ int numQuads = 0;
 int temp = 0;
 
 /***
+ * 3 functions create a name tX or rX where X is the number 
+*/
+char *createTempName(int num) {
+    int totalLength = snprintf(NULL, 0, "t%d", num) + 1;
+    char *result = (char *)malloc(totalLength);
+    if (result != NULL) {
+        snprintf(result, totalLength, "t%d", num);
+    }
+    temp++;
+    return result;
+}
+
+char *createResultName(int num) {
+    int totalLength = snprintf(NULL, 0, "r%d", num) + 1;
+    char *result = (char *)malloc(totalLength);
+    if (result != NULL) {
+        snprintf(result, totalLength, "r%d", num);
+    }
+    return result;
+}
+
+
+char *createName(char *c, int num) {
+    if (strcmp(c,'t') == 0) {
+        return createTempName(num);
+    }
+    else {
+        return createResultName(num);
+    }
+}
+/**
+ * 
+*/
+
+/***
  * Allocates memory for quads
 */
 struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op operation, char *result) {
@@ -151,14 +186,7 @@ val_t getTypeQuad(struct Type *type) {
     }
     return -1;
 }
-/**
- * a = b + c + d + e;
- * 
- * t1 = b + c;
- * t2 = t1 + d;
- * t3 = t2 + e;
- * a = t3
-*/
+
 
 /**
  * Creates an argument struct given an eval
@@ -175,15 +203,25 @@ struct argument *evalToArg(struct Evaluation *eval) {
 
 /**
  * Creates a quad for a variable declaration
+ * /**
+ * a = b + c + d + e;
+ * 
+ * t1 = b + c;
+ * t2 = t1 + d;
+ * t3 = t2 + e;
+ * a = t3
 */
 void createQuadVar(struct VarDecl *var) {
     struct Expression *e = var->expr;
     if (!e->expr) {
         addQuad(createQuad(evalToArg(e->eval), NULL, OP_ASSIGN, var->name));
+        return;
     }
     while (e) {
+        
         e = e->expr;
     }
+    addQuad(createQuad(createArg(temp,getTypeQuad(var->type),0), NULL, OP_ASSIGN, var->name));
 }
 
 void createQuadFunc(struct FuncDecl *func) {
