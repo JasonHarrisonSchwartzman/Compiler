@@ -87,8 +87,12 @@ void addQuad(struct quad *quad) {
     printf("ADDED QUAD WITH RESULT: %s\n", quad->result);
 }
 
+/**
+ * Allocates memory for an argument struct with either a name or a value
+*/
 struct argument *createArg(char *name, enum val_t val, long value) {
     struct argument *a = calloc(1,sizeof(struct argument));
+    a->val_t = val;
     if (name) a->name = name;
     else {
         a->val_t = val;
@@ -127,6 +131,9 @@ struct argument *createArg(char *name, enum val_t val, long value) {
     return a;
 }
 
+/**
+ * Converts a type struct into a val_t enum
+*/
 val_t getTypeQuad(struct Type *type) {
     if (!type) printf("TYPE NULL WHEN GETTING TYPE ERROR\n");
     if (type->pointer) return VAL_POINTER;
@@ -165,6 +172,10 @@ struct argument *evalToArg(struct Evaluation *eval) {
     }
     return NULL;
 }
+
+/**
+ * Creates a quad for a variable declaration
+*/
 void createQuadVar(struct VarDecl *var) {
     struct Expression *e = var->expr;
     if (!e->expr) {
