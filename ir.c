@@ -69,7 +69,7 @@ int temp = 0;
  * Allocates memory for quads
 */
 struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op operation, char *result) {
-    struct quad *q = malloc(sizeof(struct quad));
+    struct quad *q = calloc(1,sizeof(struct quad));
     q->arg1 = arg1;
     q->arg2 = arg2;
     q->operation = operation;
@@ -77,8 +77,18 @@ struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op op
     return q;
 }
 
+/**
+ * Adds quad to quad array
+*/
+void addQuad(struct quad *quad) {
+    quads = realloc(quads,sizeof(struct quad) * (1 + numQuads));
+    quads[numQuads] = quad;
+    numQuads++;
+    printf("ADDED QUAD WITH RESULT: %s\n", quad->result);
+}
+
 struct argument *createArg(char *name, enum val_t val, long value) {
-    struct argument *a = malloc(sizeof(struct argument));
+    struct argument *a = calloc(1,sizeof(struct argument));
     if (name) a->name = name;
     else {
         a->val_t = val;
@@ -158,10 +168,10 @@ struct argument *evalToArg(struct Evaluation *eval) {
 void createQuadVar(struct VarDecl *var) {
     struct Expression *e = var->expr;
     if (!e->expr) {
-        createQuad(evalToArg(e->eval), NULL, OP_ASSIGN, var->name);
+        addQuad(createQuad(evalToArg(e->eval), NULL, OP_ASSIGN, var->name));
     }
     while (e) {
-        
+        e = e->expr;
     }
 }
 
@@ -169,14 +179,6 @@ void createQuadFunc(struct FuncDecl *func) {
 
 }
 
-/**
- * Adds quad to quad array
-*/
-void addQuad(struct quad *quad) {
-    quads = realloc(quads,sizeof(struct quad) * (1 + numQuads));
-    quads[numQuads] = quad;
-    numQuads++;
-}
 /**
  * Converts operation enum to a string and prints it
 */
@@ -247,16 +249,16 @@ void opToString(enum op op) {
 void printValue(enum val_t val, union value value) {
     switch (val) {
         case VAL_CHAR:
-            printf("%c",value.char_value);
+            printf("%d",(char)value.char_value);
             break;
         case VAL_UCHAR:
             printf("%u",value.uchar_value);
             break;
         case VAL_SHORT:
-            printf("%hd",value.short_value);
+            printf("%d",value.short_value);
             break;
         case VAL_USHORT:
-            printf("%hu",value.ushort_value);
+            printf("%u",value.ushort_value);
             break;
         case VAL_INT:
             printf("%d",value.int_value);
@@ -273,6 +275,9 @@ void printValue(enum val_t val, union value value) {
         case VAL_DOUBLE:
             printf("%f",value.double_value);
             break;
+        case VAL_POINTER:
+            printf("POINTER");
+            break;
         default: 
             printf("VALUE NOT FOUND");
     }
@@ -282,18 +287,27 @@ void printValue(enum val_t val, union value value) {
  * Prints quads
 */
 void printQuads() {
+    printf("----------QUADS----------\n");
     for (int i = 0; i < numQuads; i++) {
         printf("Op: ");
         opToString(quads[i]->operation);
         printf(" | Arg1: ");
-        if (!quads[i]->arg1->name) {
+        if (!quads[i]->arg1) {
+            printf("_");
+        }
+        else if (!quads[i]->arg1->name) {
+            //printf("that fails\n");
             printValue(quads[i]->arg1->val_t,quads[i]->arg1->value);
         }
         else {
-            printf("%s",quads[i]->arg1->name);
+            //printf("this fails\n");
+            printf("%p",quads[i]->arg1->name);
         }
         printf(" | Arg2: ");
-        if (!quads[i]->arg2->name) {
+        if (!quads[i]->arg2) {
+            printf("_");
+        }
+        else if (!quads[i]->arg2->name) {
             printValue(quads[i]->arg2->val_t,quads[i]->arg2->value);
         }
         else {
