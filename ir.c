@@ -204,6 +204,8 @@ val_t getTypeQuad(struct Type *type) {
  * Creates an argument struct given an eval
 */
 struct argument *evalToArg(struct Evaluation *eval) {
+    if (eval->name) printf("name %s:\n", eval->name);
+    if (eval->value) printf("value %s:\n",eval->value->value);
     if (eval->eval == ID) {
         return createArg(eval->name,getTypeQuad(eval->type),0);
     }
@@ -281,7 +283,12 @@ void createQuadVar(struct VarDecl *var) {
 }
 
 void createQuadFunc(struct FuncDecl *func) {
-
+    struct Statement *stmt = func->statements;
+    while (stmt) {
+        if (stmt->stmt == ASSIGNMENT || stmt->stmt == DECLARATION) {
+            createQuadVar(stmt->var);
+        }
+    }
 }
 
 /**
