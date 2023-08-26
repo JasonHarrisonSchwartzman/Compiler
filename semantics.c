@@ -34,7 +34,7 @@ struct SymbolTable *symbolTables;//the symbol table
  * Allocates mem for a Symbol
  */
 struct Symbol *createSymbol(char *name, struct Type *type, symbol_t sym, dec_t dec, unsigned long line) {
-	struct Symbol *s = malloc(sizeof(struct Symbol));
+	struct Symbol *s = calloc(1,sizeof(struct Symbol));
 	s->name = name;
 	s->type = type;
 	s->sym = sym;
@@ -135,7 +135,7 @@ struct Type *inferLiteral(struct Value *value) {
 	char *val = value->value;
 	printf("Literal to infer: %s\n",val);
 	if (value->val_t == NUM) {
-		struct Type *type = malloc(sizeof(struct Type));
+		struct Type *type = calloc(1,sizeof(struct Type));
 		type->pointer = 0;
 		type->length = NULL;
 		type->sign = SIGNED;
@@ -151,7 +151,7 @@ struct Type *inferLiteral(struct Value *value) {
 		return type;
 	}
 	else if(value->val_t == CHARCONST) {
-		struct Type *type = malloc(sizeof(struct Type));
+		struct Type *type = calloc(1,sizeof(struct Type));
 		type->dataType = CHAR;
 		type->sign = UNSIGNED;
 		type->pointer = 0;
@@ -159,7 +159,7 @@ struct Type *inferLiteral(struct Value *value) {
 		return type;
 	}
 	else { //STRING
-		struct Type *type = malloc(sizeof(struct Type));
+		struct Type *type = calloc(1,sizeof(struct Type));
 		type->dataType = LONG;
 		type->sign = UNSIGNED;
 		type->pointer = 1;
@@ -257,8 +257,8 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 struct Type *typeCheckExpr(struct Expression *expr) {
 	if (!expr) printf("Expression null\n");
 	if (!expr) return NULL; //sholdn't be null, might have to find the cause
-	struct Evaluation **evalStack = malloc(sizeof(struct Evaluation*));
-	operation_t **opStack = malloc(sizeof(operation_t *));
+	struct Evaluation **evalStack = calloc(1,sizeof(struct Evaluation*));
+	operation_t **opStack = calloc(1,sizeof(operation_t *));
 	long stackIndex = 0;
 	long opStackIndex = 0;
 	struct Expression *temp = expr;

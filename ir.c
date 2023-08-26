@@ -287,7 +287,7 @@ void createQuadVar(struct VarDecl *var) {
 void createQuadFunc(struct FuncDecl *func) {
     struct Statement *stmt = func->statements;
     while (stmt) {
-        if (stmt->stmt == ASSIGNMENT || stmt->stmt == DECLARATION) {
+        if ((stmt->stmt == ASSIGNMENT) || (stmt->stmt == DECLARATION)) {
             createQuadVar(stmt->var);
         }
         stmt = stmt->next;

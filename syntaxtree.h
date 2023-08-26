@@ -333,21 +333,21 @@ struct Value *addValue(value_t val_t, char *value,unsigned long line) {
 
 //G1
 type_t *addDataType(type_t dataType) {
-	type_t *t = malloc(sizeof(type_t));
+	type_t *t = calloc(1,sizeof(type_t));
 	*t = dataType;
 	return t;
 }
 
 //F1
 signed_t *addSign(signed_t sign) {
-	signed_t *s = malloc(sizeof(signed_t));
+	signed_t *s = calloc(1,sizeof(signed_t));
 	*s = sign;
 	return s;
 }
 
 //S1 T1
 operation_t *addOperation(operation_t op) {
-	operation_t *o = malloc(sizeof(signed_t));
+	operation_t *o = calloc(1,sizeof(signed_t));
 	*o = op;
 	return o;
 }
