@@ -174,10 +174,10 @@ struct Type *inferLiteral(struct Value *value) {
 */
 struct Type *getType(struct Evaluation *eval) {
 	if (eval->eval == VALUE) {
+		printf("Inferring literal value of %s\n",eval->value->value);
 		return inferLiteral(eval->value);
 	}
 	else {
-		printf("hi\n");
 		return eval->symbol->type;
 	}
 }
@@ -186,8 +186,11 @@ struct Type *getType(struct Evaluation *eval) {
  */
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
 	printf("Resolving type\n");
+	//if (!eval1) return NULL;
+	if (eval1->value) printf("Infer value %s\n",eval1->value->value);
 	if (!eval2) {
 		//printf("eval 1 type: %p\n",eval1->type);
+		printf("single value\n");
 		return eval1->type = getType(eval1);
 	}
 	printf("First eval: %s\n", eval1->name);
@@ -252,6 +255,8 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
  * Given an expression, resolve all subexpression types given operations between two values and return the type computed when reduced all the way.
  */
 struct Type *typeCheckExpr(struct Expression *expr) {
+	if (!expr) printf("Expression null\n");
+	if (!expr) return NULL;
 	struct Evaluation **evalStack = malloc(sizeof(struct Evaluation*));
 	operation_t **opStack = malloc(sizeof(operation_t *));
 	long stackIndex = 0;
@@ -270,13 +275,17 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 
 		temp = temp->expr;
 	}
+	printf("Expression length %ld Operation length %ld\n",stackIndex,opStackIndex);
 	long eval1 = stackIndex - 1;
 	long eval2 = stackIndex - 2;
 	long opIndex = opStackIndex - 1;
 	while (eval2 > -1) {
 		resolveType(evalStack[eval1--],opStack[opIndex--],evalStack[eval2--]);
 	}
+	printf("Num: %ld\n",eval1);
 	resolveType(evalStack[eval1--],NULL,NULL); //resolves single expressions
+	printf("test\n");
+	if (!evalStack[0]) return NULL;
 	printf("Type: %d Name: %s\n",evalStack[0]->type->dataType,evalStack[0]->name);
 	free(opStack);
 	struct Type *ret = evalStack[0]->type;
@@ -289,6 +298,7 @@ struct Type *typeCheckExpr(struct Expression *expr) {
  */
 struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) {
 	printf("Type check assignment\n");
+	if (!expr) printf("Expression NULL here\n");
 	struct Type *exprType = typeCheckExpr(expr);
 	exprType->sign = varType->sign;
 	exprType->pointer = varType->pointer;
@@ -436,7 +446,7 @@ int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
  * Return 1 if all found or 0 if one is not found
  */ 
 int resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
-	if (!expr) return 0;
+	if (!expr) return 1;
 	return 1 * resolveExpr(symTab,expr->expr) * resolveEval(symTab,expr->eval);
 }
 
@@ -493,6 +503,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of dec
 
 			if (s->var->expr && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr);
+			if (s->var->expr->eval->type == NULL) printf("44444444444444\n");
 		}
 		if (s->stmt == FOR) {
 			inLoop = 1;
@@ -548,7 +559,10 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 
 			//remember to change this line to typeCheck return for function return type
 			if (resolvedExpr) {
+				printf("Expression here-----------\n");
 				typeCheckExpr(s->returnstmt); 
+				printf("Type checked\n");
+				if (!returnType) printf("NOT GOOOOOOOOOOOOOOD\n");
 				typeCheckAssignment(returnType,s->returnstmt);
 			}
 			//testing type checking for return statements be sure to include this function in other lines
@@ -559,9 +573,8 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
 			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of ass
 			printf("TYPE CHECKING ASSIGNMENT\n");
-			
-			
 			if (resolvedAss && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr); //if assignment is resolved you can type check
+			
 		}
 		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
 			resolveControl(s->stmt);

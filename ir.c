@@ -207,9 +207,11 @@ struct argument *evalToArg(struct Evaluation *eval) {
     if (eval->name) printf("name %s:\n", eval->name);
     if (eval->value) printf("value %s:\n",eval->value->value);
     if (eval->eval == ID) {
+        printf("1\n");
         return createArg(eval->name,getTypeQuad(eval->type),0);
     }
     if (eval->eval == VALUE) {
+        printf("2\n");
         return createArg(NULL,getTypeQuad(eval->type),strtol(eval->value->value,NULL,10));
     }
     return NULL;
@@ -288,6 +290,7 @@ void createQuadFunc(struct FuncDecl *func) {
         if (stmt->stmt == ASSIGNMENT || stmt->stmt == DECLARATION) {
             createQuadVar(stmt->var);
         }
+        stmt = stmt->next;
     }
 }
 
