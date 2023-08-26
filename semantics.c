@@ -256,7 +256,7 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
  */
 struct Type *typeCheckExpr(struct Expression *expr) {
 	if (!expr) printf("Expression null\n");
-	if (!expr) return NULL;
+	if (!expr) return NULL; //sholdn't be null, might have to find the cause
 	struct Evaluation **evalStack = malloc(sizeof(struct Evaluation*));
 	operation_t **opStack = malloc(sizeof(operation_t *));
 	long stackIndex = 0;
