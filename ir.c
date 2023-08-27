@@ -217,7 +217,9 @@ struct argument *evalToArg(struct Evaluation *eval) {
     }
     return NULL;
 }
-
+/**
+ * converts op from syntax tree to op in IR
+*/
 op getQuadOp(operation_t op) {
     switch(op) {
         case PLUS:
@@ -256,6 +258,7 @@ op getQuadOp(operation_t op) {
             return -1;
     }
 }
+
 /**
  * generic quad creator to create long expression 
  * single or null expressions are dealt with on higher-up functions
