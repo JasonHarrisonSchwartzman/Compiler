@@ -78,19 +78,7 @@ void printSymbolTable(struct SymbolTable *sym) {
 }
 
 
-/*TODO:
- * Type checking
-values: number decimal character string
-types: char short int long
-sign: signed unsigned
-double
-pointers
-functioncalls which are equal to char short int long or double
-arrays
-arrays of pointers
-Rules for types:
-Operations: + - * / % & | ^
-Comparison: == <= >= < > && || !=
+/*
 
 CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons, they will be converted to the bigger type before computed.
 
@@ -133,7 +121,7 @@ type_t determineSmallestType(char *str) {
 */
 struct Type *inferLiteral(struct Value *value) {
 	char *val = value->value;
-	printf("Literal to infer: %s\n",val);
+	//printf("Literal to infer: %s\n",val);
 	if (value->val_t == NUM) {
 		struct Type *type = calloc(1,sizeof(struct Type));
 		type->pointer = 0;
@@ -159,6 +147,7 @@ struct Type *inferLiteral(struct Value *value) {
 		return type;
 	}
 	else { //STRING
+		printf("STRING INFERENCE-------------\n");
 		struct Type *type = calloc(1,sizeof(struct Type));
 		type->dataType = LONG;
 		type->sign = UNSIGNED;
@@ -174,10 +163,11 @@ struct Type *inferLiteral(struct Value *value) {
 */
 struct Type *getType(struct Evaluation *eval) {
 	if (eval->eval == VALUE) {
-		printf("Inferring literal value of %s\n",eval->value->value);
+		//printf("Inferring literal value of %s\n",eval->value->value);
 		return inferLiteral(eval->value);
 	}
 	else {
+		printf("EvAL: %d PROBLEMA? %d-----------------------\n",eval->eval,eval->symbol->type->pointer);
 		return eval->symbol->type;
 	}
 }
@@ -185,15 +175,11 @@ struct Type *getType(struct Evaluation *eval) {
  * Type translation given operators and 1 or 2 Evaluations.
  */
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
-	printf("Resolving type\n");
 	//if (!eval1) return NULL;
-	if (eval1->value) printf("Infer value %s\n",eval1->value->value);
+	//if (eval1->value) printf("Infer value %s\n",eval1->value->value);
 	if (!eval2) {
-		//printf("eval 1 type: %p\n",eval1->type);
-		printf("single value\n");
 		return eval1->type = getType(eval1);
 	}
-	printf("First eval: %s\n", eval1->name);
 	/*switch (*op) {
 		case PLUS:
 			break;
@@ -243,6 +229,8 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		type2->sign = SIGNED;
 	}
 	if (type1->pointer || type2->pointer) {//both become points
+		printf("THERE IS ONE POINTER -----------");
+		printf("%d %d\n",type1->pointer,type2->pointer);
 		type1->pointer = 1;
 		type2->pointer = 1;
 	}
@@ -275,21 +263,22 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 
 		temp = temp->expr;
 	}
-	printf("Expression length %ld Operation length %ld\n",stackIndex,opStackIndex);
+	//printf("Expression length %ld Operation length %ld\n",stackIndex,opStackIndex);
 	long eval1 = stackIndex - 1;
 	long eval2 = stackIndex - 2;
 	long opIndex = opStackIndex - 1;
 	while (eval2 > -1) {
 		resolveType(evalStack[eval1--],opStack[opIndex--],evalStack[eval2--]);
 	}
-	printf("Num: %ld\n",eval1);
+	//printf("Num: %ld\n",eval1);
 	resolveType(evalStack[eval1--],NULL,NULL); //resolves single expressions
-	printf("test\n");
+	//printf("test\n");
 	if (!evalStack[0]) return NULL;
-	printf("Type: %d Name: %s\n",evalStack[0]->type->dataType,evalStack[0]->name);
+	//printf("Type: %d Name: %s\n",evalStack[0]->type->dataType,evalStack[0]->name);
 	free(opStack);
 	struct Type *ret = evalStack[0]->type;
 	free(evalStack);
+	printf("-----------------------POINTER: %d\n",ret->pointer);
 	return ret;
 }
 
@@ -300,6 +289,9 @@ struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) 
 	printf("Type check assignment\n");
 	if (!expr) printf("Expression NULL here\n");
 	struct Type *exprType = typeCheckExpr(expr);
+
+	printf("before comparison pointer %d\n",exprType->pointer);
+	printf("varType pointer %d\n",varType->pointer);
 	exprType->sign = varType->sign;
 	exprType->pointer = varType->pointer;
 	if (varType->dataType >= exprType->dataType) {//the biggest data type takes precedence
@@ -309,7 +301,7 @@ struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) 
 		printf("Variable type data loss (left side has smaller data type than the right).\n");
 		return NULL;
 	}
-
+	printf("within typeCheckAss pointer of X? %d\n",exprType->pointer);
 	return varType;
 }
 
@@ -389,7 +381,8 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 	addSymbol(symTab,s);
 	var->symbol = s;
 	//typeCheckExpr(var->expr);
-	//typeCheckAssignment(var->type,var->expr);
+	printf("before typeCheck pointer of var %d\n",var->type->pointer);
+	typeCheckAssignment(var->type,var->expr);
 }
 
 /*
@@ -499,11 +492,11 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		if (s->stmt == DECLARATION) {
 			printf("RESOLVING DECLARATION of %s\n", s->var->name);
 			createSymbolTableVarDecl(symTab,s->var);//var decl
-			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
-			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of dec
-
-			if (s->var->expr && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr);
-			if (s->var->expr->eval->type == NULL) printf("44444444444444\n");
+			//if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
+			//int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of dec
+			printf("pointer of %s? %d\n",s->var->name,s->var->type->pointer);
+			//if (s->var->expr && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr);
+			printf("\n\n");
 		}
 		if (s->stmt == FOR) {
 			inLoop = 1;
