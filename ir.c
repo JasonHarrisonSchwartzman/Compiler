@@ -260,7 +260,7 @@ op getQuadOp(operation_t op) {
 }
 
 /**
- * generic quad creator to create long expression 
+ * generic Quad creator to create long expression 
  * single or null expressions are dealt with on higher-up functions
 */
 char *createQuadExpr(struct Expression *expr) {
