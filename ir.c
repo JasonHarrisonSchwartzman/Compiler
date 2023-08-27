@@ -20,6 +20,7 @@ typedef enum op {
     OP_CALL,
     OP_JUMPIF,
     OP_MOD,
+    OP_RET,
 } op;
 
 typedef enum val_t {
@@ -255,6 +256,17 @@ op getQuadOp(operation_t op) {
             return -1;
     }
 }
+
+char *createQuadExpr(struct Expression *expr) {
+    struct Expression *e = expr;
+    char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
+    e = e->expr->expr;
+    while (e) {
+        tempName = addQuad(createQuad(createArg(tempName,-1,0),evalToArg(e->eval),getQuadOp(*e->op),createName("t",temp)));
+        e = e->expr;
+    }
+    return tempName;
+}
 /**
  * Creates a quad for a variable declaration
  * 
@@ -275,13 +287,31 @@ void createQuadVar(struct VarDecl *var) {
     //a b -> t1
     //t1 c -> t2
     //t2 d -> t3
-    char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
+    /*char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
     e = e->expr->expr;
     while (e) {
         tempName = addQuad(createQuad(createArg(tempName,-1,0),evalToArg(e->eval),getQuadOp(*e->op),createName("t",temp)));
         e = e->expr;
-    }
+    }*/
+    char *tempName = createQuadExpr(var->expr);
     addQuad(createQuad(createArg(tempName,getTypeQuad(var->type),0), NULL, OP_ASSIGN, var->name));
+}
+
+void createQuadReturn(struct Expression *expr) {
+    printf("return quad\n");
+    if (!expr) {
+        addQuad(createQuad(NULL,NULL,OP_RET,NULL));
+        return;
+    }
+    struct Expression *e = expr;
+    if (!e->expr) {
+        addQuad(createQuad(evalToArg(e->eval), NULL, OP_RET, NULL));
+        return;
+    }
+    printf("expr not null\n");
+    char *tempName = createQuadExpr(expr);
+    printf("expr created\n");
+    addQuad(createQuad(createArg(tempName,getTypeQuad(expr->eval->type),0),NULL,OP_RET,NULL));
 }
 
 void createQuadFunc(struct FuncDecl *func) {
@@ -289,6 +319,9 @@ void createQuadFunc(struct FuncDecl *func) {
     while (stmt) {
         if ((stmt->stmt == ASSIGNMENT) || (stmt->stmt == DECLARATION)) {
             createQuadVar(stmt->var);
+        }
+        else if (stmt->stmt == RETURN) {
+            createQuadReturn(stmt->returnstmt);
         }
         stmt = stmt->next;
     }
@@ -352,6 +385,9 @@ void opToString(enum op op) {
             break;
         case OP_JUMPIF:
             printf("JUMPIF");
+            break;
+        case OP_RET:
+            printf("RET");
             break;
         default:
             printf("OP NOT FOUND");
