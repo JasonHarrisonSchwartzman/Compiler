@@ -256,8 +256,15 @@ op getQuadOp(operation_t op) {
             return -1;
     }
 }
-
+/**
+ * generic quad creator to create long expression 
+ * single or null expressions are dealt with on higher-up functions
+*/
 char *createQuadExpr(struct Expression *expr) {
+    //a b c d
+    //a b -> t1
+    //t1 c -> t2
+    //t2 d -> t3
     struct Expression *e = expr;
     char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
     e = e->expr->expr;
@@ -283,22 +290,14 @@ void createQuadVar(struct VarDecl *var) {
         addQuad(createQuad(evalToArg(e->eval), NULL, OP_ASSIGN, var->name));
         return;
     }
-    //a b c d
-    //a b -> t1
-    //t1 c -> t2
-    //t2 d -> t3
-    /*char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
-    e = e->expr->expr;
-    while (e) {
-        tempName = addQuad(createQuad(createArg(tempName,-1,0),evalToArg(e->eval),getQuadOp(*e->op),createName("t",temp)));
-        e = e->expr;
-    }*/
     char *tempName = createQuadExpr(var->expr);
     addQuad(createQuad(createArg(tempName,getTypeQuad(var->type),0), NULL, OP_ASSIGN, var->name));
 }
 
+/**
+ * creates a quad for a return statement
+*/
 void createQuadReturn(struct Expression *expr) {
-    printf("return quad\n");
     if (!expr) {
         addQuad(createQuad(NULL,NULL,OP_RET,NULL));
         return;
@@ -308,9 +307,7 @@ void createQuadReturn(struct Expression *expr) {
         addQuad(createQuad(evalToArg(e->eval), NULL, OP_RET, NULL));
         return;
     }
-    printf("expr not null\n");
     char *tempName = createQuadExpr(expr);
-    printf("expr created\n");
     addQuad(createQuad(createArg(tempName,getTypeQuad(expr->eval->type),0),NULL,OP_RET,NULL));
 }
 
