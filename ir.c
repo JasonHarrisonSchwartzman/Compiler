@@ -183,7 +183,7 @@ struct argument *createArg(char *name, enum val_t val, long value) {
 */
 val_t getTypeQuad(struct Type *type) {
     if (!type) printf("TYPE NULL WHEN GETTING TYPE ERROR\n");
-    if (type->pointer) return VAL_POINTER;
+    if (type->pointer > 0) return VAL_POINTER;
     switch (type->dataType) {
         case CHAR:
             return type->sign == SIGNED ? VAL_CHAR : VAL_UCHAR;

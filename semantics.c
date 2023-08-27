@@ -377,10 +377,12 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 		printError(1,x->name,var->line,x->line);
 		return;
 	}
+	printf("before symbol created var type: %d\n",var->type->pointer);
 	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR,var->line);
 	addSymbol(symTab,s);
 	var->symbol = s;
 	//typeCheckExpr(var->expr);
+	printf("var symbol type pointer %d\n",var->symbol->type->pointer);
 	printf("before typeCheck pointer of var %d\n",var->type->pointer);
 	typeCheckAssignment(var->type,var->expr);
 }
