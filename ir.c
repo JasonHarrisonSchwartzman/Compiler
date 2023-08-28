@@ -372,17 +372,43 @@ void createQuadLoop(struct Loop *loop) {
     char *labelStartLoop = createName("l",label);
     char *labelEndLoop = createName("l",label);
 
-    addQuad(createQuad(NULL,NULL,OP_LABEL,labelStartLoop));
+    addQuad(createQuad(createArg("loop_start",-1,-1),NULL,OP_LABEL,labelStartLoop));
 
     char *tempName = createQuadExpr(loop->expr);
-    addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIFNOT,labelEndLoop));
+    addQuad(createQuad(createArg(tempName,VAL_LONG,0),createArg("jump_end",-1,-1),OP_JUMPIFNOT,labelEndLoop));
     
     createQuadStatements(loop->stmts);
     if (loop->stmt == FOR) {
         createQuadVar(loop->mod);
     }
-    addQuad(createQuad(NULL,NULL,OP_JUMP,labelStartLoop));
-    addQuad(createQuad(NULL,NULL,OP_LABEL,labelEndLoop));
+    addQuad(createQuad(NULL,createArg("jump_start",-1,-1),OP_JUMP,labelStartLoop));
+    addQuad(createQuad(createArg("loop_end",-1,-1),NULL,OP_LABEL,labelEndLoop));
+}
+
+void createQuadBreak(int currentIndex) {
+    int numInner = 0;
+    while (currentIndex > 1) {
+        if (quads[currentIndex]->operation == OP_LABEL && strcmp(quads[currentIndex]->arg1->name,"loop_end") == 0) numInner++; //find corresponding loop
+        else if (quads[currentIndex]->operation == OP_JUMPIFNOT && strcmp(quads[currentIndex]->arg2->name,"jump_end") == 0) {
+            if (numInner > 0) numInner--;
+            else addQuad(createQuad(NULL,NULL,OP_JUMP,quads[currentIndex]->result));
+        }
+        currentIndex--;
+    }
+}
+
+void createQuadContinue(int currentIndex) {
+    int numInner = 0;
+    while (currentIndex > 1) {
+        if (quads[currentIndex]->operation == OP_LABEL && strcmp(quads[currentIndex]->arg1->name,"loop_end") == 0) numInner++; //find corresponding loop
+        else if (quads[currentIndex]->operation == OP_JUMPIFNOT && strcmp(quads[currentIndex]->arg2->name,"jump_end") == 0) {
+            numInner--;
+        }
+        if (quads[currentIndex]->operation == OP_LABEL && strcmp(quads[currentIndex]->arg1->name,"loop_start") == 0) {
+            addQuad(createQuad(NULL,NULL,OP_JUMP,quads[currentIndex]->result));
+        }
+        currentIndex--;
+    }
 }
 
 void createQuadStatements(struct Statement *stmt) {
@@ -404,10 +430,10 @@ void createQuadStatements(struct Statement *stmt) {
 
         }
         else if (stmt->stmt == BREAK) {
-            
+            createQuadBreak(numQuads);
         }
         else if (stmt->stmt == CONTINUE) {
-
+            createQuadContinue(numQuads);
         }
         stmt = stmt->next;
     }
