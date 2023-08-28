@@ -21,6 +21,7 @@ typedef enum op {
     OP_JUMPIF,
     OP_MOD,
     OP_RET,
+    OP_LABEL,
 } op;
 
 typedef enum val_t {
@@ -66,6 +67,7 @@ struct quad **quads;
 int numQuads = 0;
 
 int temp = 0;
+int label = 0;
 
 /***
  * 3 functions create a name tX or rX where X is the number 
@@ -273,9 +275,14 @@ char *createQuadExpr(struct Expression *expr) {
     struct Expression *e = expr;
     char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
     e = e->expr->expr;
+    struct Expression *op = expr->expr; //storing operation
     while (e) {
-        tempName = addQuad(createQuad(createArg(tempName,-1,0),evalToArg(e->eval),getQuadOp(*e->op),createName("t",temp)));
+        printf("before test\n");
+        tempName = addQuad(createQuad(createArg(tempName,-1,0),evalToArg(e->eval),getQuadOp(*op->op),createName("t",temp)));
+        printf("after test\n");
         e = e->expr;
+        op = op->expr;
+        printf("i\n");
     }
     printf("end here\n");
     return tempName;
@@ -317,6 +324,14 @@ void createQuadReturn(struct Expression *expr) {
     addQuad(createQuad(createArg(tempName,getTypeQuad(expr->eval->type),0),NULL,OP_RET,NULL));
 }
 
+/**
+ * Creates quad for a conditional statement
+ * if statements looks for elseif to jump to followed by else
+*/
+void createQuadConditional(struct CondStatement *cond) {
+    
+}
+
 void createQuadFunc(struct FuncDecl *func) {
     struct Statement *stmt = func->statements;
     while (stmt) {
@@ -325,6 +340,9 @@ void createQuadFunc(struct FuncDecl *func) {
         }
         else if (stmt->stmt == RETURN) {
             createQuadReturn(stmt->returnstmt);
+        }
+        else if (stmt->stmt == IF) {
+            createQuadConditional(stmt->condstmt);
         }
         stmt = stmt->next;
     }
