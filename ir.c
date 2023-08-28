@@ -82,6 +82,16 @@ char *createTempName(int num) {
     return result;
 }
 
+char *createLabelName(int num) {
+    int totalLength = snprintf(NULL, 0, "l%d", num) + 1;
+    char *result = (char *)malloc(totalLength);
+    if (result != NULL) {
+        snprintf(result, totalLength, "l%d", num);
+    }
+    label++;
+    return result;
+}
+
 char *createResultName(int num) {
     int totalLength = snprintf(NULL, 0, "r%d", num) + 1;
     char *result = (char *)malloc(totalLength);
@@ -95,6 +105,9 @@ char *createResultName(int num) {
 char *createName(char *c, int num) {
     if (strcmp(c,"t") == 0) {
         return createTempName(num);
+    }
+    else if (strcmp(c,"l") == 0) {
+        return createLabelName(num);
     }
     else {
         return createResultName(num);
@@ -319,16 +332,37 @@ void createQuadReturn(struct Expression *expr) {
     addQuad(createQuad(createArg(tempName,getTypeQuad(expr->eval->type),0),NULL,OP_RET,NULL));
 }
 
+
+void createQuadStatements(struct Statement *stmt);
+
 /**
  * Creates quad for a conditional statement
  * if statements looks for elseif to jump to followed by else
 */
 void createQuadConditional(struct CondStatement *cond) {
-    
+    char *tempName = createQuadExpr(cond->expr);
+    char *labelName = createName("l",label);
+    addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIF,labelName));
+    createQuadStatements(cond->stmts);
+    cond = cond->next;
+    while (cond && cond->stmt != ELSE) {//elseif
+        addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
+
+        tempName = createQuadExpr(cond->expr);
+        labelName = createName("l",label);
+        addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIF,labelName));
+        createQuadStatements(cond->stmts);
+        cond = cond->next;
+    }
+    //else
+    if (cond) {
+        addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
+
+        createQuadStatements(cond->stmts);
+    }
 }
 
-void createQuadFunc(struct FuncDecl *func) {
-    struct Statement *stmt = func->statements;
+void createQuadStatements(struct Statement *stmt) {
     while (stmt) {
         if ((stmt->stmt == ASSIGNMENT) || (stmt->stmt == DECLARATION)) {
             createQuadVar(stmt->var);
@@ -341,6 +375,11 @@ void createQuadFunc(struct FuncDecl *func) {
         }
         stmt = stmt->next;
     }
+}
+
+void createQuadFunc(struct FuncDecl *func) {
+    struct Statement *stmt = func->statements;
+    createQuadStatements(stmt);
 }
 
 /**
