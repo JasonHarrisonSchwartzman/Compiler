@@ -24,6 +24,7 @@ typedef enum op {
     OP_MOD,
     OP_RET,
     OP_LABEL,
+    OP_PARAM,
 } op;
 
 typedef enum val_t {
@@ -413,8 +414,15 @@ void createQuadStatements(struct Statement *stmt) {
 }
 
 void createQuadFunc(struct FuncDecl *func) {
+    addQuad(createQuad(NULL,NULL,OP_LABEL,func->name));
+    struct Params *params = func->params;
+    while (params) {
+        addQuad(createQuad(createArg(params->var->name,getTypeQuad(params->var->type),0),NULL,OP_PARAM,NULL));
+        params = params->next;
+    }
     struct Statement *stmt = func->statements;
     createQuadStatements(stmt);
+    addQuad(createQuad(NULL,NULL,OP_LABEL,"end func"));
 }
 
 /**
@@ -487,6 +495,9 @@ void opToString(enum op op) {
             break;
         case OP_RET:
             printf("RET");
+            break;
+        case OP_PARAM:
+            printf("PARAM");
             break;
         default:
             printf("OP NOT FOUND");
