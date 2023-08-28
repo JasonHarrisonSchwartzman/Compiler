@@ -364,7 +364,7 @@ void createQuadConditional(struct CondStatement *cond) {
     }
 }
 
-void createQuadWhileLoop(struct Loop *loop) {
+void createQuadLoop(struct Loop *loop) {
     if (loop->stmt == FOR) {
         createQuadVar(loop->init);
     }
@@ -392,10 +392,20 @@ void createQuadStatements(struct Statement *stmt) {
         else if (stmt->stmt == RETURN) {
             createQuadReturn(stmt->returnstmt);
         }
-        else if (stmt->stmt == IF) {
+        else if (stmt->stmt == IF) { // IF ELSE IF ELSE
             createQuadConditional(stmt->condstmt);
         }
         else if ((stmt->stmt == WHILE) || (stmt->stmt == FOR)) {
+            printf("LOOP\n");
+            createQuadLoop(stmt->loop);
+        }
+        else if (stmt->stmt == FUNCCALL) {
+
+        }
+        else if (stmt->stmt == BREAK) {
+            
+        }
+        else if (stmt->stmt == CONTINUE) {
 
         }
         stmt = stmt->next;
@@ -471,6 +481,9 @@ void opToString(enum op op) {
             break;
         case OP_JUMP:
             printf("JUMP");
+            break;
+        case OP_LABEL:
+            printf("LABEL");
             break;
         case OP_RET:
             printf("RET");
