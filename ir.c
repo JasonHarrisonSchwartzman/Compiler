@@ -362,6 +362,14 @@ void createQuadConditional(struct CondStatement *cond) {
     }
 }
 
+void createQuadWhileLoop(struct Loop *loop) {
+    if (loop->stmt == FOR) {
+
+    }
+    char *labelName = createName("l",label);
+    
+}
+
 void createQuadStatements(struct Statement *stmt) {
     while (stmt) {
         if ((stmt->stmt == ASSIGNMENT) || (stmt->stmt == DECLARATION)) {
@@ -372,6 +380,9 @@ void createQuadStatements(struct Statement *stmt) {
         }
         else if (stmt->stmt == IF) {
             createQuadConditional(stmt->condstmt);
+        }
+        else if ((stmt->stmt == WHILE) || (stmt->stmt == FOR)) {
+
         }
         stmt = stmt->next;
     }
