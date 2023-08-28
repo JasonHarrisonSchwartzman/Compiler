@@ -207,6 +207,7 @@ val_t getTypeQuad(struct Type *type) {
 struct argument *evalToArg(struct Evaluation *eval) {
     if (eval->name) printf("name %s:\n", eval->name);
     if (eval->value) printf("value %s:\n",eval->value->value);
+    if (!eval->type) printf("error no type\n");
     if (eval->eval == ID) {
         printf("1\n");
         return createArg(eval->name,getTypeQuad(eval->type),0);
@@ -268,6 +269,7 @@ char *createQuadExpr(struct Expression *expr) {
     //a b -> t1
     //t1 c -> t2
     //t2 d -> t3
+    printf("start here\n");
     struct Expression *e = expr;
     char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
     e = e->expr->expr;
@@ -275,6 +277,7 @@ char *createQuadExpr(struct Expression *expr) {
         tempName = addQuad(createQuad(createArg(tempName,-1,0),evalToArg(e->eval),getQuadOp(*e->op),createName("t",temp)));
         e = e->expr;
     }
+    printf("end here\n");
     return tempName;
 }
 /**

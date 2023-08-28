@@ -234,6 +234,8 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		type1->pointer = 1;
 		type2->pointer = 1;
 	}
+	eval1->type = type1;
+	eval2->type = type2;
 
 	return type2;
 }
