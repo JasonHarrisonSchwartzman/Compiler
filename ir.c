@@ -438,6 +438,15 @@ void printValue(enum val_t val, union value value) {
 }
 
 /**
+ * Print argument struct
+*/
+void printArgument(struct argument *arg) {
+    if (!arg) printf("_");
+    else if (arg->name) printf("%s",arg->name);
+    else printValue(arg->val_t,arg->value);
+}
+
+/**
  * Prints quads
 */
 void printQuads() {
@@ -446,27 +455,9 @@ void printQuads() {
         printf("Op: ");
         opToString(quads[i]->operation);
         printf(" | Arg1: ");
-        if (!quads[i]->arg1) {
-            printf("_");
-        }
-        else if (!quads[i]->arg1->name) {
-            //printf("that fails\n");
-            printValue(quads[i]->arg1->val_t,quads[i]->arg1->value);
-        }
-        else {
-            //printf("this fails\n");
-            printf("%p",quads[i]->arg1->name);
-        }
+        printArgument(quads[i]->arg1);
         printf(" | Arg2: ");
-        if (!quads[i]->arg2) {
-            printf("_");
-        }
-        else if (!quads[i]->arg2->name) {
-            printValue(quads[i]->arg2->val_t,quads[i]->arg2->value);
-        }
-        else {
-            printf("%s",quads[i]->arg2->name);
-        }
+        printArgument(quads[i]->arg2);
         printf(" | Result: %s\n",quads[i]->result);
     }
 }
