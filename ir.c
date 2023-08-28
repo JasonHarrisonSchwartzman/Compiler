@@ -271,20 +271,15 @@ char *createQuadExpr(struct Expression *expr) {
     //a b -> t1
     //t1 c -> t2
     //t2 d -> t3
-    printf("start here\n");
     struct Expression *e = expr;
     char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
     e = e->expr->expr;
     struct Expression *op = expr->expr; //storing operation
     while (e) {
-        printf("before test\n");
         tempName = addQuad(createQuad(createArg(tempName,-1,0),evalToArg(e->eval),getQuadOp(*op->op),createName("t",temp)));
-        printf("after test\n");
         e = e->expr;
         op = op->expr;
-        printf("i\n");
     }
-    printf("end here\n");
     return tempName;
 }
 /**
