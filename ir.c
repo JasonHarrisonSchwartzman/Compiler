@@ -18,7 +18,9 @@ typedef enum op {
     OP_BITAND,
     OP_BITXOR,
     OP_CALL,
+    OP_JUMP,
     OP_JUMPIF,
+    OP_JUMPIFNOT,
     OP_MOD,
     OP_RET,
     OP_LABEL,
@@ -342,7 +344,7 @@ void createQuadStatements(struct Statement *stmt);
 void createQuadConditional(struct CondStatement *cond) {
     char *tempName = createQuadExpr(cond->expr);
     char *labelName = createName("l",label);
-    addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIF,labelName));
+    addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIFNOT,labelName));
     createQuadStatements(cond->stmts);
     cond = cond->next;
     while (cond && cond->stmt != ELSE) {//elseif
@@ -350,7 +352,7 @@ void createQuadConditional(struct CondStatement *cond) {
 
         tempName = createQuadExpr(cond->expr);
         labelName = createName("l",label);
-        addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIF,labelName));
+        addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIFNOT,labelName));
         createQuadStatements(cond->stmts);
         cond = cond->next;
     }
@@ -366,8 +368,18 @@ void createQuadWhileLoop(struct Loop *loop) {
     if (loop->stmt == FOR) {
 
     }
-    char *labelName = createName("l",label);
+    char *labelStartLoop = createName("l",label);
+    char *labelEndLoop = createName("l",label);
+
+    addQuad(createQuad(NULL,NULL,OP_LABEL,labelStartLoop));
+
+    char *tempName = createQuadExpr(loop->expr);
+    addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIFNOT,labelEndLoop));
     
+    createQuadStatements(loop->stmts);
+
+    addQuad(createQuad(NULL,NULL,OP_JUMP,labelStartLoop));
+    addQuad(createQuad(NULL,NULL,OP_LABEL,labelEndLoop));
 }
 
 void createQuadStatements(struct Statement *stmt) {
@@ -449,8 +461,14 @@ void opToString(enum op op) {
         case OP_CALL:
             printf("CALL");
             break;
+        case OP_JUMPIFNOT:
+            printf("JUMPIFNOT");
+            break;
         case OP_JUMPIF:
             printf("JUMPIF");
+            break;
+        case OP_JUMP:
+            printf("JUMP");
             break;
         case OP_RET:
             printf("RET");
