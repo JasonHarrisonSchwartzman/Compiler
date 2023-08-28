@@ -366,7 +366,7 @@ void createQuadConditional(struct CondStatement *cond) {
 
 void createQuadWhileLoop(struct Loop *loop) {
     if (loop->stmt == FOR) {
-
+        createQuadVar(loop->init);
     }
     char *labelStartLoop = createName("l",label);
     char *labelEndLoop = createName("l",label);
@@ -377,7 +377,9 @@ void createQuadWhileLoop(struct Loop *loop) {
     addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIFNOT,labelEndLoop));
     
     createQuadStatements(loop->stmts);
-
+    if (loop->stmt == FOR) {
+        createQuadVar(loop->mod);
+    }
     addQuad(createQuad(NULL,NULL,OP_JUMP,labelStartLoop));
     addQuad(createQuad(NULL,NULL,OP_LABEL,labelEndLoop));
 }
