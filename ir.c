@@ -385,6 +385,10 @@ void createQuadLoop(struct Loop *loop) {
     addQuad(createQuad(createArg("loop_end",-1,-1),NULL,OP_LABEL,labelEndLoop));
 }
 
+/**
+ * creates a quad for a break statement
+ * finds the lop associated with it
+*/
 void createQuadBreak(int currentIndex) {
     int numInner = 0;
     while (currentIndex > 1) {
