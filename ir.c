@@ -411,6 +411,9 @@ void createQuadContinue(int currentIndex) {
     }
 }
 
+/**
+ * quad for a function call
+*/
 void createQuadFuncCall(struct FunctionCall *call) {
     struct FunctionArgs *count = call->funcargs;
     unsigned long num = 0;
@@ -427,6 +430,9 @@ void createQuadFuncCall(struct FunctionCall *call) {
     }
 }
 
+/**
+ * creates quad depending on type of statement
+*/
 void createQuadStatements(struct Statement *stmt) {
     while (stmt) {
         if ((stmt->stmt == ASSIGNMENT) || (stmt->stmt == DECLARATION)) {
@@ -455,6 +461,9 @@ void createQuadStatements(struct Statement *stmt) {
     }
 }
 
+/**
+ * creates quad for a function
+*/
 void createQuadFunc(struct FuncDecl *func) {
     addQuad(createQuad(NULL,NULL,OP_LABEL,func->name));
     struct Params *params = func->params;
