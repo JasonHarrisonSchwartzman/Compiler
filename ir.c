@@ -411,6 +411,22 @@ void createQuadContinue(int currentIndex) {
     }
 }
 
+void createQuadFuncCall(struct FunctionCall *call) {
+    struct FunctionArgs *count = call->funcargs;
+    unsigned long num = 0;
+    while (count) {
+        num++;
+        count = count->funcargs;
+    }
+    addQuad(createQuad(createArg(call->name,-1,0),createArg(NULL,VAL_ULONG,num),OP_CALL,NULL));
+    struct FunctionArgs *args = call->funcargs;
+    while (args) {
+        char *tempName = createQuadExpr(args->expr);
+        addQuad(createQuad(NULL,NULL,OP_PARAM,tempName));
+        args = args->funcargs;
+    }
+}
+
 void createQuadStatements(struct Statement *stmt) {
     while (stmt) {
         if ((stmt->stmt == ASSIGNMENT) || (stmt->stmt == DECLARATION)) {
@@ -427,7 +443,7 @@ void createQuadStatements(struct Statement *stmt) {
             createQuadLoop(stmt->loop);
         }
         else if (stmt->stmt == FUNCCALL) {
-
+            createQuadFuncCall(stmt->funccall);
         }
         else if (stmt->stmt == BREAK) {
             createQuadBreak(numQuads);
