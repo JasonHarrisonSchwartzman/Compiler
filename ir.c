@@ -397,6 +397,10 @@ void createQuadBreak(int currentIndex) {
     }
 }
 
+/**
+ * creates quad for a continue statement
+ * finds the loop associated with it if another loop precedes it
+*/
 void createQuadContinue(int currentIndex) {
     int numInner = 0;
     while (currentIndex > 1) {
