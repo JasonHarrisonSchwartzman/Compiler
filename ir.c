@@ -647,10 +647,10 @@ void createIR() {
     }
 }
 long performOperation(struct argument *arg1, struct argument *arg2, enum op op) {
-    switch(op) {
-        case OP_ADD:
-        case OP_SUB:
-    }
+    /*switch(op) {
+
+    }*/
+    return 0;
 }
 
 void reduceConstants() {
