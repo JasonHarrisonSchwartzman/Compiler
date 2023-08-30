@@ -166,6 +166,9 @@ struct Type *getType(struct Evaluation *eval) {
 		//printf("Inferring literal value of %s\n",eval->value->value);
 		return inferLiteral(eval->value);
 	}
+	else if (eval->eval == FUNCRETURN) {
+		return eval->funccall->symbol->type;
+	}
 	else {
 		printf("EvAL: %d PROBLEMA? %d-----------------------\n",eval->eval,eval->symbol->type->pointer);
 		return eval->symbol->type;
@@ -423,11 +426,18 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 	param->var->symbol = s;
 }
 
+int resolveFuncCall();
+
 /*
  * Looks up in the symbol table if the symbol exists exists
  * Return 0 if you cannot find symbol else return 1
  */
 int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
+	printf("Function: resolveEval Trying to resolve eval %d\n",eval->eval);
+	if (eval->eval == FUNCRETURN) {
+		printf("going to resolve FuncCall\n");
+		return resolveFuncCall(symTab,eval->funccall);
+	}
 	if (eval->eval != VALUE) {
 		eval->symbol = lookUpName(eval->name,symTab);
 		if (!eval->symbol) {
@@ -465,16 +475,24 @@ int resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 /*
  * determines if function call is within the symbol table and if it truly is a function
  */
-void resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
+int resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 	funccall->symbol = lookUpName(funccall->name,symTab);
+	if (!funccall->symbol->type) printf("NULL HERE\n");
 	if (!funccall->symbol) {
 		printError(2, funccall->name,funccall->symbol->line,0);
-		return;
+		return 0;
 	}
 	if (funccall->symbol->dec == VAR) {
 		printError(3, funccall->name,funccall->symbol->line,0);
-		return;
+		return 0;
 	}
+	struct FunctionArgs *fargs = funccall->funcargs;
+	while (fargs) {
+		if (resolveExpr(symTab, fargs->expr) == 0) return 0;
+		fargs = fargs->funcargs;
+	}
+	printf("finished\n");
+	return 1;
 }
 /*
  * If the control statement is not within a loop then print error.
