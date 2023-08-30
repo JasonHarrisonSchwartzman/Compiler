@@ -436,12 +436,11 @@ void createQuadFuncCall(struct FunctionCall *call) {
     while (args) {
         if (!args->expr->expr) {
             addQuad(createQuad(evalToArg(args->expr->eval), NULL, OP_PARAM, NULL));
-            args = args->funcargs;
-            continue;
         }
-        char *tempName = createQuadExpr(args->expr);
-        
-        addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_PARAM,NULL));
+        else {
+            char *tempName = createQuadExpr(args->expr);
+            addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_PARAM,NULL));
+        }
         args = args->funcargs;
     }
 }
