@@ -443,6 +443,7 @@ int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
  * Return 1 if all found or 0 if one is not found
  */ 
 int resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
+	printf("resolving expr\n");
 	if (!expr) return 1;
 	return 1 * resolveExpr(symTab,expr->expr) * resolveEval(symTab,expr->eval);
 }

@@ -288,7 +288,9 @@ char *createQuadExpr(struct Expression *expr) {
     //t1 c -> t2
     //t2 d -> t3
     struct Expression *e = expr;
+    printf("giga before\n");
     char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
+    printf("before\n");
     e = e->expr->expr;
     struct Expression *op = expr->expr; //storing operation
     while (e) {
@@ -432,8 +434,14 @@ void createQuadFuncCall(struct FunctionCall *call) {
     addQuad(createQuad(createArg(call->name,-1,0),createArg(NULL,VAL_ULONG,num),OP_CALL,NULL));
     struct FunctionArgs *args = call->funcargs;
     while (args) {
+        if (!args->expr->expr) {
+            addQuad(createQuad(evalToArg(args->expr->eval), NULL, OP_PARAM, NULL));
+            args = args->funcargs;
+            continue;
+        }
         char *tempName = createQuadExpr(args->expr);
-        addQuad(createQuad(NULL,NULL,OP_PARAM,tempName));
+        
+        addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_PARAM,NULL));
         args = args->funcargs;
     }
 }
