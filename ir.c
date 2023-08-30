@@ -646,3 +646,19 @@ void createIR() {
         d = d->next;
     }
 }
+long performOperation(struct argument *arg1, struct argument *arg2, enum op op) {
+    switch(op) {
+        case OP_ADD:
+        case OP_SUB:
+    }
+}
+
+void reduceConstants() {
+    for (int i = 0; i < numQuads; i++) {
+        
+    }
+}
+
+void optimize() {
+    reduceConstants();
+}
