@@ -227,7 +227,6 @@ char *createQuadFuncCall();
 struct argument *evalToArg(struct Evaluation *eval) {
     if (!eval->type) printf("error no type\n");
     if (eval->eval == ID) {
-        printf("ID arg\n");
         if (!eval->type) printf("no eval name\n");
         return createArg(eval->name,getTypeQuad(eval->type),0);
     }
@@ -235,7 +234,6 @@ struct argument *evalToArg(struct Evaluation *eval) {
         return createArg(NULL,getTypeQuad(eval->type),strtol(eval->value->value,NULL,10));
     }
     if (eval->eval == FUNCRETURN) {
-        printf("HERE\n");
         char *tempName = createQuadFuncCall(eval->funccall);
         return createArg(tempName,getTypeQuad(eval->type),0);
     }
@@ -293,8 +291,6 @@ char *createQuadExpr(struct Expression *expr) {
     //t1 c -> t2
     //t2 d -> t3
     struct Expression *e = expr;
-    printf("TEST %d\n",e->eval->eval);
-    if (!e->op) printf("NO OP\n");
     char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
     e = e->expr->expr;
     struct Expression *op = expr->expr; //storing operation
@@ -343,7 +339,6 @@ void createQuadReturn(struct Expression *expr) {
         return;
     }
     char *tempName = createQuadExpr(expr);
-    printf("creating last quad\n");
     addQuad(createQuad(createArg(tempName,getTypeQuad(expr->eval->type),0),NULL,OP_RET,NULL));
 }
 
