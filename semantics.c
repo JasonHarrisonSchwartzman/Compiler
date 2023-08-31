@@ -157,6 +157,7 @@ struct Type *inferLiteral(struct Value *value) {
 	}
 }
 
+struct Type *typeCheckExpr();
 
 /*
 * Gets type of eval (VALUE or other)
@@ -167,6 +168,11 @@ struct Type *getType(struct Evaluation *eval) {
 		return inferLiteral(eval->value);
 	}
 	else if (eval->eval == FUNCRETURN) {
+		struct FunctionArgs *fargs = eval->funccall->funcargs;
+		while(fargs) {
+			typeCheckExpr(fargs->expr);
+			fargs = fargs->funcargs;
+		}
 		return eval->funccall->symbol->type;
 	}
 	else {
@@ -283,7 +289,6 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 	free(opStack);
 	struct Type *ret = evalStack[0]->type;
 	free(evalStack);
-	printf("-----------------------POINTER: %d\n",ret->pointer);
 	return ret;
 }
 
@@ -453,7 +458,6 @@ int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
  * Return 1 if all found or 0 if one is not found
  */ 
 int resolveExpr(struct SymbolTable *symTab, struct Expression *expr) {
-	printf("resolving expr\n");
 	if (!expr) return 1;
 	return 1 * resolveExpr(symTab,expr->expr) * resolveEval(symTab,expr->eval);
 }
@@ -564,7 +568,6 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 				int resolvedExpr = resolveExpr(symTab,f->expr);
 
 				if (resolvedExpr) typeCheckExpr(f->expr);
-
 				f = f->funcargs;
 			}
 		}
@@ -572,10 +575,8 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			printf("RESOLVING RETURN\n");
 			int resolvedExpr = resolveExpr(symTab,s->returnstmt);
 			printf("Expression resolve?: %d\n",resolvedExpr);
-
 			//remember to change this line to typeCheck return for function return type
 			if (resolvedExpr) {
-				printf("Expression here-----------\n");
 				typeCheckExpr(s->returnstmt); 
 				printf("Type checked\n");
 				if (!returnType) printf("NOT GOOOOOOOOOOOOOOD\n");
