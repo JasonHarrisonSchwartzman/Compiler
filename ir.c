@@ -217,6 +217,7 @@ val_t getTypeQuad(struct Type *type) {
     }
     return -1;
 }
+char *createQuadFuncCall();
 
 
 /**
@@ -233,6 +234,10 @@ struct argument *evalToArg(struct Evaluation *eval) {
     if (eval->eval == VALUE) {
         printf("2\n");
         return createArg(NULL,getTypeQuad(eval->type),strtol(eval->value->value,NULL,10));
+    }
+    if (eval->eval == FUNCRETURN) {
+        char *tempName = createQuadFuncCall(eval->funccall);
+        return createArg(tempName,getTypeQuad(eval->type),0);
     }
     return NULL;
 }
@@ -288,9 +293,7 @@ char *createQuadExpr(struct Expression *expr) {
     //t1 c -> t2
     //t2 d -> t3
     struct Expression *e = expr;
-    printf("giga before\n");
     char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
-    printf("before\n");
     e = e->expr->expr;
     struct Expression *op = expr->expr; //storing operation
     while (e) {
