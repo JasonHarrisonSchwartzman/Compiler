@@ -320,16 +320,20 @@ void createQuadVar(struct VarDecl *var) {
     addQuad(createQuad(createArg(tempName,getTypeQuad(var->type),0), NULL, OP_ASSIGN, var->name));
 }
 
+void printQuad();
+
 /**
  * creates a quad for a return statement
 */
 void createQuadReturn(struct Expression *expr) {
     if (!expr) {
-        addQuad(createQuad(NULL,NULL,OP_RET,NULL));
+        struct quad *quad = createQuad(NULL,NULL,OP_RET,NULL);
+        addQuad(quad);
+        printQuad(quad);
         return;
     }
     struct Expression *e = expr;
-    if (!e->expr) {
+    if (!e->expr && e->eval->eval != FUNCRETURN) {
         addQuad(createQuad(evalToArg(e->eval), NULL, OP_RET, NULL));
         return;
     }
@@ -424,14 +428,14 @@ void createQuadContinue(int currentIndex) {
 /**
  * quad for a function call
 */
-void createQuadFuncCall(struct FunctionCall *call) {
+char *createQuadFuncCall(struct FunctionCall *call) {
     struct FunctionArgs *count = call->funcargs;
     unsigned long num = 0;
     while (count) {
         num++;
         count = count->funcargs;
     }
-    addQuad(createQuad(createArg(call->name,-1,0),createArg(NULL,VAL_ULONG,num),OP_CALL,NULL));
+    char *tempName = addQuad(createQuad(createArg(call->name,-1,0),createArg(NULL,VAL_ULONG,num),OP_CALL,createName("t",temp)));
     struct FunctionArgs *args = call->funcargs;
     while (args) {
         if (!args->expr->expr) {
@@ -443,6 +447,7 @@ void createQuadFuncCall(struct FunctionCall *call) {
         }
         args = args->funcargs;
     }
+    return tempName;
 }
 
 /**
@@ -620,18 +625,25 @@ void printArgument(struct argument *arg) {
 }
 
 /**
+ * prints a single quad
+*/
+void printQuad(struct quad *quad) {
+    printf("Op: ");
+    opToString(quad->operation);
+    printf(" | Arg1: ");
+    printArgument(quad->arg1);
+    printf(" | Arg2: ");
+    printArgument(quad->arg2);
+    printf(" | Result: %s\n",quad->result);
+}
+
+/**
  * Prints quads
 */
 void printQuads() {
     printf("----------QUADS----------\n");
     for (int i = 0; i < numQuads; i++) {
-        printf("Op: ");
-        opToString(quads[i]->operation);
-        printf(" | Arg1: ");
-        printArgument(quads[i]->arg1);
-        printf(" | Arg2: ");
-        printArgument(quads[i]->arg2);
-        printf(" | Result: %s\n",quads[i]->result);
+        printQuad(quads[i]);
     }
 }
 
