@@ -224,15 +224,11 @@ char *createQuadFuncCall();
  * Creates an argument struct given an eval
 */
 struct argument *evalToArg(struct Evaluation *eval) {
-    if (eval->name) printf("name %s:\n", eval->name);
-    if (eval->value) printf("value %s:\n",eval->value->value);
     if (!eval->type) printf("error no type\n");
     if (eval->eval == ID) {
-        printf("1\n");
         return createArg(eval->name,getTypeQuad(eval->type),0);
     }
     if (eval->eval == VALUE) {
-        printf("2\n");
         return createArg(NULL,getTypeQuad(eval->type),strtol(eval->value->value,NULL,10));
     }
     if (eval->eval == FUNCRETURN) {
@@ -470,7 +466,6 @@ void createQuadStatements(struct Statement *stmt) {
             createQuadConditional(stmt->condstmt);
         }
         else if ((stmt->stmt == WHILE) || (stmt->stmt == FOR)) {
-            printf("LOOP\n");
             createQuadLoop(stmt->loop);
         }
         else if (stmt->stmt == FUNCCALL) {
