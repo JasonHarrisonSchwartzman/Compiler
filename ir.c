@@ -149,7 +149,7 @@ char *addQuad(struct quad *quad) {
     quads = realloc(quads,sizeof(struct quad) * (1 + numQuads));
     quads[numQuads] = quad;
     numQuads++;
-    printf("ADDED QUAD WITH RESULT: %s\n", quad->result);
+    //printf("ADDED QUAD WITH RESULT: %s\n", quad->result);
     return quad->result;
 }
 
@@ -442,9 +442,11 @@ char *createQuadFuncCall(struct FunctionCall *call) {
     struct FunctionArgs *args = call->funcargs;
     while (args) {
         if (!args->expr->expr) {
+            printf("Problem starts here 1\n");
             addQuad(createQuad(evalToArg(args->expr->eval), NULL, OP_PARAM, NULL));
         }
         else {
+            printf("Problem starts here 2\n");
             char *tempName = createQuadExpr(args->expr);
             addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_PARAM,NULL));
         }
