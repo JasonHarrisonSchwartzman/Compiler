@@ -1345,6 +1345,7 @@ void initializeInstances() {
 	addInstanceAction(132,STEP_REDUCE,37,TOKEN_RETURN);
 	addInstanceAction(132,STEP_REDUCE,37,TOKEN_BREAK);
 	addInstanceAction(132,STEP_REDUCE,37,TOKEN_CONTINUE);
+	addInstanceAction(132,STEP_REDUCE,37,TOKEN_RIGHTCURLY);
 	//instance 133
 	addInstanceAction(133,STEP_REDUCE,64,TOKEN_PLUS);
 	addInstanceAction(133,STEP_REDUCE,64,TOKEN_MINUS);
