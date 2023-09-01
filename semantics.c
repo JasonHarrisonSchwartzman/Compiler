@@ -296,7 +296,6 @@ struct Type *typeCheckExpr(struct Expression *expr) {
  * Checking to see if assignment is legal between an expression into a variable
  */
 struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) {
-	printf("Type check assignment\n");
 	if (!expr) printf("Expression NULL here\n");
 	struct Type *exprType = typeCheckExpr(expr);
 
@@ -376,7 +375,7 @@ void printError(int errorNum, char *name,unsigned long line1, unsigned long line
 	errorNumber++;
 }
 
-
+int resolveExpr();
 
 /*
  * takes a var decl to create a symbol to add to current scope
@@ -394,7 +393,8 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 	//typeCheckExpr(var->expr);
 	printf("var symbol type pointer %d\n",var->symbol->type->pointer);
 	printf("before typeCheck pointer of var %d\n",var->type->pointer);
-	typeCheckAssignment(var->type,var->expr);
+	int exprResolved = resolveExpr(symTab,var->expr);
+	if (exprResolved) typeCheckAssignment(var->type,var->expr);
 }
 
 /*
@@ -438,6 +438,7 @@ int resolveFuncCall();
  * Return 0 if you cannot find symbol else return 1
  */
 int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
+	printf("TRYING TO RESOLVE EVAL\n");
 	printf("Function: resolveEval Trying to resolve eval %d\n",eval->eval);
 	if (eval->eval == FUNCRETURN) {
 		printf("going to resolve FuncCall\n");
@@ -519,10 +520,13 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		if (s->stmt == DECLARATION) {
 			printf("RESOLVING DECLARATION of %s\n", s->var->name);
 			createSymbolTableVarDecl(symTab,s->var);//var decl
+			printf("CRETED SYMBOL FOR VARIABLE\n");
 			//if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
-			//int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of dec
+			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of dec
+			printf("EXPRESSION OF DECLARATION RESOLVED\n");
 			printf("pointer of %s? %d\n",s->var->name,s->var->type->pointer);
-			//if (s->var->expr && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr);
+			
+			if (resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr);
 			printf("\n\n");
 		}
 		if (s->stmt == FOR) {
