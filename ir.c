@@ -40,6 +40,17 @@ typedef enum val_t {
     VAL_ULONG,
     VAL_DOUBLE,
     VAL_POINTER,
+
+    VAL_ARR_CHAR,
+    VAL_ARR_UCHAR,
+    VAL_ARR_SHORT,
+    VAL_ARR_USHORT,
+    VAL_ARR_INT,
+    VAL_ARR_UINT,
+    VAL_ARR_LONG,
+    VAL_ARR_ULONG,
+    VAL_ARR_DOUBLE,
+    VAL_ARR_POINTER,
 } val_t;
 
 union value {
