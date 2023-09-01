@@ -444,7 +444,11 @@ int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 		printf("going to resolve FuncCall\n");
 		return resolveFuncCall(symTab,eval->funccall);
 	}
-	if (eval->eval != VALUE) {
+	else if (eval->eval == ARRAYINDEX) {
+		printf("TRYING TO RESOLVE ARRAY INDEX\n");
+		return resolveExpr(symTab,eval->expr); //array index
+	}
+	else if (eval->eval != VALUE) {
 		eval->symbol = lookUpName(eval->name,symTab);
 		if (!eval->symbol) {
 			printError(2,eval->name,eval->line,0);

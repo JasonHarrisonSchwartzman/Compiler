@@ -249,6 +249,10 @@ struct argument *evalToArg(struct Evaluation *eval) {
         char *tempName = addQuad(createQuad(createArg(eval->name,getTypeQuad(eval->type),0),NULL,OP_DEREF,createName("t",temp)));
         return createArg(tempName,getTypeQuad(eval->type),0);
     }
+    if (eval->eval == ARRAYINDEX) {
+        printf("ARRAYINDEX\n");
+        
+    }
     return NULL;
 }
 /**
