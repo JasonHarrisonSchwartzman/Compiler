@@ -251,7 +251,7 @@ struct argument *evalToArg(struct Evaluation *eval) {
     }
     if (eval->eval == ARRAYINDEX) {
         printf("ARRAYINDEX\n");
-        
+
     }
     return NULL;
 }
@@ -329,6 +329,10 @@ char *createQuadExpr(struct Expression *expr) {
 */
 void createQuadVar(struct VarDecl *var) {
     struct Expression *e = var->expr;
+    if (!e) {
+        addQuad(createQuad(createArg(NULL,getTypeQuad(var->type),0),NULL,OP_ASSIGN,var->name));
+        return;
+    }
     if (!e->expr) {
         addQuad(createQuad(evalToArg(e->eval), NULL, OP_ASSIGN, var->name));
         return;

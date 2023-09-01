@@ -297,6 +297,7 @@ struct Type *typeCheckExpr(struct Expression *expr) {
  */
 struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) {
 	if (!expr) printf("Expression NULL here\n");
+	if (!expr) return NULL;
 	struct Type *exprType = typeCheckExpr(expr);
 
 	printf("before comparison pointer %d\n",exprType->pointer);
