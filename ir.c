@@ -215,18 +215,23 @@ struct argument *createArg(char *name, enum val_t val, long value) {
 */
 val_t getTypeQuad(struct Type *type) {
     if (!type) printf("TYPE NULL WHEN GETTING TYPE ERROR\n");
-    if (type->pointer > 0) return VAL_POINTER;
+    if (type->pointer > 0) return type->length != NULL ? VAL_POINTER : VAL_ARR_POINTER;
     switch (type->dataType) {
         case CHAR:
-            return type->sign == SIGNED ? VAL_CHAR : VAL_UCHAR;
+            if (type->length) return type->sign == SIGNED ? VAL_ARR_CHAR : VAL_ARR_UCHAR;
+            else return type->sign == SIGNED ? VAL_CHAR : VAL_UCHAR;
         case SHORT:
-            return type->sign == SIGNED ? VAL_SHORT : VAL_USHORT;
+            if (type->length) return type->sign == SIGNED ? VAL_ARR_SHORT : VAL_ARR_USHORT;
+            else return type->sign == SIGNED ? VAL_SHORT : VAL_USHORT;
         case INT:
-            return type->sign == SIGNED ? VAL_INT : VAL_UINT;
+            if (type->length) return type->sign == SIGNED ? VAL_ARR_INT : VAL_ARR_UINT;
+            else return type->sign == SIGNED ? VAL_INT : VAL_UINT;
         case LONG:
+            if (type->length) return type->sign == SIGNED ? VAL_ARR_LONG : VAL_ARR_ULONG;
             return type->sign == SIGNED ? VAL_LONG : VAL_ULONG;
         case DOUBLE:
-            return VAL_DOUBLE; //no such thing as unsigned double
+            if (type->length) return VAL_ARR_DOUBLE;
+            else return VAL_DOUBLE; //no such thing as unsigned double
     }
     printf("NO TYPE FOUND\n");
     return -1;
