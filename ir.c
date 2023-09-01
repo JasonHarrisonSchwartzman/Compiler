@@ -17,6 +17,8 @@ typedef enum op {
     OP_BITOR,
     OP_BITAND,
     OP_BITXOR,
+    OP_REF,
+    OP_DEREF,
     OP_CALL,
     OP_JUMP,
     OP_JUMPIF,
@@ -236,6 +238,11 @@ struct argument *evalToArg(struct Evaluation *eval) {
     if (eval->eval == FUNCRETURN) {
         char *tempName = createQuadFuncCall(eval->funccall);
         return createArg(tempName,getTypeQuad(eval->type),0);
+    }
+    if (eval->eval == REF) {
+        printf("REFERENCE\n");
+        char *tempName = addQuad(createQuad(createArg(eval->name,VAL_POINTER,0),NULL,OP_REF,createName("t",temp)));
+        return createArg(tempName,VAL_POINTER,0);
     }
     return NULL;
 }
@@ -574,6 +581,12 @@ void opToString(enum op op) {
             break;
         case OP_PARAM:
             printf("PARAM");
+            break;
+        case OP_REF:
+            printf("REF");
+            break;
+        case OP_DEREF:
+            printf("DEREF");
             break;
         default:
             printf("OP NOT FOUND");
