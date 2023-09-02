@@ -712,6 +712,36 @@ void printValue(enum val_t val, union value value) {
         case VAL_POINTER:
             printf("POINTER");
             break;
+        case VAL_ARR_CHAR:
+            printf("ARR_CHAR");
+            break;
+        case VAL_ARR_SHORT:
+            printf("ARR_SHORT");
+            break;
+        case VAL_ARR_INT:
+            printf("ARR_INT");
+            break;
+        case VAL_ARR_LONG:
+            printf("ARR_LONG");
+            break;
+        case VAL_ARR_UCHAR:
+            printf("ARR_UCHAR");
+            break;
+        case VAL_ARR_USHORT:
+            printf("ARR_USHORT");
+            break;
+        case VAL_ARR_UINT:
+            printf("ARR_UINT");
+            break;
+        case VAL_ARR_ULONG:
+            printf("ARR_ULONG");
+            break;
+        case VAL_ARR_DOUBLE:
+            printf("ARR_DOUBLE");
+            break;
+        case VAL_ARR_POINTER:
+            printf("ARR_POINTER");
+            break;
         default: 
             printf("VALUE NOT FOUND");
     }
