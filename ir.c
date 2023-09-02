@@ -27,6 +27,7 @@ typedef enum op {
     OP_RET,
     OP_LABEL,
     OP_PARAM,
+    OP_ARRAY_CREATE,
 } op;
 
 typedef enum val_t {
@@ -333,6 +334,28 @@ char *createQuadExpr(struct Expression *expr) {
     }
     return tempName;
 }
+
+void createQuadArr(struct VarDecl *var) {
+    printf("Creating arr\n");
+    if (var->symbol->line == var->line) {
+        char *tempNameSize = createQuadExpr(var->type->length);
+        char *tempNameValue;
+        if (var->expr){
+            if (!var->expr->expr) {
+                addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),evalToArg(var->expr->eval),OP_ARRAY_CREATE,var->name));
+                return;
+            }
+            else tempNameValue = createQuadExpr(var->expr);
+        }
+        else {
+            tempNameValue = NULL;
+        }
+        printf("quarter\n");
+        printf("half\n");
+        if (tempNameValue) addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_CREATE,var->name));
+        else addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),NULL,OP_ARRAY_CREATE,var->name));
+    }
+}
 /**
  * Creates a quad for a variable declaration
  * 
@@ -344,7 +367,11 @@ char *createQuadExpr(struct Expression *expr) {
  * a = t3
 */
 void createQuadVar(struct VarDecl *var) {
-    struct Expression *e = var->expr;
+    struct Expression *e = var->expr; 
+    if (var->type->length) {
+        createQuadArr(var);
+        return;
+    }
     if (!e) {
         addQuad(createQuad(createArg(NULL,getTypeQuad(var->type),0),NULL,OP_ASSIGN,var->name));
         return;
