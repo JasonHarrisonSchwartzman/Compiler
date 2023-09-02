@@ -339,8 +339,9 @@ char *createQuadExpr(struct Expression *expr) {
 }
 
 void createQuadArr(struct VarDecl *var) {
-    printf("Creating arr\n");
     if (var->symbol->line == var->line) {
+        printf("Creating arr\n");
+        printf("POINTER OF LENGTH AFTER DEC: %p\n",var->type->length);
         char *tempNameSize;
         if (var->type->length->expr) {
             tempNameSize = createQuadExpr(var->type->length);
@@ -368,6 +369,7 @@ void createQuadArr(struct VarDecl *var) {
     }
     else {
         printf("assignment\n");
+        printf("POINTER OF LENGTH AFTER DEC: %p\n",var->type->length);
         if (!var->expr->expr) {
             if (!var->type->length->expr) {
                 addQuad(createQuad(evalToArg(var->type->length->eval),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->name));

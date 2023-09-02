@@ -298,6 +298,10 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) {
 	if (!expr) printf("Expression NULL here\n");
 	if (!expr) return NULL;
+
+	//debug arrays
+
+
 	struct Type *exprType = typeCheckExpr(expr);
 
 	printf("before comparison pointer %d\n",exprType->pointer);
@@ -597,13 +601,24 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			//testing type checking for return statements be sure to include this function in other lines
 		}
 		if (s->stmt == ASSIGNMENT) {
+			
+			
+			
+			
 			printf("RESOLVING ASSIGNMENT of %s\n",s->var->name);
+			if (strcmp(s->var->name,"c") == 0) printf("Array c %p\n",s->var->type);
+			if (s->var->type && s->var->type->length) printf("This is the pointer for the index of array before resolution %p\n",s->var->type->length);
+
 			int resolvedAss = resolveAssignment(symTab,s->var);//var assign
+
+			if (s->var->type->length) printf("This is the pointer for the index of array before %p\n",s->var->type->length);
+
 			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
 			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of ass
 			printf("TYPE CHECKING ASSIGNMENT\n");
 			if (resolvedAss && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr); //if assignment is resolved you can type check
 			
+			if (s->var->type->length) printf("This is the pointer for the index of array after %p\n",s->var->type->length);
 		}
 		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
 			resolveControl(s->stmt);
