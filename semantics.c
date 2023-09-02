@@ -526,7 +526,10 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			printf("RESOLVING DECLARATION of %s\n", s->var->name);
 			createSymbolTableVarDecl(symTab,s->var);//var decl
 			printf("CRETED SYMBOL FOR VARIABLE\n");
-			//if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
+
+			if(s->var->type->length) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
+			if(s->var->type->length) typeCheckExpr(s->var->type->length);
+
 			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of dec
 			printf("EXPRESSION OF DECLARATION RESOLVED\n");
 			printf("pointer of %s? %d\n",s->var->name,s->var->type->pointer);
@@ -625,6 +628,8 @@ void createSymbolTableDeclarations(struct SymbolTable *initial, struct Declarati
 			createSymbolTableVarDecl(initial,d->vardecl);
 			//resolve type of right side of equal sign
 			typeCheckExpr(d->vardecl->expr);
+			if(d->vardecl->type->length) resolveExpr(initial,d->vardecl->type->length);//array size (if applicable)
+			if(d->vardecl->type->length) typeCheckExpr(d->vardecl->type->length);
 		}
 		else {
 			createSymbolTableFuncDecl(initial,d->funcdecl);

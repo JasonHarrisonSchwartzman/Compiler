@@ -338,7 +338,15 @@ char *createQuadExpr(struct Expression *expr) {
 void createQuadArr(struct VarDecl *var) {
     printf("Creating arr\n");
     if (var->symbol->line == var->line) {
-        char *tempNameSize = createQuadExpr(var->type->length);
+        char *tempNameSize;
+        if (var->type->length->expr) {
+            tempNameSize = createQuadExpr(var->type->length);
+        }
+        else {
+            printf("here\n");
+            tempNameSize = addQuad(createQuad(evalToArg(var->type->length->eval),NULL,OP_ASSIGN,createName("t",temp)));
+        }
+        printf("Determined size\n");
         char *tempNameValue;
         if (var->expr){
             if (!var->expr->expr) {
