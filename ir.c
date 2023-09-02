@@ -652,6 +652,9 @@ void opToString(enum op op) {
         case OP_DEREF:
             printf("DEREF");
             break;
+        case OP_ARRAY_CREATE:
+            printf("ARRAY CREATE");
+            break;
         default:
             printf("OP NOT FOUND");
     }
