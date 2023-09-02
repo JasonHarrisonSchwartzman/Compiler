@@ -28,6 +28,7 @@ typedef enum op {
     OP_LABEL,
     OP_PARAM,
     OP_ARRAY_CREATE,
+    OP_ARRAY_INDEX,
 } op;
 
 typedef enum val_t {
@@ -41,7 +42,6 @@ typedef enum val_t {
     VAL_ULONG,
     VAL_DOUBLE,
     VAL_POINTER,
-
     VAL_ARR_CHAR,
     VAL_ARR_UCHAR,
     VAL_ARR_SHORT,
@@ -205,7 +205,7 @@ struct argument *createArg(char *name, enum val_t val, long value) {
                 a->value.double_value = (double)value;
                 break;
             default:
-                printf("VAL NOT FOUND\n");
+                printf("VAL NOT FOUND %d\n",val);
         }
     }
     return a;
@@ -216,7 +216,10 @@ struct argument *createArg(char *name, enum val_t val, long value) {
 */
 val_t getTypeQuad(struct Type *type) {
     if (!type) printf("TYPE NULL WHEN GETTING TYPE ERROR\n");
-    if (type->pointer > 0) return type->length != NULL ? VAL_POINTER : VAL_ARR_POINTER;
+    if (type->pointer > 0) {
+        printf("POINTER or ARRAY POINTER\n");
+        return type->length != NULL ? VAL_POINTER : VAL_ARR_POINTER;
+    }
     switch (type->dataType) {
         case CHAR:
             if (type->length) return type->sign == SIGNED ? VAL_ARR_CHAR : VAL_ARR_UCHAR;
@@ -362,6 +365,17 @@ void createQuadArr(struct VarDecl *var) {
         printf("half\n");
         if (tempNameValue) addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_CREATE,var->name));
         else addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),NULL,OP_ARRAY_CREATE,var->name));
+    }
+    else {
+        printf("assignment\n");
+        if (!var->expr->expr) {
+            if (!var->type->length->expr) {
+                addQuad(createQuad(evalToArg(var->type->length->eval),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->name));
+            }
+        }
+        else {
+            
+        }
     }
 }
 /**
@@ -654,6 +668,9 @@ void opToString(enum op op) {
             break;
         case OP_ARRAY_CREATE:
             printf("ARRAY CREATE");
+            break;
+        case OP_ARRAY_INDEX:
+            printf("ARRAY INDEX");
             break;
         default:
             printf("OP NOT FOUND");
