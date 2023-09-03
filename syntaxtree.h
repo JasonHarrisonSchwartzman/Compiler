@@ -281,10 +281,17 @@ struct CondStatement *addCondStatement(struct Expression *expr, struct Statement
 	return c;
 }
 
+struct Type *addType();
+
 //D1                      (E1, H1)
 struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
 	struct VarDecl *var = calloc(1,sizeof(struct VarDecl));
 	var->type = type;
+	if (decl->name->expr && !type) {
+		printf("Adding var decl with array\n");
+		var->type = addType(NULL,NULL);
+		var->type->length = decl->name->expr;
+	}
 	if (type) {
 		var->type->length = decl->name->expr;
 		var->type->pointer = decl->name->pointer;
@@ -355,12 +362,17 @@ operation_t *addOperation(operation_t op) {
 //E1
 struct Type *addType(type_t *dataType, signed_t *sign) {
 	struct Type *type = calloc(1,sizeof(struct Type));
-	type->dataType = *dataType;
-	if (!sign) {
-		if (*dataType == CHAR) type->sign = UNSIGNED;
-		else type->sign = SIGNED;
+	if (!dataType && !sign) {
+		return type;
 	}
-	else type->sign = *sign;
+	else {
+		type->dataType = *dataType;
+		if (!sign) {
+			if (*dataType == CHAR) type->sign = UNSIGNED;
+			else type->sign = SIGNED;
+		}
+		else type->sign = *sign;
+	}
 	return type;
 }
 

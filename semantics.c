@@ -482,7 +482,22 @@ int resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 		printError(2, var->name,var->line,0);
 		return 0;
 	}
-	var->type = var->symbol->type;
+	struct Expression *index = NULL;
+	printf("mid\n");
+	if (var->type) {
+		//printf("Expression has an array index\n");
+		index = var->type->length;
+	}
+	else index = var->symbol->type->length;
+	var->type = calloc(1,sizeof(struct Type));
+	var->type->dataType = var->symbol->type->dataType;
+	var->type->pointer = var->symbol->type->pointer;
+	var->type->sign = var->symbol->type->sign;
+	
+	var->type->length = index;//this is so the index of the array doesn't point to the total size within var->symbol->type
+	//var->type = var->symbol->type;
+	//var->type->length = index;
+	//printf("Expression length in symbol %s\nExpression length in var %s\n",var->symbol->type->length->eval->value->value,var->type->length->eval->value->value);
 	return 1;
 }
 
@@ -601,19 +616,15 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			//testing type checking for return statements be sure to include this function in other lines
 		}
 		if (s->stmt == ASSIGNMENT) {
-			
-			
-			
-			
 			printf("RESOLVING ASSIGNMENT of %s\n",s->var->name);
-			if (strcmp(s->var->name,"c") == 0) printf("Array c %p\n",s->var->type);
-			if (s->var->type && s->var->type->length) printf("This is the pointer for the index of array before resolution %p\n",s->var->type->length);
+			//if (s->var->type && s->var->type->length) printf("This is the pointer for the index of array before resolution %p\n",s->var->type->length);
 
 			int resolvedAss = resolveAssignment(symTab,s->var);//var assign
 
-			if (s->var->type->length) printf("This is the pointer for the index of array before %p\n",s->var->type->length);
+			//if (s->var->type->length) printf("This is the pointer for the index of array before %p\n",s->var->type->length);
 
-			if(s->var->type) resolveExpr(symTab,s->var->type->length);//array size if applicable
+			if(s->var->type && s->var->type->length) resolveExpr(symTab,s->var->type->length);//array size if applicable
+			if(s->var->type && s->var->type->length) typeCheckExpr(s->var->type->length);//array size if applicable
 			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of ass
 			printf("TYPE CHECKING ASSIGNMENT\n");
 			if (resolvedAss && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr); //if assignment is resolved you can type check

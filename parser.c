@@ -165,6 +165,7 @@ void *callSemanticRule(void *param[], int rule) {
 		case 16:
 			return addDecl(param[0],addExpr(NULL,NULL,addEval(VALUE,param[2],NULL,NULL,-1,-1,NULL,((struct Value*)param[2])->line)));
 		case 17:
+			printf("RULE 17 ARRAY INDEX PARSER of name %s\n",((struct Token*)param[0])->token);
 			return addName(((struct Token*)param[0])->token,((struct Token*)param[2])->token,-1,NULL,((struct Token*)param[0])->line);
 		case 18:
 			return addName(((struct Token*)param[0])->token,NULL,-1,NULL,((struct Token*)param[0])->line);
@@ -259,6 +260,7 @@ void *callSemanticRule(void *param[], int rule) {
 		case 63:
 			return addEval(ID,NULL,NULL,((struct Token*)param[0])->token,-1,-1,NULL,((struct Token*)param[0])->line);
 		case 64:
+			printf("RULE 64 ARRAY INDEX PARSER of name %s\n",((struct Token*)param[0])->token);
 			return addEval(ARRAYINDEX,NULL,param[2],((struct Token*)param[0])->token,-1,-1,NULL,((struct Token*)param[0])->line);
 		case 65:
 			return addEval(FUNCRETURN,NULL,NULL,NULL,-1,-1,param[0],((struct FunctionCall*)param[0])->line);
@@ -305,11 +307,18 @@ void *callSemanticRule(void *param[], int rule) {
 		case 86:
 			return addStatement(CONTINUE,NULL,NULL,NULL,NULL,NULL);
 		case 87:
-			return addFunctionStatement(ASSIGNMENT,NULL,addVarDecl(NULL,addDecl((struct Name*)param[0],(struct Expression*)param[2])));
+			{
+			struct FunctionStatement *f = addFunctionStatement(ASSIGNMENT,NULL,addVarDecl(NULL,addDecl((struct Name*)param[0],(struct Expression*)param[2])));
+			//printf("RULE 87 length of array %s\n",f->vardecl->type->length->eval->value->value);
+			return f; }
 		case 88:
 			return addName(((struct Token*)param[0])->token,NULL,-1,NULL,((struct Token*)param[0])->line);
 		case 89:
+			printf("Rule 89 ARRAY INDEX PARSER of name %s\n",((struct Token*)param[0])->token);
+			struct Expression *expr = (struct Expression*)param[2];
+			printf("VALUE: %s\n",expr->eval->value->value);
 			return addName(((struct Token*)param[0])->token,NULL,-1,param[2],((struct Token*)param[0])->line);
+			//return addEval(ARRAYINDEX,NULL,param[2],((struct Token*)param[0])->token,-1,-1,NULL,((struct Token*)param[0])->line);
 		default:
 			printf("Rule not found ERROR\n");
 			return NULL;
