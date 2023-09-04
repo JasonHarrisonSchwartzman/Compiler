@@ -237,7 +237,7 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		type1->sign = SIGNED;
 		type2->sign = SIGNED;
 	}
-	if (type1->pointer || type2->pointer) {//both become points
+	if (type1->pointer > 0 || type2->pointer > 0) {//both become points
 		printf("THERE IS ONE POINTER -----------");
 		printf("%d %d\n",type1->pointer,type2->pointer);
 		type1->pointer = 1;
