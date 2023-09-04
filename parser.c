@@ -314,9 +314,9 @@ void *callSemanticRule(void *param[], int rule) {
 		case 88:
 			return addName(((struct Token*)param[0])->token,NULL,-1,NULL,((struct Token*)param[0])->line);
 		case 89:
-			printf("Rule 89 ARRAY INDEX PARSER of name %s\n",((struct Token*)param[0])->token);
-			struct Expression *expr = (struct Expression*)param[2];
-			printf("VALUE: %s\n",expr->eval->value->value);
+			//printf("Rule 89 ARRAY INDEX PARSER of name %s\n",((struct Token*)param[0])->token);
+			//struct Expression *expr = (struct Expression*)param[2];
+			//printf("VALUE: %s\n",expr->eval->value->value);
 			return addName(((struct Token*)param[0])->token,NULL,-1,param[2],((struct Token*)param[0])->line);
 			//return addEval(ARRAYINDEX,NULL,param[2],((struct Token*)param[0])->token,-1,-1,NULL,((struct Token*)param[0])->line);
 		default:
