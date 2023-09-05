@@ -153,7 +153,7 @@ struct Type *inferLiteral(struct Value *value) {
 }
 
 struct Type *typeCheckExpr();
-
+int resolveExpr();
 /*
 * Gets type of eval (VALUE or other)
 */
@@ -175,6 +175,9 @@ struct Type *getType(struct Evaluation *eval) {
 		if (!eval->symbol) printf("no symbol\n");
 		printf("%s\n",eval->name);
 		if (!eval->type) printf("no type\n");
+
+		if (!eval->type->length->eval) printf("NULL INDEx\n");
+		printf("%s\n",eval->type->length->eval->name);
 		typeCheckExpr(eval->type->length);
 		printf("index checked\n");
 
@@ -194,6 +197,7 @@ struct Type *getType(struct Evaluation *eval) {
 		return eval->type;
 	}
 	else {
+		if (!eval->symbol) printf("No symbol\n");
 		return eval->symbol->type;
 	}
 }
@@ -458,6 +462,7 @@ int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 	}
 	else if (eval->eval == ARRAYINDEX) {
 		eval->symbol = lookUpName(eval->name,symTab);
+		resolveExpr(symTab,eval->type->length);//array index
 		if (!eval->symbol) {
 			printError(2,eval->name,eval->line,0);
 			return 0;
