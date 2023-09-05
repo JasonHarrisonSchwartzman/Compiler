@@ -356,38 +356,42 @@ char *createQuadExpr(struct Expression *expr) {
 }
 
 /**
- * 
+ * creates a quad for an array
 */
 void createQuadArr(struct VarDecl *var) {
-    if (var->symbol->line == var->line) {
+    if (var->symbol->line == var->line) {//declaration of array
         char *tempNameSize;
+        
+        //size/index of array
         if (var->type->length->expr) {
+            //multi eval expression
             tempNameSize = createQuadExpr(var->type->length);
         }
         else {
-            printf("here\n");
+            //single eval expression
             tempNameSize = addQuad(createQuad(evalToArg(var->type->length->eval),NULL,OP_ASSIGN,createName("t",temp)));
         }
-        printf("Determined size\n");
+
         char *tempNameValue;
-        if (var->expr){
+
+        //value assigned to array index
+        if (var->expr){//value assigned
             if (!var->expr->expr) {
+                //single eval expression
                 addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),evalToArg(var->expr->eval),OP_ARRAY_CREATE,var->name));
                 return;
             }
+            //multi eval expression
             else tempNameValue = createQuadExpr(var->expr);
         }
-        else {
+        else {//no value assigned
             tempNameValue = NULL;
         }
-        printf("quarter\n");
-        printf("half\n");
         if (tempNameValue) addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_CREATE,var->name));
         else addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),NULL,OP_ARRAY_CREATE,var->name));
     }
-    else {
-        printf("assignment\n");
-        printf("POINTER OF LENGTH AFTER DEC: %p\n",var->type->length);
+    else {//assignment
+        
         if (!var->expr->expr) {
             if (!var->type->length->expr) {
                 addQuad(createQuad(evalToArg(var->type->length->eval),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->name));
