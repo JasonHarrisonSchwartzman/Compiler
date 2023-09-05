@@ -99,19 +99,15 @@ type_t determineSmallestType(char *str) {
 		return -1;
     } 
 	else if (value < SCHAR_MAX && value > SCHAR_MIN) {
-		printf("Inferred type of number: %ld | CHAR\n", value);
 		return CHAR;
 	}
 	else if (value < SHRT_MAX && value > SHRT_MIN) {
-		printf("Inferred type of number: %ld | SHORT\n", value);
         return SHORT;
     } 
 	else if (value < INT_MAX && value > INT_MIN) {
-		printf("Inferred type of number: %ld | INT\n", value);
 		return INT;
 	}
 	else {
-		printf("Inferred type of number: %ld | LONG\n", value);
         return LONG;
     }
 }
@@ -121,7 +117,6 @@ type_t determineSmallestType(char *str) {
 */
 struct Type *inferLiteral(struct Value *value) {
 	char *val = value->value;
-	//printf("Literal to infer: %s\n",val);
 	if (value->val_t == NUM) {
 		struct Type *type = calloc(1,sizeof(struct Type));
 		type->pointer = 0;
@@ -176,7 +171,6 @@ struct Type *getType(struct Evaluation *eval) {
 		return eval->funccall->symbol->type;
 	}
 	else {
-		printf("EvAL: %d PROBLEMA? %d-----------------------\n",eval->eval,eval->symbol->type->pointer);
 		return eval->symbol->type;
 	}
 }
@@ -184,12 +178,12 @@ struct Type *getType(struct Evaluation *eval) {
  * Type translation given operators and 1 or 2 Evaluations.
  */
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
-	//if (!eval1) return NULL;
-	//if (eval1->value) printf("Infer value %s\n",eval1->value->value);
 	if (!eval2) {
 		return eval1->type = getType(eval1);
 	}
-	/*switch (*op) {
+	/*
+	Commenting out the following because unsure if I will typecheck based on operation
+	switch (*op) {
 		case PLUS:
 			break;
 		case MINUS:
@@ -238,7 +232,7 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		type2->sign = SIGNED;
 	}
 	if (type1->pointer > 0 || type2->pointer > 0) {//both become points
-		printf("THERE IS ONE POINTER -----------");
+		printf("Pointer present in one or more evals");
 		printf("%d %d\n",type1->pointer,type2->pointer);
 		type1->pointer = 1;
 		type2->pointer = 1;
@@ -261,6 +255,7 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 	long stackIndex = 0;
 	long opStackIndex = 0;
 	struct Expression *temp = expr;
+	//type checks the Expression linked list in order
 	while (temp) {
 		struct Evaluation *e = temp->eval;
 		evalStack = realloc(evalStack,sizeof(struct Evaluation*) * ++stackIndex);
@@ -274,18 +269,14 @@ struct Type *typeCheckExpr(struct Expression *expr) {
 
 		temp = temp->expr;
 	}
-	//printf("Expression length %ld Operation length %ld\n",stackIndex,opStackIndex);
 	long eval1 = stackIndex - 1;
 	long eval2 = stackIndex - 2;
 	long opIndex = opStackIndex - 1;
 	while (eval2 > -1) {
-		resolveType(evalStack[eval1--],opStack[opIndex--],evalStack[eval2--]);
+		resolveType(evalStack[eval1--],opStack[opIndex--],evalStack[eval2--]);//resolves type of two evals with operation
 	}
-	//printf("Num: %ld\n",eval1);
 	resolveType(evalStack[eval1--],NULL,NULL); //resolves single expressions
-	//printf("test\n");
 	if (!evalStack[0]) return NULL;
-	//printf("Type: %d Name: %s\n",evalStack[0]->type->dataType,evalStack[0]->name);
 	free(opStack);
 	struct Type *ret = evalStack[0]->type;
 	free(evalStack);
@@ -299,13 +290,8 @@ struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) 
 	if (!expr) printf("Expression NULL here\n");
 	if (!expr) return NULL;
 
-	//debug arrays
-
-
 	struct Type *exprType = typeCheckExpr(expr);
 
-	printf("before comparison pointer %d\n",exprType->pointer);
-	printf("varType pointer %d\n",varType->pointer);
 	exprType->sign = varType->sign;
 	exprType->pointer = varType->pointer;
 	if (varType->dataType >= exprType->dataType) {//the biggest data type takes precedence
@@ -444,13 +430,10 @@ int resolveFuncCall();
  */
 int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 	printf("TRYING TO RESOLVE EVAL\n");
-	printf("Function: resolveEval Trying to resolve eval %d\n",eval->eval);
 	if (eval->eval == FUNCRETURN) {
-		printf("going to resolve FuncCall\n");
 		return resolveFuncCall(symTab,eval->funccall);
 	}
 	else if (eval->eval == ARRAYINDEX) {
-		printf("TRYING TO RESOLVE ARRAY INDEX\n");
 		return resolveExpr(symTab,eval->expr); //array index
 	}
 	else if (eval->eval != VALUE) {
@@ -483,9 +466,7 @@ int resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 		return 0;
 	}
 	struct Expression *index = NULL;
-	printf("mid\n");
 	if (var->type) {
-		//printf("Expression has an array index\n");
 		index = var->type->length;
 	}
 	else index = var->symbol->type->length;
@@ -520,7 +501,6 @@ int resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 		if (resolveExpr(symTab, fargs->expr) == 0) return 0;
 		fargs = fargs->funcargs;
 	}
-	printf("finished\n");
 	return 1;
 }
 /*
@@ -531,7 +511,6 @@ void resolveControl(statement_t stmt) {
 		printError(4,NULL,0,0);
 	}
 }
-
 
 /*
  * Given the statements within a function will add symbol for variables defined OR 
@@ -544,17 +523,13 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		if (s->stmt == DECLARATION) {
 			printf("RESOLVING DECLARATION of %s\n", s->var->name);
 			createSymbolTableVarDecl(symTab,s->var);//var decl
-			printf("CRETED SYMBOL FOR VARIABLE\n");
 
 			if(s->var->type->length) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
-			if(s->var->type->length) typeCheckExpr(s->var->type->length);
+			if(s->var->type->length) typeCheckExpr(s->var->type->length);//array size (if applicable)
 
 			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of dec
-			printf("EXPRESSION OF DECLARATION RESOLVED\n");
-			printf("pointer of %s? %d\n",s->var->name,s->var->type->pointer);
 			
 			if (resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr);
-			printf("\n\n");
 		}
 		if (s->stmt == FOR) {
 			inLoop = 1;
@@ -603,17 +578,13 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			}
 		}
 		if (s->stmt == RETURN) {
-			printf("RESOLVING RETURN\n");
 			int resolvedExpr = resolveExpr(symTab,s->returnstmt);
 			printf("Expression resolve?: %d\n",resolvedExpr);
-			//remember to change this line to typeCheck return for function return type
 			if (resolvedExpr) {
 				typeCheckExpr(s->returnstmt); 
-				printf("Type checked\n");
-				if (!returnType) printf("NOT GOOOOOOOOOOOOOOD\n");
+				if (!returnType) printf("NO RETURN TYPE NOT GOOD\n");
 				typeCheckAssignment(returnType,s->returnstmt);
 			}
-			//testing type checking for return statements be sure to include this function in other lines
 		}
 		if (s->stmt == ASSIGNMENT) {
 			printf("RESOLVING ASSIGNMENT of %s\n",s->var->name);
