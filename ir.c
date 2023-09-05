@@ -286,7 +286,8 @@ struct argument *evalToArg(struct Evaluation *eval) {
     }
     if (eval->eval == ARRAYINDEX) {
         printf("ARRAYINDEX\n");
-
+        char *tempName = addQuad(createQuad(createArg(eval->name,getTypeQuad(eval->type),0),evalToArg(eval->type->length->eval),OP_ARRAY_INDEX,createName("t",temp)));
+        return createArg(tempName,getTypeQuad(eval->type),0);
     }
     return NULL;
 }
@@ -393,13 +394,23 @@ void createQuadArr(struct VarDecl *var) {
     }
     else {//assignment
         
-        if (!var->expr->expr) {
-            if (!var->type->length->expr) {
+        if (!var->expr->expr) {//single eval expression (for value)
+            if (!var->type->length->expr) {//single eval expression (for index)
+                printf("single expr and index\n");
                 addQuad(createQuad(evalToArg(var->type->length->eval),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->name));
+            }
+            else {
+
             }
         }
         else {
-            printf("HELLO\n");
+            printf("not implemented yet\n");
+            if (!var->type->length->expr) {
+
+            }
+            else {
+
+            }
         }
     }
 }
