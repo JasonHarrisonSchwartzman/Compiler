@@ -403,20 +403,24 @@ void createQuadArr(struct VarDecl *var) {
 
         if (!var->expr->expr) {//single eval expression (for value)
             if (!var->type->length->expr) {//single eval expression (for index)
-                printf("single expr and index\n");
                 addQuad(createQuad(evalToArg(var->type->length->eval),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->name));
             }
-            else {
-
+            else {//multi eval expression (for index)
+                char *tempName = createQuadExpr(var->type->length);
+                addQuad(createQuad(createArg(tempName,VAL_ULONG,0),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->name));
             }
         }
-        else {
-            printf("not implemented yet\n");
-            if (!var->type->length->expr) {
-
+        else {//multi eval expression (for value)
+            if (!var->type->length->expr) {//single eval expression (for index)
+                printf("multi single\n");
+                char *tempName = createQuadExpr(var->expr);
+                addQuad(createQuad(evalToArg(var->type->length->eval),createArg(tempName,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_INDEX,var->name));
             }
-            else {
-
+            else {//multi eval expression (for index)
+                printf("multi multi\n");
+                char *tempNameIndex = createQuadExpr(var->type->length);
+                char *tempNameValue = createQuadExpr(var->expr);
+                addQuad(createQuad(createArg(tempNameIndex,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_INDEX,var->name));
             }
         }
     }
