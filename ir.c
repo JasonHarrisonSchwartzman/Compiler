@@ -845,6 +845,9 @@ void createIR() {
     }
 }
 
+/**
+ * Retrieves a value from the union based on val_t
+*/
 long getValue(val_t val, union value value) {
     switch(val) {
         case VAL_CHAR:
@@ -870,6 +873,9 @@ long getValue(val_t val, union value value) {
     }
 }
 
+/**
+ * Performs operation on two constants
+*/
 long performOperation(struct argument *arg1, struct argument *arg2, enum op op) {
     long value1 = getValue(arg1->val_t,arg1->value);
     long value2 = getValue(arg2->val_t,arg2->value);
@@ -877,26 +883,44 @@ long performOperation(struct argument *arg1, struct argument *arg2, enum op op) 
         case OP_ADD:
             return value2 + value1;
         case OP_SUB:
+            return value2 - value1;
         case OP_MULT:
+            return value2 * value1;
         case OP_DIV:
+            return value2 / value1;
         case OP_MOD:
+            return value2 % value1;
         case OP_EQ:
+            return value2 == value1;
         case OP_GEQ:
+            return value2 >= value1;
         case OP_LEQ:
+            return value2 <= value1;
         case OP_LESS:
-        case OP_GREAT:
+            return value2 < value1;
+        case OP_GREAT: 
+            return value2 > value1;
         case OP_AND:
+            return value2 && value1;
         case OP_OR:
+            return value2 || value1;
         case OP_NEQ:
+            return value2 != value1;
         case OP_BITAND:
+            return value2 & value1;
         case OP_BITOR:
+            return value2 | value1;
         case OP_BITXOR:
+            return value2 ^ value1;
         default:
         return 0;
     }
     return 0;
 }
 
+/**
+ * Removes a quad from the quad array
+*/
 void removeQuad(int index) {
     for (int i = index; i < numQuads - 1; i++) {
         quads[i] = quads[i + 1];
@@ -905,6 +929,9 @@ void removeQuad(int index) {
     quads = realloc(quads,sizeof(struct quad) * numQuads);
 }
 
+/**
+ * Reduces adjacent constants in an expression
+*/
 void constantFolding() {
     for (int i = 0; i < numQuads - 1; i++) {
         if (!quads[i]->arg1 || !quads[i]->arg2) continue;
