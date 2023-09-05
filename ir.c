@@ -911,7 +911,6 @@ void constantFolding() {
         char *name1 = quads[i]->arg1->name;
         char *name2 = quads[i]->arg2->name;
         if (!name1 && !name2) {
-            printf("FOUND VALUES index %d\n",i);
             char *oldResult = quads[i]->result;
             long foldedVal = performOperation(quads[i]->arg1,quads[i]->arg2,quads[i]->operation);
             struct argument *newArg = createArg(NULL,quads[i]->arg1->val_t,foldedVal);
