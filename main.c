@@ -42,8 +42,13 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	createIR();
+	printf("Quads before optimizations\n");
 	printQuads();
 	printf("IR finished\n");
+	optimize();
+	printQuads();
+
+
 	freeRules();
 	freeInstanceAndVarTokens();
 	// //freeTokens();seg fault
