@@ -5,3 +5,6 @@
 /**
  * This file converts the Intermediate Representation into assembly language.
 */
+
+extern struct quad **quads;
+extern int numQuads;
