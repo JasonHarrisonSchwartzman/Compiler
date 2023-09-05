@@ -360,6 +360,7 @@ char *createQuadExpr(struct Expression *expr) {
 */
 void createQuadArr(struct VarDecl *var) {
     if (var->symbol->line == var->line) {//declaration of array
+        printf("declaration of array\n");
         char *tempNameSize;
         
         //size/index of array
@@ -398,7 +399,7 @@ void createQuadArr(struct VarDecl *var) {
             }
         }
         else {
-            
+            printf("HELLO\n");
         }
     }
 }

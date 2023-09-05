@@ -158,6 +158,7 @@ struct Type *typeCheckExpr();
 * Gets type of eval (VALUE or other)
 */
 struct Type *getType(struct Evaluation *eval) {
+	printf("type to get: %d\n",eval->eval);
 	if (eval->eval == VALUE) {
 		//printf("Inferring literal value of %s\n",eval->value->value);
 		return inferLiteral(eval->value);
@@ -169,6 +170,14 @@ struct Type *getType(struct Evaluation *eval) {
 			fargs = fargs->funcargs;
 		}
 		return eval->funccall->symbol->type;
+	}
+	else if (eval->eval == ARRAYINDEX) {
+		if (!eval->symbol) printf("no symbol\n");
+		printf("%s\n",eval->name);
+		if (!eval->type) printf("no type");
+		//typeCheckExpr(eval->type->length);
+		printf("index checked\n");
+		return eval->symbol->type;
 	}
 	else {
 		return eval->symbol->type;
@@ -434,7 +443,13 @@ int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 		return resolveFuncCall(symTab,eval->funccall);
 	}
 	else if (eval->eval == ARRAYINDEX) {
-		return resolveExpr(symTab,eval->expr); //array index
+		eval->symbol = lookUpName(eval->name,symTab);
+		if (!eval->symbol) {
+			printError(2,eval->name,eval->line,0);
+			return 0;
+		}
+		return 1;
+		//return resolveExpr(symTab,eval->expr); //array index
 	}
 	else if (eval->eval != VALUE) {
 		eval->symbol = lookUpName(eval->name,symTab);
