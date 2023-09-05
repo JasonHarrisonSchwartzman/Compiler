@@ -259,7 +259,7 @@ void *callSemanticRule(void *param[], int rule) {
 		case 63:
 			return addEval(ID,NULL,NULL,((struct Token*)param[0])->token,-1,-1,NULL,((struct Token*)param[0])->line);
 		case 64:
-			printf("Eval: %s\n",((struct Expression*)param[2])->eval->value->value);
+			//printf("Eval: %s\n",((struct Expression*)param[2])->eval->value->value);
 			//exit(1);
 			return addEval(ARRAYINDEX,NULL,param[2],((struct Token*)param[0])->token,-1,-1,NULL,((struct Token*)param[0])->line);
 		case 65:
