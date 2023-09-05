@@ -22,17 +22,17 @@ typedef enum op {
     OP_GREAT,
     OP_OR,
     OP_AND,
-    OP_ASSIGN,
+    OP_MOD,
     OP_BITOR,
     OP_BITAND,
     OP_BITXOR,
     OP_REF,
     OP_DEREF,
     OP_CALL,
+    OP_ASSIGN,
     OP_JUMP,
     OP_JUMPIF,
     OP_JUMPIFNOT,
-    OP_MOD,
     OP_RET,
     OP_LABEL,
     OP_PARAM,
@@ -845,18 +845,45 @@ void createIR() {
     }
 }
 long performOperation(struct argument *arg1, struct argument *arg2, enum op op) {
-    /*switch(op) {
-
-    }*/
+    switch(op) {
+        case OP_ADD:
+        case OP_SUB:
+        case OP_MULT:
+        case OP_DIV:
+        case OP_MOD:
+        case OP_EQ:
+        case OP_GEQ:
+        case OP_LEQ:
+        case OP_LESS:
+        case OP_GREAT:
+        case OP_AND:
+        case OP_OR:
+        case OP_NEQ:
+        case OP_BITAND:
+        case OP_BITOR:
+        case OP_BITXOR:
+        default:
+        return 0;
+    }
     return 0;
 }
 
-void reduceConstants() {
+void removeQuad(int index) {
+    for (int i = index; i < numQuads - 1; i++) {
+        quads[i] = quads[i + 1];
+    }
+    numQuads--;
+    quads = realloc(quads,sizeof(struct quad) * numQuads);
+}
+
+void constantFolding() {
     for (int i = 0; i < numQuads; i++) {
-        
+        if (!quads[i]->arg1->name && !quads[i]->arg2->name) {
+            performOperation(quads[i]->arg1,quads[i]->arg2,quads[i]->operation);
+        }
     }
 }
 
 void optimize() {
-    reduceConstants();
+    constantFolding();
 }
