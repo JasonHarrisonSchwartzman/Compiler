@@ -844,9 +844,38 @@ void createIR() {
         d = d->next;
     }
 }
+
+long getValue(val_t val, union value value) {
+    switch(val) {
+        case VAL_CHAR:
+            return value.char_value;
+        case VAL_UCHAR:
+            return value.uchar_value;
+        case VAL_SHORT:
+            return value.short_value;
+        case VAL_USHORT:
+            return value.ushort_value;
+        case VAL_INT:
+            return value.int_value;
+        case VAL_UINT:
+            return value.uint_value;
+        case VAL_LONG:
+            return value.long_value;
+        case VAL_ULONG:
+            return value.ulong_value;
+        case VAL_DOUBLE:
+            return value.double_value;
+        default:
+            return 0;
+    }
+}
+
 long performOperation(struct argument *arg1, struct argument *arg2, enum op op) {
+    long value1 = getValue(arg1->val_t,arg1->value);
+    long value2 = getValue(arg2->val_t,arg2->value);
     switch(op) {
         case OP_ADD:
+            return value2 + value1;
         case OP_SUB:
         case OP_MULT:
         case OP_DIV:
@@ -877,9 +906,25 @@ void removeQuad(int index) {
 }
 
 void constantFolding() {
-    for (int i = 0; i < numQuads; i++) {
-        if (!quads[i]->arg1->name && !quads[i]->arg2->name) {
-            performOperation(quads[i]->arg1,quads[i]->arg2,quads[i]->operation);
+    for (int i = 0; i < numQuads - 1; i++) {
+        if (!quads[i]->arg1 || !quads[i]->arg2) continue;
+        char *name1 = quads[i]->arg1->name;
+        char *name2 = quads[i]->arg2->name;
+        if (!name1 && !name2) {
+            printf("FOUND VALUES index %d\n",i);
+            char *oldResult = quads[i]->result;
+            long foldedVal = performOperation(quads[i]->arg1,quads[i]->arg2,quads[i]->operation);
+            struct argument *newArg = createArg(NULL,quads[i]->arg1->val_t,foldedVal);
+            for (int j = i + 1; j < numQuads - 1; j++) {
+                if (quads[j]->arg1 && quads[j]->arg1->name && strcmp(quads[j]->arg1->name,oldResult) == 0) {
+                    quads[j]->arg1 = newArg;
+                }
+                if (quads[j]->arg2 && quads[j]->arg2->name && strcmp(quads[j]->arg2->name,oldResult) == 0) {
+                    quads[j]->arg2 = newArg;
+                }
+            }
+            removeQuad(i);
+            i--;
         }
     }
 }
