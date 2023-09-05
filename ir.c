@@ -1,5 +1,14 @@
 #include "syntaxtree.h"
 
+/***
+ * This file is responsible for the Intermediate Representation which utilizes Quadruples
+ * Each Quadruple contains:
+ * an Operation (enum op)
+ * two Arguments (struct argument) which contains a type and a name or a value
+ * a result which is a name
+*/
+
+//operations
 typedef enum op {
     OP_MULT,
     OP_DIV,
@@ -31,6 +40,7 @@ typedef enum op {
     OP_ARRAY_INDEX,
 } op;
 
+//value types
 typedef enum val_t {
     VAL_CHAR,
     VAL_UCHAR,
@@ -54,6 +64,7 @@ typedef enum val_t {
     VAL_ARR_POINTER,
 } val_t;
 
+//value of the argument 
 union value {
     const char *name;
     double double_value;
@@ -67,12 +78,14 @@ union value {
     unsigned long ulong_value;
 };
 
+//argument for the quadruple contains information about the name or value 
 struct argument {
     char *name;
     enum val_t val_t;
     union value value;
 };
 
+//the quadruple
 struct quad {
     struct argument *arg1;
     struct argument *arg2;
@@ -80,11 +93,11 @@ struct quad {
     char *result;
 } quad;
 
-struct quad **quads;
-int numQuads = 0;
+struct quad **quads;//array of quads
+int numQuads = 0;//index of quads
 
-int temp = 0;
-int label = 0;
+int temp = 0;//used to create temp names for storing values
+int label = 0;//used for label names
 
 /***
  * 3 functions create a name tX or rX where X is the number 
@@ -321,7 +334,7 @@ op getQuadOp(operation_t op) {
 
 /**
  * generic Quad creator to create long expression 
- * single or null expressions are dealt with on higher-up functions
+ * single or null expressions are dealt with on higher-up functions (THEY SHOULD BE)
 */
 char *createQuadExpr(struct Expression *expr) {
     //a b c d
@@ -329,6 +342,8 @@ char *createQuadExpr(struct Expression *expr) {
     //t1 c -> t2
     //t2 d -> t3
     struct Expression *e = expr;
+
+    //creates quad using the first two evals in an expression
     char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
     e = e->expr->expr;
     struct Expression *op = expr->expr; //storing operation
@@ -340,10 +355,11 @@ char *createQuadExpr(struct Expression *expr) {
     return tempName;
 }
 
+/**
+ * 
+*/
 void createQuadArr(struct VarDecl *var) {
     if (var->symbol->line == var->line) {
-        printf("Creating arr\n");
-        printf("POINTER OF LENGTH AFTER DEC: %p\n",var->type->length);
         char *tempNameSize;
         if (var->type->length->expr) {
             tempNameSize = createQuadExpr(var->type->length);
