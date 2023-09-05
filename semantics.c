@@ -174,10 +174,24 @@ struct Type *getType(struct Evaluation *eval) {
 	else if (eval->eval == ARRAYINDEX) {
 		if (!eval->symbol) printf("no symbol\n");
 		printf("%s\n",eval->name);
-		if (!eval->type) printf("no type");
-		//typeCheckExpr(eval->type->length);
+		if (!eval->type) printf("no type\n");
+		typeCheckExpr(eval->type->length);
 		printf("index checked\n");
-		return eval->symbol->type;
+
+		struct Expression *index = eval->type->length;
+		printf("hi\n");
+		/*if (eval->type) {
+			index = eval->type->length;
+		}
+		else index = eval->symbol->type->length;*/
+		eval->type = calloc(1,sizeof(struct Type));
+		eval->type->dataType = eval->symbol->type->dataType;
+		eval->type->pointer = eval->symbol->type->pointer;
+		eval->type->sign = eval->symbol->type->sign;
+	
+		eval->type->length = index;
+		printf("done\n");
+		return eval->type;
 	}
 	else {
 		return eval->symbol->type;

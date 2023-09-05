@@ -397,7 +397,12 @@ struct FunctionCall *addFuncCall(char *name, struct FunctionArgs *funcargs,unsig
 struct Evaluation *addEval(eval_t eval, struct Value *value, struct Expression *expr, char *name, int dereference, int reference, struct FunctionCall *funccall, unsigned long line) {
 	struct Evaluation *e = calloc(1,sizeof(struct Evaluation));
 	e->value = value;
-	e->expr = expr;
+	
+	//e->expr = expr;expr should be part of type
+	if (expr) {
+		e->type = addType(NULL,NULL);
+		e->type->length = expr;
+	}
 	e->name = name;
 	e->dereference = dereference;
 	e->reference = reference;
