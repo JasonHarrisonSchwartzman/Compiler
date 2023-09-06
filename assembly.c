@@ -7,6 +7,7 @@
  * This file converts the Intermediate Representation into assembly language.
 */
 
+//from ir.c
 extern struct quad **quads;
 extern int numQuads;
 
@@ -16,6 +17,7 @@ struct scratch_register {
     char *name;
     int inUse;
 } scratch_register;
+
 
 struct scratch_register registers[] = {
     {"%rbx",0},
@@ -62,6 +64,9 @@ int label_create() {
     return labelName++;
 }
 
+/**
+ * Returns lable name .LX where X is the label number
+*/
 const char *label_name(int label) {
     int totalLength = snprintf(NULL, 0, ".L%d", labelName) + 1;
     char *result = (char *)malloc(totalLength);
@@ -71,6 +76,13 @@ const char *label_name(int label) {
     return result;
 }
 
+/**
+ * Returns the address computation for a given symbol
+*/
 const char *symbol_codegen(struct Symbol *s) {
+    if (s->sym == SYMBOL_GLOBAL) return s->name;
+    else {//LOCAL VARIABLES/PAREMETERS
+
+    }
     return NULL;
 }
