@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ir.c"
+#include "syntaxtree.h"
 
 /**
  * This file converts the Intermediate Representation into assembly language.
@@ -8,6 +9,8 @@
 
 extern struct quad **quads;
 extern int numQuads;
+
+int labelName = 0;
 
 struct scratch_register {
     char *name;
@@ -50,4 +53,24 @@ void scratch_free(int reg) {
 */
 const char *scratch_name(int reg) {
     return registers[reg].name;
+}
+
+/**
+ * Increments label and returns current value
+*/
+int label_create() {
+    return labelName++;
+}
+
+const char *label_name(int label) {
+    int totalLength = snprintf(NULL, 0, ".L%d", labelName) + 1;
+    char *result = (char *)malloc(totalLength);
+    if (result != NULL) {
+        snprintf(result, totalLength, ".L%d", labelName);
+    }
+    return result;
+}
+
+const char *symbol_codegen(struct Symbol *s) {
+    return NULL;
 }
