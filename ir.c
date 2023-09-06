@@ -6,6 +6,8 @@
  * an Operation (enum op)
  * two Arguments (struct argument) which contains a type and a name or a value
  * a result which is a name
+ * Optimizations include constant folding which is when you reduce a constant expression ex. 5 + 5 into 10 
+ * which saves an instruction
 */
 
 //operations
