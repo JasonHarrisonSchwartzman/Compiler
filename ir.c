@@ -823,9 +823,7 @@ void printQuad(struct quad *quad) {
 */
 void printQuads() {
     printf("----------QUADS----------\n");
-    for (int i = 0; i < numQuads; i++) {
-        printQuad(quads[i]);
-    }
+    for (int i = 0; i < numQuads; i++) printQuad(quads[i]);
 }
 
 /**
@@ -834,15 +832,8 @@ void printQuads() {
 void createIR() {
     struct Declaration *d = syntaxTree;
     while (d) {
-
-        if (d->dec == VAR) {
-            createQuadVar(d->vardecl);
-        }
-        else {
-            createQuadFunc(d->funcdecl);
-        }
-
-
+        if (d->dec == VAR) createQuadVar(d->vardecl);
+        else createQuadFunc(d->funcdecl);
         d = d->next;
     }
 }
