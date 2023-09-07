@@ -957,6 +957,9 @@ void constantFolding() {
     }
 }
 
+/**
+ * Optimizes the code in the intermediate representation
+*/
 void optimize() {
     constantFolding();
 }
