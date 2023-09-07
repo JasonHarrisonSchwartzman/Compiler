@@ -300,40 +300,23 @@ struct argument *evalToArg(struct Evaluation *eval) {
 */
 op getQuadOp(operation_t op) {
     switch(op) {
-        case PLUS:
-            return OP_ADD;
-        case MINUS:
-            return OP_SUB;
-        case MULT:
-            return OP_MULT;
-        case DIV:
-            return OP_DIV;
-        case MOD:
-            return OP_MOD;
-        case BITWISEAND:
-            return OP_BITAND;
-        case BITWISEOR:
-            return OP_BITOR;
-        case BITWISEXOR:
-            return OP_BITXOR;
-        case EQUAL:
-            return OP_EQ;
-        case GREATEQUAL:
-            return OP_GEQ;
-        case LESSEQUAL:
-            return OP_LEQ;
-        case LESS:
-            return OP_LESS;
-        case GREAT:
-            return OP_GREAT;
-        case AND:
-            return OP_AND;
-        case NOT:
-            return OP_NEQ;
-        case OR:
-            return OP_OR;
-        default:
-            return -1;
+        case PLUS: return OP_ADD;
+        case MINUS: return OP_SUB;
+        case MULT: return OP_MULT;
+        case DIV: return OP_DIV;
+        case MOD: return OP_MOD;
+        case BITWISEAND: return OP_BITAND;
+        case BITWISEOR: return OP_BITOR;
+        case BITWISEXOR: return OP_BITXOR;
+        case EQUAL: return OP_EQ;
+        case GREATEQUAL: return OP_GEQ;
+        case LESSEQUAL: return OP_LEQ;
+        case LESS: return OP_LESS;
+        case GREAT: return OP_GREAT;
+        case AND: return OP_AND;
+        case NOT: return OP_NEQ;
+        case OR: return OP_OR;
+        default: return -1;
     }
 }
 
@@ -595,27 +578,13 @@ char *createQuadFuncCall(struct FunctionCall *call) {
 */
 void createQuadStatements(struct Statement *stmt) {
     while (stmt) {
-        if ((stmt->stmt == ASSIGNMENT) || (stmt->stmt == DECLARATION)) {
-            createQuadVar(stmt->var);
-        }
-        else if (stmt->stmt == RETURN) {
-            createQuadReturn(stmt->returnstmt);
-        }
-        else if (stmt->stmt == IF) { // IF ELSE IF ELSE
-            createQuadConditional(stmt->condstmt);
-        }
-        else if ((stmt->stmt == WHILE) || (stmt->stmt == FOR)) {
-            createQuadLoop(stmt->loop);
-        }
-        else if (stmt->stmt == FUNCCALL) {
-            createQuadFuncCall(stmt->funccall);
-        }
-        else if (stmt->stmt == BREAK) {
-            createQuadBreak(numQuads);
-        }
-        else if (stmt->stmt == CONTINUE) {
-            createQuadContinue(numQuads);
-        }
+        if ((stmt->stmt == ASSIGNMENT) || (stmt->stmt == DECLARATION)) createQuadVar(stmt->var);
+        else if (stmt->stmt == RETURN) createQuadReturn(stmt->returnstmt);
+        else if (stmt->stmt == IF) createQuadConditional(stmt->condstmt);
+        else if ((stmt->stmt == WHILE) || (stmt->stmt == FOR)) createQuadLoop(stmt->loop);
+        else if (stmt->stmt == FUNCCALL) createQuadFuncCall(stmt->funccall);
+        else if (stmt->stmt == BREAK) createQuadBreak(numQuads);
+        else if (stmt->stmt == CONTINUE) createQuadContinue(numQuads);
         stmt = stmt->next;
     }
 }
