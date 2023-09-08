@@ -77,6 +77,15 @@ const char *label_name(int label) {
 }
 
 /**
+ * Computes the address where the local variable/param will be stored on the stack
+*/
+char *addressCompute(struct Symbol *s) {
+    for (int i = 0; i < numQuads; i++) {
+
+    }
+}
+
+/**
  * Returns the address computation for a given symbol
 */
 const char *symbol_codegen(struct Symbol *s) {
