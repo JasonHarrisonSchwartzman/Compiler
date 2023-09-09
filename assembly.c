@@ -83,6 +83,7 @@ char *addressCompute(struct Symbol *s) {
     for (int i = 0; i < numQuads; i++) {
         
     }
+    return NULL;
 }
 
 /**
