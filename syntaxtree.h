@@ -90,6 +90,8 @@ struct Symbol {
 	dec_t dec;
 	struct Symbol *next;
 	
+	unsigned long sequence;
+
 	unsigned long line;
 } Symbol;
 

@@ -47,6 +47,8 @@ struct Symbol *createSymbol(char *name, struct Type *type, symbol_t sym, dec_t d
  * adds a symbol to a given symbol table
  */
 void addSymbol(struct SymbolTable *t, struct Symbol *s) {
+	if (s->sym == SYMBOL_LOCAL && !t->symbols) s->sequence = 8;
+	else if (s->sym == SYMBOL_LOCAL) s->sequence = t->symbols->sequence + 8;
 	s->next = t->symbols;
 	t->symbols = s;
 }
@@ -69,10 +71,11 @@ struct SymbolTable *addInner(struct SymbolTable *t) {
 void printSymbolTable(struct SymbolTable *sym) {
 	struct SymbolTable *temp = sym;
 	while (temp->symbols) {
-		printf("Level %lu Symbol: %s\n",temp->level,temp->symbols->name);
+		printf("Level %lu Symbol: %s Sequence: %lu\n",temp->level,temp->symbols->name,temp->symbols->sequence);
 		temp->symbols = temp->symbols->next;
 	}
 	for (int i = 0; i < temp->numInner; i++ ) {
+		//printf("Num inner %d\n",i);
 		printSymbolTable(temp->inner[i]);
 	}
 }

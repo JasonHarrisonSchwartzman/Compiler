@@ -81,7 +81,7 @@ const char *label_name(int label) {
 */
 char *addressCompute(struct Symbol *s) {
     for (int i = 0; i < numQuads; i++) {
-
+        
     }
 }
 
