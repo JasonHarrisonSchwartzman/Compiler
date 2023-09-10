@@ -47,8 +47,8 @@ struct Symbol *createSymbol(char *name, struct Type *type, symbol_t sym, dec_t d
  * adds a symbol to a given symbol table
  */
 void addSymbol(struct SymbolTable *t, struct Symbol *s) {
-	if (s->sym == SYMBOL_LOCAL && !t->symbols) s->sequence = 8;
-	else if (s->sym == SYMBOL_LOCAL) s->sequence = t->symbols->sequence + 8;
+	if (s->sym == SYMBOL_LOCAL && !t->symbols) s->sequence = 8;//sequence number of first local variable
+	else if (s->sym == SYMBOL_LOCAL) s->sequence = t->symbols->sequence + 8;//subsequent variables
 	s->next = t->symbols;
 	t->symbols = s;
 }
