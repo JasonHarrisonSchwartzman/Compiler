@@ -87,7 +87,7 @@ char *addressCompute(struct Symbol *s) {
 }
 
 /**
- * Returns the address computation for a given symbol
+ * Returns the address computation for a given symbol 
 */
 const char *symbol_codegen(struct Symbol *s) {
     if (s->sym == SYMBOL_GLOBAL) return s->name;
