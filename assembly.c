@@ -76,12 +76,39 @@ const char *label_name(int label) {
     return result;
 }
 
+
+
+struct SymbolAddress {
+    struct Symbol *symbol;
+    char *address;
+} SymbolAddress;
+
+struct SymbolAddress **symAdds;
+int numSymbols = 0;
+
+void addSymbolAddress(struct Symbol *symbol, char *address){ 
+    struct SymbolAddress *symAdd = calloc(1,sizeof(struct SymbolAddress));
+    symAdd->symbol = symbol;
+    symAdd->address = address;
+    symAdds = realloc(1,sizeof(struct SymbolAddress) * (numSymbols + 1));
+    symAdds[numSymbols++] = symAdd;
+}
+
+char *lookUpAddress(struct Symbol *symbol) {
+    for (int i = 0; i < numSymbols; i++) {
+        if (symAdds[i]->symbol == symbol) return symAdds[i]->address;
+    }
+    return NULL;
+}
+
 /**
  * Computes the address where the local variable/param will be stored on the stack
 */
 char *addressCompute(struct Symbol *s) {
     for (int i = 0; i < numQuads; i++) {
-        
+        if (quads[i]->symbol == s) {
+
+        }
     }
     return NULL;
 }
