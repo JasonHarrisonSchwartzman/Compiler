@@ -172,6 +172,16 @@ struct quad *createQuad(struct argument *arg1, struct argument *arg2, enum op op
     return q;
 }
 
+struct quad *createQuad2(struct argument *arg1, struct argument *arg2, enum op operation, struct Symbol *result) {
+    struct quad *q = calloc(1,sizeof(struct quad));
+    q->arg1 = arg1;
+    q->arg2 = arg2;
+    q->operation = operation;
+    q->result = result->name;
+    q->symbol = result;
+    return q;
+}
+
 /**
  * Adds quad to quad array
 */
