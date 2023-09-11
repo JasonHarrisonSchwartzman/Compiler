@@ -89,10 +89,12 @@ int numSymbols = 0;
 /**
  * Adds symbol address to SymbolAddress table
 */
-void addSymbolAddress(struct Symbol *symbol, char *address){ 
+void addSymbolAddress(struct Symbol *symbol, char *address, int size, int placeOnStack){ 
     struct SymbolAddress *symAdd = calloc(1,sizeof(struct SymbolAddress));
     symAdd->symbol = symbol;
     symAdd->address = address;
+    symAdd->size = size;
+    symAdd->placeOnStack = placeOnStack;
     symAdds = realloc(symAdds,sizeof(struct SymbolAddress) * (numSymbols + 1));
     symAdds[numSymbols++] = symAdd;
 }
@@ -109,6 +111,18 @@ char *lookUpAddress(struct Symbol *symbol) {
 }
 
 /**
+ * Converts the number to a string for address name on stack
+*/
+char *createAddressName(int num) {
+    int totalLength = snprintf(NULL, 0, "-%d(%%rbp)", num) + 1;
+    char *result = (char *)malloc(totalLength);
+    if (result != NULL) {
+        snprintf(result, totalLength, "-%d(%%rbp)", num);
+    }
+    return result;
+}
+
+/**
  * Computes the address where the local variable/param will be stored on the stack
 */
 char *addressCompute(struct Symbol *s) {
@@ -116,10 +130,11 @@ char *addressCompute(struct Symbol *s) {
     if (address) {
         return address;
     }
+    else if (numSymbols == 0) {
+        addSymbolAddress(s,createAddressName(8),8,8);
+    }
     else {
-        int index = symAdds[numSymbols]->placeOnStack; 
-        int size = 8;
-                
+        addSymbolAddress(s,createAddressName(8+symAdds[numSymbols-1]->placeOnStack),8,8+symAdds[numSymbols-1]->placeOnStack);
     }
     return NULL;
 }
@@ -137,4 +152,12 @@ const char *symbol_codegen(struct Symbol *s) {
 
 void generateVariableLocations() {
 
+}
+
+void generateCode() {
+    for (int i = 0; i < numQuads; i++) {
+        if (quads[i]->symbol) {
+            symbol_codegen(quads[i]->symbol);
+        }
+    }
 }
