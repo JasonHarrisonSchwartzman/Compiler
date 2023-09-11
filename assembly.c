@@ -81,11 +81,15 @@ const char *label_name(int label) {
 struct SymbolAddress {
     struct Symbol *symbol;
     char *address;
+    unsigned long sequenceNum;
 } SymbolAddress;
 
 struct SymbolAddress **symAdds;
 int numSymbols = 0;
 
+/**
+ * Adds symbol address to SymbolAddress table
+*/
 void addSymbolAddress(struct Symbol *symbol, char *address){ 
     struct SymbolAddress *symAdd = calloc(1,sizeof(struct SymbolAddress));
     symAdd->symbol = symbol;
@@ -94,6 +98,10 @@ void addSymbolAddress(struct Symbol *symbol, char *address){
     symAdds[numSymbols++] = symAdd;
 }
 
+/**
+ * Looks up address given a symbol 
+ * returns address is symbol exsists or return null
+*/
 char *lookUpAddress(struct Symbol *symbol) {
     for (int i = 0; i < numSymbols; i++) {
         if (symAdds[i]->symbol == symbol) return symAdds[i]->address;
@@ -107,7 +115,13 @@ char *lookUpAddress(struct Symbol *symbol) {
 char *addressCompute(struct Symbol *s) {
     for (int i = 0; i < numQuads; i++) {
         if (quads[i]->symbol == s) {
-
+            char *address = lookUpAddress(s);
+            if (address) {
+                return address;
+            }
+            else {
+                
+            }
         }
     }
     return NULL;
