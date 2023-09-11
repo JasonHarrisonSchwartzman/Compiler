@@ -378,7 +378,7 @@ void createQuadArr(struct VarDecl *var) {
         if (var->expr){//value assigned
             if (!var->expr->expr) {
                 //single eval expression
-                addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),evalToArg(var->expr->eval),OP_ARRAY_CREATE,var->name));
+                addQuad(createQuad2(createArg(tempNameSize,VAL_ULONG,0),evalToArg(var->expr->eval),OP_ARRAY_CREATE,var->symbol));
                 return;
             }
             //multi eval expression
@@ -387,8 +387,8 @@ void createQuadArr(struct VarDecl *var) {
         else {//no value assigned
             tempNameValue = NULL;
         }
-        if (tempNameValue) addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_CREATE,var->name));
-        else addQuad(createQuad(createArg(tempNameSize,VAL_ULONG,0),NULL,OP_ARRAY_CREATE,var->name));
+        if (tempNameValue) addQuad(createQuad2(createArg(tempNameSize,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_CREATE,var->symbol));
+        else addQuad(createQuad2(createArg(tempNameSize,VAL_ULONG,0),NULL,OP_ARRAY_CREATE,var->symbol));
     }
     else {//assignment
         //TODO:
@@ -399,24 +399,24 @@ void createQuadArr(struct VarDecl *var) {
 
         if (!var->expr->expr) {//single eval expression (for value)
             if (!var->type->length->expr) {//single eval expression (for index)
-                addQuad(createQuad(evalToArg(var->type->length->eval),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->name));
+                addQuad(createQuad2(evalToArg(var->type->length->eval),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->symbol));
             }
             else {//multi eval expression (for index)
                 char *tempName = createQuadExpr(var->type->length);
-                addQuad(createQuad(createArg(tempName,VAL_ULONG,0),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->name));
+                addQuad(createQuad2(createArg(tempName,VAL_ULONG,0),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->symbol));
             }
         }
         else {//multi eval expression (for value)
             if (!var->type->length->expr) {//single eval expression (for index)
                 printf("multi single\n");
                 char *tempName = createQuadExpr(var->expr);
-                addQuad(createQuad(evalToArg(var->type->length->eval),createArg(tempName,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_INDEX,var->name));
+                addQuad(createQuad2(evalToArg(var->type->length->eval),createArg(tempName,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_INDEX,var->symbol));
             }
             else {//multi eval expression (for index)
                 printf("multi multi\n");
                 char *tempNameIndex = createQuadExpr(var->type->length);
                 char *tempNameValue = createQuadExpr(var->expr);
-                addQuad(createQuad(createArg(tempNameIndex,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_INDEX,var->name));
+                addQuad(createQuad2(createArg(tempNameIndex,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_INDEX,var->symbol));
             }
         }
     }
@@ -438,15 +438,15 @@ void createQuadVar(struct VarDecl *var) {
         return;
     }
     if (!e) {
-        addQuad(createQuad(createArg(NULL,getTypeQuad(var->type),0),NULL,OP_ASSIGN,var->name));
+        addQuad(createQuad2(createArg(NULL,getTypeQuad(var->type),0),NULL,OP_ASSIGN,var->symbol));
         return;
     }
     if (!e->expr) {
-        addQuad(createQuad(evalToArg(e->eval), NULL, OP_ASSIGN, var->name));
+        addQuad(createQuad2(evalToArg(e->eval), NULL, OP_ASSIGN, var->symbol));
         return;
     }
     char *tempName = createQuadExpr(var->expr);
-    addQuad(createQuad(createArg(tempName,getTypeQuad(var->type),0), NULL, OP_ASSIGN, var->name));
+    addQuad(createQuad2(createArg(tempName,getTypeQuad(var->type),0), NULL, OP_ASSIGN, var->symbol));
 }
 
 void printQuad();
@@ -607,7 +607,7 @@ void createQuadFunc(struct FuncDecl *func) {
     addQuad(createQuad(NULL,NULL,OP_LABEL,func->name));
     struct Params *params = func->params;
     while (params) {
-        addQuad(createQuad(createArg(params->var->name,getTypeQuad(params->var->type),0),NULL,OP_PARAM,NULL));
+        addQuad(createQuad2(createArg(params->var->name,getTypeQuad(params->var->type),0),NULL,OP_PARAM,params->var->symbol));
         params = params->next;
     }
     struct Statement *stmt = func->statements;
