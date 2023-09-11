@@ -76,12 +76,11 @@ const char *label_name(int label) {
     return result;
 }
 
-
-
 struct SymbolAddress {
     struct Symbol *symbol;
     char *address;
-    unsigned long sequenceNum;
+    int size;
+    int placeOnStack;
 } SymbolAddress;
 
 struct SymbolAddress **symAdds;
@@ -113,16 +112,14 @@ char *lookUpAddress(struct Symbol *symbol) {
  * Computes the address where the local variable/param will be stored on the stack
 */
 char *addressCompute(struct Symbol *s) {
-    for (int i = 0; i < numQuads; i++) {
-        if (quads[i]->symbol == s) {
-            char *address = lookUpAddress(s);
-            if (address) {
-                return address;
-            }
-            else {
+    char *address = lookUpAddress(s);
+    if (address) {
+        return address;
+    }
+    else {
+        int index = symAdds[numSymbols]->placeOnStack; 
+        int size = 8;
                 
-            }
-        }
     }
     return NULL;
 }
@@ -136,4 +133,8 @@ const char *symbol_codegen(struct Symbol *s) {
 
     }
     return NULL;
+}
+
+void generateVariableLocations() {
+
 }
