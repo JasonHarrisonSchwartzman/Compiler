@@ -94,7 +94,7 @@ void addSymbolAddress(struct Symbol *symbol, char *address){
     struct SymbolAddress *symAdd = calloc(1,sizeof(struct SymbolAddress));
     symAdd->symbol = symbol;
     symAdd->address = address;
-    symAdds = realloc(1,sizeof(struct SymbolAddress) * (numSymbols + 1));
+    symAdds = realloc(symAdds,sizeof(struct SymbolAddress) * (numSymbols + 1));
     symAdds[numSymbols++] = symAdd;
 }
 
