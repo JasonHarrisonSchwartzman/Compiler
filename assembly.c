@@ -145,13 +145,19 @@ char *addressCompute(struct Symbol *s) {
 const char *symbol_codegen(struct Symbol *s) {
     if (s->sym == SYMBOL_GLOBAL) return s->name;
     else {//LOCAL VARIABLES/PAREMETERS
-
+        addressCompute(s);
     }
     return NULL;
 }
 
 void generateVariableLocations() {
 
+}
+
+void printSymbolAddress() {
+    for (int i = 0; i < numSymbols; i++) {
+        printf("Name: %s | Location: %d\n",symAdds[i]->symbol->name,symAdds[i]->placeOnStack);
+    }
 }
 
 void generateCode() {
