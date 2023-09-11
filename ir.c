@@ -85,7 +85,6 @@ struct argument {
     char *name;
     enum val_t val_t;
     union value value;
-    struct Symbol *symbol;
 };
 
 //the quadruple
@@ -94,6 +93,7 @@ struct quad {
     struct argument *arg2;
     enum op operation;
     char *result;
+    struct Symbol *symbol;
 } quad;
 
 struct quad **quads;//array of quads
