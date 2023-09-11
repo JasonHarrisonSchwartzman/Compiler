@@ -85,6 +85,7 @@ struct argument {
     char *name;
     enum val_t val_t;
     union value value;
+    struct Symbol *symbol;
 };
 
 //the quadruple
