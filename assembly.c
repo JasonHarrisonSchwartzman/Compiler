@@ -76,6 +76,9 @@ const char *label_name(int label) {
     return result;
 }
 
+/**
+ * Table of Symbols and their address
+*/
 struct SymbolAddress {
     struct Symbol *symbol;
     char *address;
@@ -122,6 +125,11 @@ char *createAddressName(int num) {
     return result;
 }
 
+/**
+ * Calculates size of a given local variable 
+ * Either 8 * size (IF ARRAY)
+ * otherwise 8
+*/
 int calculateSize(struct quad *quad) {
     if (quad->operation == OP_ARRAY_CREATE) {
         return (int)getValue(quad->arg1->val_t,quad->arg1->value) * 8;
@@ -159,16 +167,18 @@ const char *symbol_codegen(struct quad *quad, struct Symbol *s) {
     return NULL;
 }
 
-void generateVariableLocations() {
-
-}
-
+/**
+ * Prints symbol address table
+*/
 void printSymbolAddress() {
     for (int i = 0; i < numSymbols; i++) {
         printf("Name: %s | Location: %d\n",symAdds[i]->symbol->name,symAdds[i]->placeOnStack);
     }
 }
 
+/**
+ * Generates code given IR
+*/
 void generateCode() {
     for (int i = 0; i < numQuads; i++) {
         if (quads[i]->symbol) {
