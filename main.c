@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 	printQuads();
 
 	
-
+	generateCode();
 
 	freeRules();
 	freeInstanceAndVarTokens();

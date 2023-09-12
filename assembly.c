@@ -8,7 +8,6 @@
 */
 
 //from ir.c
-
 extern struct quad **quads;
 extern int numQuads;
 
