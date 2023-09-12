@@ -122,19 +122,28 @@ char *createAddressName(int num) {
     return result;
 }
 
+int calculateSize(struct quad *quad) {
+    if (quad->operation == OP_ARRAY_CREATE) {
+        return (int)getValue(quad->arg1->val_t,quad->arg1->value) * 8;
+    }
+    else return 8;
+}
+
 /**
  * Computes the address where the local variable/param will be stored on the stack
 */
-char *addressCompute(struct Symbol *s) {
+char *addressCompute(struct quad *quad, struct Symbol *s) {
     char *address = lookUpAddress(s);
     if (address) {
         return address;
     }
-    else if (numSymbols == 0) {
-        addSymbolAddress(s,createAddressName(8),8,8);
+    int size = calculateSize(quad);
+    if (numSymbols == 0) {
+        addSymbolAddress(s,createAddressName(8),size,8);
     }
     else {
-        addSymbolAddress(s,createAddressName(8+symAdds[numSymbols-1]->placeOnStack),8,8+symAdds[numSymbols-1]->placeOnStack);
+        int placeOnStack = symAdds[numSymbols-1]->placeOnStack + symAdds[numSymbols-1]->size;
+        addSymbolAddress(s,createAddressName(placeOnStack),size,placeOnStack);
     }
     return NULL;
 }
@@ -142,10 +151,10 @@ char *addressCompute(struct Symbol *s) {
 /**
  * Returns the address computation for a given symbol 
 */
-const char *symbol_codegen(struct Symbol *s) {
+const char *symbol_codegen(struct quad *quad, struct Symbol *s) {
     if (s->sym == SYMBOL_GLOBAL) return s->name;
     else {//LOCAL VARIABLES/PAREMETERS
-        addressCompute(s);
+        addressCompute(quad,s);
     }
     return NULL;
 }
@@ -163,7 +172,7 @@ void printSymbolAddress() {
 void generateCode() {
     for (int i = 0; i < numQuads; i++) {
         if (quads[i]->symbol) {
-            symbol_codegen(quads[i]->symbol);
+            symbol_codegen(quads[i],quads[i]->symbol);
         }
     }
     printSymbolAddress();
