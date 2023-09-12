@@ -274,18 +274,19 @@ char *createQuadExpr(struct Expression *expr) {
 */
 void createQuadArr(struct VarDecl *var) {
     if (var->symbol->line == var->line) {//declaration of array
-        printf("declaration of array\n");
-        char *tempNameSize;
+        printf("declaration of array %s\n",var->name);
+        struct argument *tempSize;
         
         //size/index of array
-        if (var->type->length->expr) {
+        /*if (var->type->length->expr) {
             //multi eval expression
+            printf("multi eval\n");
             tempNameSize = createQuadExpr(var->type->length);
-        }
-        else {
-            //single eval expression
-            tempNameSize = addQuad(createQuad(evalToArg(var->type->length->eval),NULL,OP_ASSIGN,createName("t",temp)));
-        }
+        }*/
+        //else {
+        //single eval expression
+        tempSize = evalToArg(var->type->length->eval);
+        //}
 
         char *tempNameValue;
 
@@ -293,7 +294,7 @@ void createQuadArr(struct VarDecl *var) {
         if (var->expr){//value assigned
             if (!var->expr->expr) {
                 //single eval expression
-                addQuad(createQuad2(createArg(tempNameSize,VAL_ULONG,0),evalToArg(var->expr->eval),OP_ARRAY_CREATE,var->symbol));
+                addQuad(createQuad2(tempSize,evalToArg(var->expr->eval),OP_ARRAY_CREATE,var->symbol));
                 return;
             }
             //multi eval expression
@@ -302,16 +303,10 @@ void createQuadArr(struct VarDecl *var) {
         else {//no value assigned
             tempNameValue = NULL;
         }
-        if (tempNameValue) addQuad(createQuad2(createArg(tempNameSize,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_CREATE,var->symbol));
-        else addQuad(createQuad2(createArg(tempNameSize,VAL_ULONG,0),NULL,OP_ARRAY_CREATE,var->symbol));
+        if (tempNameValue) addQuad(createQuad2(tempSize,createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_CREATE,var->symbol));
+        else addQuad(createQuad2(tempSize,NULL,OP_ARRAY_CREATE,var->symbol));
     }
     else {//assignment
-        //TODO:
-
-
-
-
-
         if (!var->expr->expr) {//single eval expression (for value)
             if (!var->type->length->expr) {//single eval expression (for index)
                 addQuad(createQuad2(evalToArg(var->type->length->eval),evalToArg(var->expr->eval),OP_ARRAY_INDEX,var->symbol));
@@ -823,6 +818,7 @@ void removeQuad(int index) {
 void constantFolding() {
     for (int i = 0; i < numQuads - 1; i++) {
         if (!quads[i]->arg1 || !quads[i]->arg2) continue;
+        if (quads[i]->operation == OP_ARRAY_CREATE) continue;
         char *name1 = quads[i]->arg1->name;
         char *name2 = quads[i]->arg2->name;
         if (!name1 && !name2) {
