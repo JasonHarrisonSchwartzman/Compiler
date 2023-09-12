@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ir.c"
 #include "syntaxtree.h"
+#include "ir.h"
 
 /**
  * This file converts the Intermediate Representation into assembly language.
 */
 
 //from ir.c
+
 extern struct quad **quads;
 extern int numQuads;
 
@@ -20,13 +21,13 @@ struct scratch_register {
 
 
 struct scratch_register registers[] = {
-    {"%rbx",0},
-    {"%r10",0},
-    {"%r11",0},
-    {"%r12",0},
-    {"%r13",0},
-    {"%r14",0},
-    {"%r15",0},
+    {"%%rbx",0},
+    {"%%r10",0},
+    {"%%r11",0},
+    {"%%r12",0},
+    {"%%r13",0},
+    {"%%r14",0},
+    {"%%r15",0},
 };
 int numRegisters = 6;
 

@@ -4,6 +4,7 @@
 #include "parser.c"
 #include "semantics.c"
 #include "ir.c"
+#include "assembly.c"
 #include <stdio.h>
 
 /**
@@ -47,6 +48,8 @@ int main(int argc, char *argv[]) {
 	printf("IR finished\n");
 	optimize();
 	printQuads();
+
+	
 
 
 	freeRules();

@@ -5,10 +5,10 @@ EXE=jcc
 jcc: obj/main.o obj/parser.o obj/parserinit.o obj/scanner.o obj/dfa.o obj/semantics.o obj/ir.o obj/assembly.o
 	$(CC) $(CFLAGS) -o $(EXE) obj/main.o -g
 
-obj/main.o: main.c parser.c parserinit.c scanner.c semantics.c dfa.c ir.c token.h
+obj/main.o: main.c parser.c parserinit.c scanner.c semantics.c dfa.c ir.c assembly.c token.h
 	$(CC) $(CFLAGS) -c main.c -o obj/main.o
 
-obj/assembly.o: assembly.c ir.c syntaxtree.h
+obj/assembly.o: assembly.c ir.c
 	$(CC) $(CFLAGS) -c assembly.c -o obj/assembly.o
 
 obj/ir.o: ir.c syntaxtree.h
