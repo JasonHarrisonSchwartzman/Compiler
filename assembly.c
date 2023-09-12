@@ -166,4 +166,5 @@ void generateCode() {
             symbol_codegen(quads[i]->symbol);
         }
     }
+    printSymbolAddress();
 }
