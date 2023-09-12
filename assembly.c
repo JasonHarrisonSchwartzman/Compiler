@@ -184,6 +184,11 @@ void generateCode() {
         if (quads[i]->symbol) {
             symbol_codegen(quads[i],quads[i]->symbol);
         }
+        if (quads[i]->operation == OP_LABEL && quads[i]->symbol) {
+            printSymbolAddress();
+            symAdds = realloc(symAdds, 0);
+            numSymbols = 0;
+        }
     }
     printSymbolAddress();
 }

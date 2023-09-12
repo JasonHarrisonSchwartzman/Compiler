@@ -514,7 +514,7 @@ void createQuadStatements(struct Statement *stmt) {
  * creates quad for a function
 */
 void createQuadFunc(struct FuncDecl *func) {
-    addQuad(createQuad(NULL,NULL,OP_LABEL,func->name));
+    addQuad(createQuad2(NULL,NULL,OP_LABEL,func->symbol));
     struct Params *params = func->params;
     while (params) {
         addQuad(createQuad2(createArg(params->var->name,getTypeQuad(params->var->type),0),NULL,OP_PARAM,params->var->symbol));
