@@ -181,7 +181,7 @@ void printSymbolAddress() {
 */
 void generateCode() {
     for (int i = 0; i < numQuads; i++) {
-        if (quads[i]->symbol) {
+        if (quads[i]->symbol) {//symbol address (local variable/parameter)
             symbol_codegen(quads[i],quads[i]->symbol);
         }
         else if (quads[i]->operation == OP_LABEL) {
