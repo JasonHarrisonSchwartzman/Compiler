@@ -190,6 +190,42 @@ void printSymbolAddress() {
     }
 }
 
+void expr_codegen(struct quad *quad) {
+    switch (quad->operation) {
+        case OP_ADD:
+
+        case OP_SUB:
+
+        case OP_MULT:
+
+        case OP_DIV:
+
+        case OP_MOD:
+
+        case OP_BITAND:
+
+        case OP_BITOR:
+
+        case OP_BITXOR:
+
+        case OP_AND:
+
+        case OP_OR:
+
+        case OP_NEQ:
+
+        case OP_GEQ:
+
+        case OP_LEQ:
+
+        case OP_GREAT:
+
+        case OP_LESS:
+
+        case OP_EQ:
+    }
+}
+
 /**
  * Generates code given IR
 */
@@ -210,8 +246,12 @@ void generateCode() {
         }
         else if (quads[i]->operation == OP_CALL) {
             char *call = "CALL ";
-            strcat(call,quads[i]->arg1->name);
+            //strcat(call,quads[i]->arg1->name);
             addCode(call);
+        }
+        else if (quads[i]->operation == OP_RET) {
+            
+            addCode("RET");
         }
     }
     printSymbolAddress();
