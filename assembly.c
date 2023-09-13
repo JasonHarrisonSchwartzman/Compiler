@@ -19,14 +19,14 @@ struct scratch_register {
 } scratch_register;
 
 char **code;
-int numLines = 0;
+int numCodeLines = 0;
 
 void addCode(char *str) {
     code = realloc(code, sizeof(char*) * (numLines + 1));
     code[numLines++] = str;
 }
 
-printCode() {
+void printCode() {
     for (int i = 0; i < numLines; i++) {
         printf("%s\n",code[i]);
     }
@@ -176,7 +176,7 @@ char *addressCompute(struct quad *quad, struct Symbol *s) {
 const char *symbol_codegen(struct quad *quad, struct Symbol *s) {
     if (s->sym == SYMBOL_GLOBAL) return s->name;
     else {//LOCAL VARIABLES/PAREMETERS
-        addressCompute(quad,s);
+        return addressCompute(quad,s);
     }
     return NULL;
 }
@@ -205,8 +205,13 @@ void generateCode() {
                 numSymbols = 0;
             }
             else {
-                quads[i]->result;
+                //quads[i]->result;
             }
+        }
+        else if (quads[i]->operation == OP_CALL) {
+            char *call = "CALL ";
+            strcat(call,quads[i]->arg1->name);
+            addCode(call);
         }
     }
     printSymbolAddress();
