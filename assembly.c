@@ -223,6 +223,9 @@ void expr_codegen(struct quad *quad) {
         case OP_LESS:
 
         case OP_EQ:
+
+        default:
+        return;
     }
 }
 
@@ -250,7 +253,7 @@ void generateCode() {
             addCode(call);
         }
         else if (quads[i]->operation == OP_RET) {
-            
+
             addCode("RET");
         }
     }
