@@ -18,6 +18,20 @@ struct scratch_register {
     int inUse;
 } scratch_register;
 
+char **code;
+int numLines = 0;
+
+void addCode(char *str) {
+    code = realloc(code, sizeof(char*) * (numLines + 1));
+    code[numLines++] = str;
+}
+
+printCode() {
+    for (int i = 0; i < numLines; i++) {
+        printf("%s\n",code[i]);
+    }
+}
+
 
 struct scratch_register registers[] = {
     {"%%rbx",0},
