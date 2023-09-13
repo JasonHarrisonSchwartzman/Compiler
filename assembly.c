@@ -34,22 +34,22 @@ void printCode() {
 
 
 struct scratch_register registers[] = {
-    {"%%rax",0},//0
-    {"%%rbx",0},//1
-    {"%%rcx",0},//2
-    {"%%rdx",0},//3
-    {"%%rsi",0},//4
-    {"%%rdi",0},//5
-    {"%%rbp",0},//6
-    {"%%rsp",0},//7
-    {"%%r8",0},//8
-    {"%%r9",0},//9
-    {"%%r10",0},//10
-    {"%%r11",0},//11
-    {"%%r12",0},//12
-    {"%%r13",0},//13
-    {"%%r14",0},//14
-    {"%%r15",0},//15
+    {"%rax",0},//0
+    {"%rbx",0},//1
+    {"%rcx",0},//2
+    {"%rdx",0},//3
+    {"%rsi",0},//4
+    {"%rdi",0},//5
+    {"%rbp",0},//6
+    {"%rsp",0},//7
+    {"%r8",0},//8
+    {"%r9",0},//9
+    {"%r10",0},//10
+    {"%r11",0},//11
+    {"%r12",0},//12
+    {"%r13",0},//13
+    {"%r14",0},//14
+    {"%r15",0},//15
 };
 int numRegisters = 16;
 
@@ -218,12 +218,34 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
     }
     if (arg->name) {
         for (int i = quad->numQuad; i >= 0; i--) {
-            if (strcmp(arg->name,quads[i]->symbol->name) == 0) return symbol_codegen(quads[i],quads[i]->symbol);//variable
+            if (quads[i]->symbol && strcmp(arg->name,quads[i]->symbol->name) == 0) return symbol_codegen(quads[i],quads[i]->symbol);//variable
             if (strcmp(arg->name,quads[i]->result) == 0) return registers[quads[i]->reg].name;//value on reg
         }
     }
-    printf("unable to find symbol of arg %s\n",arg->name);
+    printf("unable to find symbol of arg name%s\n",arg->name);
     return NULL;
+}
+
+char *concatenateStrings(char *str1, char *str2) {  // Removed 'const' keyword
+    // Calculate the lengths of the input strings
+    size_t len1 = strlen(str1);
+    size_t len2 = strlen(str2);
+
+    // Allocate memory for the new concatenated string
+    char *result = (char *)malloc(len1 + len2 + 1);  // +1 for the null terminator
+
+    if (result == NULL) {
+        // Memory allocation failed
+        return NULL;
+    }
+
+    // Copy the characters from the first string to the new string
+    strcpy(result, str1);
+
+    // Append the characters from the second string
+    strcat(result, str2);
+
+    return result;
 }
 
 
@@ -232,32 +254,33 @@ void expr_codegen(struct quad *quad) {
     switch (quad->operation) {
         case OP_ADD:
             //OP: ADD | Arg1: 9 | Arg2: x | Result: t0
-
-        case OP_SUB:
+            break;
+        case OP_SUB: {
             //OP: SUB | Arg1: 9 | Arg2: x | Result: t0
             //sub eax, ebx  ; Subtract the value in ebx from eax, and store the result in eax
-            //scratch_alloc scratch_free scratch_name
-            /*printf("test\n");
-            scratch_alloc();
-            printf("test\n");
-            char code1[50] = "MOVQ ";
-            strcat(code1,symbolToOperand(quad,quad->arg1));
-            printf("test\n");
+            char *code1 = concatenateStrings("MOVQ ",symbolToOperand(quad,quad->arg1));
             int reg1 = scratch_alloc();
-            strcat(code1,", ");
-            strcat(code1,scratch_name(reg1));
+            code1 = concatenateStrings(code1,", ");
+            code1 = concatenateStrings(code1,scratch_name(reg1));
             addCode(code1);
-            char sub[50] = "SUBQ ";
-            addCode(sub);*/
-            
+            char *code2 = concatenateStrings("MOVQ ",symbolToOperand(quad,quad->arg2));
+            int reg2 = scratch_alloc();
+            code2 = concatenateStrings(code2,", ");
+            code2 = concatenateStrings(code2,scratch_name(reg2));
+            addCode(code2);
+            char *sub = concatenateStrings("SUBQ ",scratch_name(reg1));
+            sub = concatenateStrings(sub, ", ");
+            sub = concatenateStrings(sub,scratch_name(reg2));
+            addCode(sub);
+            break; }
         case OP_MULT:
-
+            break;
         case OP_DIV:
-
+            break;
         case OP_MOD:
-
+            break;
         case OP_BITAND:
-
+            break;
         case OP_BITOR:
 
         case OP_BITXOR:
@@ -320,12 +343,13 @@ void generateCode() {
             addCode(call);
         }
         else if (quads[i]->operation == OP_SUB) {
-            //expr_codegen(quads[i]);
+            expr_codegen(quads[i]);
         }
         else if (quads[i]->operation == OP_RET) {
             addCode("RET");
         }
     }
     printSymbolAddress();
+    printf("--------------------------\n");
     printCode();
 }
