@@ -31,10 +31,10 @@ char *createTempName(int num) {
 }
 
 char *createLabelName(int num) {
-    int totalLength = snprintf(NULL, 0, "l%d", num) + 1;
+    int totalLength = snprintf(NULL, 0, ".L%d", num) + 1;
     char *result = (char *)malloc(totalLength);
     if (result != NULL) {
-        snprintf(result, totalLength, "l%d", num);
+        snprintf(result, totalLength, ".L%d", num);
     }
     label++;
     return result;
