@@ -185,13 +185,13 @@ void generateCode() {
             symbol_codegen(quads[i],quads[i]->symbol);
         }
         else if (quads[i]->operation == OP_LABEL) {
-            if (quads[i]->symbol) {
+            if (quads[i]->symbol) {//new function
                 printSymbolAddress();
                 symAdds = realloc(symAdds, 0);
                 numSymbols = 0;
             }
             else {
-                
+                quads[i]->result;
             }
         }
     }
