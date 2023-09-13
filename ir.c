@@ -390,8 +390,10 @@ void createQuadStatements(struct Statement *stmt);
 void createQuadConditional(struct CondStatement *cond) {
     char *tempName = createQuadExpr(cond->expr);
     char *labelName = createName("l",label);
+    char *endLabel = createName("l",label);
     addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIFNOT,labelName));
     createQuadStatements(cond->stmts);
+    addQuad(createQuad(createArg("end_conditional",VAL_LONG,0),NULL,OP_JUMP,endLabel));
     cond = cond->next;
     while (cond && cond->stmt != ELSE) {//elseif
         addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
@@ -400,6 +402,7 @@ void createQuadConditional(struct CondStatement *cond) {
         labelName = createName("l",label);
         addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIFNOT,labelName));
         createQuadStatements(cond->stmts);
+        addQuad(createQuad(createArg("end_conditional",VAL_LONG,0),NULL,OP_JUMP,endLabel));
         cond = cond->next;
     }
     //else
@@ -408,6 +411,7 @@ void createQuadConditional(struct CondStatement *cond) {
 
         createQuadStatements(cond->stmts);
     }
+    addQuad(createQuad(createArg("end_conditional",VAL_LONG,0),NULL,OP_LABEL,endLabel));
 }
 
 void createQuadLoop(struct Loop *loop) {
