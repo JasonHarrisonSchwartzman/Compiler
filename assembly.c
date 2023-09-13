@@ -22,12 +22,12 @@ char **code;
 int numCodeLines = 0;
 
 void addCode(char *str) {
-    code = realloc(code, sizeof(char*) * (numLines + 1));
-    code[numLines++] = str;
+    code = realloc(code, sizeof(char*) * (numCodeLines + 1));
+    code[numCodeLines++] = str;
 }
 
 void printCode() {
-    for (int i = 0; i < numLines; i++) {
+    for (int i = 0; i < numCodeLines; i++) {
         printf("%s\n",code[i]);
     }
 }
@@ -51,7 +51,7 @@ struct scratch_register registers[] = {
     {"%%r14",0},//14
     {"%%r15",0},//15
 };
-int numRegisters = 6;
+int numRegisters = 16;
 
 /**
  * Finds unused register and makes it in use
@@ -76,7 +76,7 @@ void scratch_free(int reg) {
 /**
  * Returns names of register
 */
-const char *scratch_name(int reg) {
+char *scratch_name(int reg) {
     return registers[reg].name;
 }
 
@@ -90,7 +90,7 @@ int label_create() {
 /**
  * Returns lable name .LX where X is the label number
 */
-const char *label_name(int label) {
+char *label_name(int label) {
     int totalLength = snprintf(NULL, 0, ".L%d", labelName) + 1;
     char *result = (char *)malloc(totalLength);
     if (result != NULL) {
@@ -179,10 +179,12 @@ char *addressCompute(struct quad *quad, struct Symbol *s) {
     return NULL;
 }
 
+
+
 /**
  * Returns the address computation for a given symbol 
 */
-const char *symbol_codegen(struct quad *quad, struct Symbol *s) {
+char *symbol_codegen(struct quad *quad, struct Symbol *s) {
     if (s->sym == SYMBOL_GLOBAL) return s->name;
     else {//LOCAL VARIABLES/PAREMETERS
         return addressCompute(quad,s);
@@ -199,12 +201,55 @@ void printSymbolAddress() {
     }
 }
 
+/**
+ * Creates an operand for the given argument 
+ * Can be an immediate value $X
+ * or a value on a register %rX
+*/
+char *symbolToOperand(struct quad *quad, struct argument *arg) {
+    if (!arg->name) {
+        long num = getValue(arg->val_t,arg->value);
+        int totalLength = snprintf(NULL, 0, "$%ld", num) + 1;
+        char *result = (char *)malloc(totalLength);
+        if (result != NULL) {
+            snprintf(result, totalLength, "$%ld", num);
+        }
+        return result;//immediate value
+    }
+    if (arg->name) {
+        for (int i = quad->numQuad; i >= 0; i--) {
+            if (strcmp(arg->name,quads[i]->symbol->name) == 0) return symbol_codegen(quads[i],quads[i]->symbol);//variable
+            if (strcmp(arg->name,quads[i]->result) == 0) return registers[quads[i]->reg].name;//value on reg
+        }
+    }
+    printf("unable to find symbol of arg %s\n",arg->name);
+    return NULL;
+}
+
+
+
 void expr_codegen(struct quad *quad) {
     switch (quad->operation) {
         case OP_ADD:
+            //OP: ADD | Arg1: 9 | Arg2: x | Result: t0
 
         case OP_SUB:
-
+            //OP: SUB | Arg1: 9 | Arg2: x | Result: t0
+            //sub eax, ebx  ; Subtract the value in ebx from eax, and store the result in eax
+            //scratch_alloc scratch_free scratch_name
+            /*printf("test\n");
+            scratch_alloc();
+            printf("test\n");
+            char code1[50] = "MOVQ ";
+            strcat(code1,symbolToOperand(quad,quad->arg1));
+            printf("test\n");
+            int reg1 = scratch_alloc();
+            strcat(code1,", ");
+            strcat(code1,scratch_name(reg1));
+            addCode(code1);
+            char sub[50] = "SUBQ ";
+            addCode(sub);*/
+            
         case OP_MULT:
 
         case OP_DIV:
@@ -233,6 +278,16 @@ void expr_codegen(struct quad *quad) {
 
         case OP_EQ:
 
+
+
+        case OP_REF:
+
+        case OP_DEREF:
+
+        case OP_ARRAY_INDEX:
+
+        case OP_ASSIGN:
+
         default:
         return;
     }
@@ -243,6 +298,7 @@ void expr_codegen(struct quad *quad) {
 */
 void generateCode() {
     for (int i = 0; i < numQuads; i++) {
+        quads[i]->numQuad = i;
         if (quads[i]->symbol) {//symbol address (local variable/parameter)
             symbol_codegen(quads[i],quads[i]->symbol);
         }
@@ -257,12 +313,16 @@ void generateCode() {
             }
         }
         else if (quads[i]->operation == OP_CALL) {
-            char *call = "CALL ";
-            //strcat(call,quads[i]->arg1->name);
+            char call[50] = "CALL ";
+            const char *name = malloc(sizeof(char*));
+            name = quads[i]->arg1->name;
+            strcat(call,name);
             addCode(call);
         }
+        else if (quads[i]->operation == OP_SUB) {
+            //expr_codegen(quads[i]);
+        }
         else if (quads[i]->operation == OP_RET) {
-
             addCode("RET");
         }
     }
