@@ -63,6 +63,7 @@ int scratch_alloc() {
             return i;
         }
     }
+    printf("ERROR NO REGISTER AVAILABLE\n");
     return -1;
 }
 
@@ -218,8 +219,12 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
     }
     if (arg->name) {
         for (int i = quad->numQuad; i >= 0; i--) {
-            if (quads[i]->symbol && strcmp(arg->name,quads[i]->symbol->name) == 0) return symbol_codegen(quads[i],quads[i]->symbol);//variable
-            if (strcmp(arg->name,quads[i]->result) == 0) return registers[quads[i]->reg].name;//value on reg
+            if (quads[i]->symbol && strcmp(arg->name,quads[i]->symbol->name) == 0) {
+                return symbol_codegen(quads[i],quads[i]->symbol);//variable
+            }
+            if (quads[i]->result && strcmp(arg->name,quads[i]->result) == 0) {
+                return registers[quads[i]->reg].name;//value on reg
+            }
         }
     }
     printf("unable to find symbol of arg name%s\n",arg->name);
@@ -236,30 +241,40 @@ char *concatenateStrings(char *str1, char *str2) {
     return result;
 }
 
+int move(struct quad *quad, struct argument *arg) {
+    char *code1 = concatenateStrings("MOVQ ",symbolToOperand(quad,arg));
+    int reg1 = scratch_alloc();
+    code1 = concatenateStrings(code1,", ");
+    code1 = concatenateStrings(code1,scratch_name(reg1));
+    addCode(code1);
+    return reg1;
+}
+
 
 
 void expr_codegen(struct quad *quad) {
     switch (quad->operation) {
-        case OP_ADD:
-            //OP: ADD | Arg1: 9 | Arg2: x | Result: t0
-            break;
+        case OP_ADD:{
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *add = concatenateStrings("ADDQ ",scratch_name(reg1));
+            add = concatenateStrings(add, ", ");
+            add = concatenateStrings(add,scratch_name(reg2));
+            addCode(add);
+            scratch_free(reg1);
+            quad->reg = reg2;
+            break; }
         case OP_SUB: {
             //OP: SUB | Arg1: 9 | Arg2: x | Result: t0
             //sub eax, ebx  ; Subtract the value in ebx from eax, and store the result in eax
-            char *code1 = concatenateStrings("MOVQ ",symbolToOperand(quad,quad->arg1));
-            int reg1 = scratch_alloc();
-            code1 = concatenateStrings(code1,", ");
-            code1 = concatenateStrings(code1,scratch_name(reg1));
-            addCode(code1);
-            char *code2 = concatenateStrings("MOVQ ",symbolToOperand(quad,quad->arg2));
-            int reg2 = scratch_alloc();
-            code2 = concatenateStrings(code2,", ");
-            code2 = concatenateStrings(code2,scratch_name(reg2));
-            addCode(code2);
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
             char *sub = concatenateStrings("SUBQ ",scratch_name(reg1));
             sub = concatenateStrings(sub, ", ");
             sub = concatenateStrings(sub,scratch_name(reg2));
             addCode(sub);
+            scratch_free(reg1);
+            quad->reg = reg2;
             break; }
         case OP_MULT:
             break;
@@ -313,7 +328,7 @@ void generateCode() {
         if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
             symbol_codegen(quads[i],quads[i]->symbol);
         }
-        else if (quads[i]->operation == OP_LABEL) {
+        if (quads[i]->operation == OP_LABEL) {
             if (quads[i]->symbol) {//new function
                 printSymbolAddress();
                 symAdds = realloc(symAdds, 0);
@@ -334,14 +349,15 @@ void generateCode() {
                 //quads[i]->result;
             }
         }
+        else if (quads[i]->operation == OP_ASSIGN) {//make sure to do someting different with globals
+            printf("ASSIGN\n");
+            quads[i]->reg = move(quads[i],quads[i]->arg1);
+        }
         else if (quads[i]->operation == OP_CALL) {
-            char call[50] = "CALL ";
-            const char *name = malloc(sizeof(char*));
-            name = quads[i]->arg1->name;
-            strcat(call,name);
+            char *call = concatenateStrings("CALL ",quads[i]->arg1->name);
             addCode(call);
         }
-        else if (quads[i]->operation == OP_SUB) {
+        else if (quads[i]->operation == OP_SUB || quads[i]->operation == OP_ADD) {
             expr_codegen(quads[i]);
         }
         else if (quads[i]->operation == OP_RET) {

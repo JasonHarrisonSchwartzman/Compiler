@@ -717,7 +717,10 @@ void printQuad(struct quad *quad) {
 */
 void printQuads() {
     printf("----------QUADS----------\n");
-    for (int i = 0; i < numQuads; i++) printQuad(quads[i]);
+    for (int i = 0; i < numQuads; i++) {
+        printf("Quad: %d | ",i);
+        printQuad(quads[i]);
+    }
 }
 
 /**
