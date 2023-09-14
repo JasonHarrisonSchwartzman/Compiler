@@ -115,7 +115,7 @@ int numSymbols = 0;
 /**
  * Adds symbol address to SymbolAddress table
 */
-void addSymbolAddress(struct Symbol *symbol, char *address, int size, int placeOnStack){ 
+char *addSymbolAddress(struct Symbol *symbol, char *address, int size, int placeOnStack){ 
     struct SymbolAddress *symAdd = calloc(1,sizeof(struct SymbolAddress));
     symAdd->symbol = symbol;
     symAdd->address = address;
@@ -123,6 +123,7 @@ void addSymbolAddress(struct Symbol *symbol, char *address, int size, int placeO
     symAdd->placeOnStack = placeOnStack;
     symAdds = realloc(symAdds,sizeof(struct SymbolAddress) * (numSymbols + 1));
     symAdds[numSymbols++] = symAdd;
+    return address;
 }
 
 /**
@@ -170,11 +171,11 @@ char *addressCompute(struct quad *quad, struct Symbol *s) {
     }
     int size = calculateSize(quad);
     if (numSymbols == 0) {
-        addSymbolAddress(s,createAddressName(8),size,8);
+        return addSymbolAddress(s,createAddressName(8),size,8);
     }
     else {
         int placeOnStack = symAdds[numSymbols-1]->placeOnStack + symAdds[numSymbols-1]->size;
-        addSymbolAddress(s,createAddressName(placeOnStack),size,placeOnStack);
+        return addSymbolAddress(s,createAddressName(placeOnStack),size,placeOnStack);
     }
     return NULL;
 }
@@ -189,7 +190,6 @@ char *symbol_codegen(struct quad *quad, struct Symbol *s) {
     else {//LOCAL VARIABLES/PAREMETERS
         return addressCompute(quad,s);
     }
-    return NULL;
 }
 
 /**
@@ -322,7 +322,7 @@ void expr_codegen(struct quad *quad) {
 void generateCode() {
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
-        if (quads[i]->symbol) {//symbol address (local variable/parameter)
+        if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
             symbol_codegen(quads[i],quads[i]->symbol);
         }
         else if (quads[i]->operation == OP_LABEL) {
@@ -330,6 +330,19 @@ void generateCode() {
                 printSymbolAddress();
                 symAdds = realloc(symAdds, 0);
                 numSymbols = 0;
+                char *func = concatenateStrings(quads[i]->result,":");
+                addCode(func);
+                printf("added func\n");
+                i++;
+                while (quads[i]->operation == OP_PARAM) {
+                    printf("first param\n");
+                    char *push = concatenateStrings("PUSHQ ",symbol_codegen(quads[i],quads[i]->symbol));
+                    printf("test\n");
+                    addCode(push);
+                    i++;
+                }
+                printf("done pushing params\n");
+                i--;
             }
             else {
                 //quads[i]->result;
