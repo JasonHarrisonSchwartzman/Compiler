@@ -219,11 +219,11 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
     }
     if (arg->name) {
         for (int i = quad->numQuad; i >= 0; i--) {
-            if (quads[i]->symbol && strcmp(arg->name,quads[i]->symbol->name) == 0) {
-                return symbol_codegen(quads[i],quads[i]->symbol);//variable
-            }
             if (quads[i]->result && strcmp(arg->name,quads[i]->result) == 0) {
                 return registers[quads[i]->reg].name;//value on reg
+            }
+            if (quads[i]->symbol && strcmp(arg->name,quads[i]->symbol->name) == 0) {
+                return symbol_codegen(quads[i],quads[i]->symbol);//variable
             }
         }
     }
@@ -346,7 +346,8 @@ void generateCode() {
                 i--;
             }
             else {
-                //quads[i]->result;
+                char *label = concatenateStrings(quads[i]->result,":");
+                addCode(label);
             }
         }
         else if (quads[i]->operation == OP_ASSIGN) {//make sure to do someting different with globals
@@ -361,7 +362,15 @@ void generateCode() {
             expr_codegen(quads[i]);
         }
         else if (quads[i]->operation == OP_RET) {
+            char *ret = concatenateStrings("MOVQ ",symbolToOperand(quads[i],quads[i]->arg1));
+            ret = concatenateStrings(ret,", ");
+            ret = concatenateStrings(ret,"%rax");
+            addCode(ret);
             addCode("RET");
+        }
+        else if (quads[i]->operation == OP_JUMP) {
+            char *jump = concatenateStrings("JMP ",quads[i]->result);
+            addCode(jump);
         }
     }
     printSymbolAddress();
