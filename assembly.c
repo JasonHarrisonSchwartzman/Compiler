@@ -226,25 +226,13 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
     return NULL;
 }
 
-char *concatenateStrings(char *str1, char *str2) {  // Removed 'const' keyword
-    // Calculate the lengths of the input strings
+char *concatenateStrings(char *str1, char *str2) {
     size_t len1 = strlen(str1);
     size_t len2 = strlen(str2);
-
-    // Allocate memory for the new concatenated string
-    char *result = (char *)malloc(len1 + len2 + 1);  // +1 for the null terminator
-
-    if (result == NULL) {
-        // Memory allocation failed
-        return NULL;
-    }
-
-    // Copy the characters from the first string to the new string
+    char *result = (char *)malloc(len1 + len2 + 1);
+    if (result == NULL) return NULL;
     strcpy(result, str1);
-
-    // Append the characters from the second string
     strcat(result, str2);
-
     return result;
 }
 
@@ -282,35 +270,35 @@ void expr_codegen(struct quad *quad) {
         case OP_BITAND:
             break;
         case OP_BITOR:
-
+            break;
         case OP_BITXOR:
-
+            break;
         case OP_AND:
-
+            break;
         case OP_OR:
-
+            break;
         case OP_NEQ:
-
+            break;
         case OP_GEQ:
-
+            break;
         case OP_LEQ:
-
+            break;
         case OP_GREAT:
-
+            break;
         case OP_LESS:
-
+            break;
         case OP_EQ:
-
+            break;
 
 
         case OP_REF:
-
+            break;
         case OP_DEREF:
-
+            break;
         case OP_ARRAY_INDEX:
-
+            break;
         case OP_ASSIGN:
-
+            break;
         default:
         return;
     }
@@ -335,13 +323,11 @@ void generateCode() {
                 printf("added func\n");
                 i++;
                 while (quads[i]->operation == OP_PARAM) {
-                    printf("first param\n");
                     char *push = concatenateStrings("PUSHQ ",symbol_codegen(quads[i],quads[i]->symbol));
-                    printf("test\n");
                     addCode(push);
                     i++;
                 }
-                printf("done pushing params\n");
+                printf("done adding params\n");
                 i--;
             }
             else {
