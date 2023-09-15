@@ -312,12 +312,38 @@ void expr_codegen(struct quad *quad) {
             break;
         case OP_ARRAY_INDEX:
             break;
-        case OP_ASSIGN:
-            break;
         default:
         return;
     }
 }
+
+void addParamsToStack(struct quad *quad) {
+/*movq	%rdi, -8(%rbp)
+	movq	%rsi, -16(%rbp)
+	movq	%rdx, -24(%rbp)
+	movq	%rcx, -32(%rbp)
+	movq	%r8, -40(%rbp)
+	movq	%r9, -48(%rbp)*/
+    switch (getValue(quad->arg1->val_t,quad->arg1->value)) {
+        case 6:
+
+        case 5:
+
+        case 4:
+
+        case 3:
+
+        case 2:
+
+        case 1:
+
+        case 0:return;
+        default:
+        return;
+    }
+}
+
+
 
 /**
  * Generates code given IR
@@ -335,6 +361,10 @@ void generateCode() {
                 numSymbols = 0;
                 char *func = concatenateStrings(quads[i]->result,":");
                 addCode(func);
+
+                addCode("PUSHQ %rbp");
+                addCode("MOVQ %rsp, %rbp");
+
                 printf("added func\n");
                 i++;
                 while (quads[i]->operation == OP_PARAM) {
