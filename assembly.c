@@ -74,6 +74,13 @@ void scratch_free(int reg) {
     registers[reg].inUse = 0;
 }
 
+int regNameToNum(char *name) {
+    for (int i = 0; i < numRegisters; i++) {
+        if (strcmp(registers[i].name,name) == 0) return i;
+    }
+    return -1;
+}
+
 /**
  * Returns names of register
 */
@@ -242,10 +249,12 @@ char *concatenateStrings(char *str1, char *str2) {
 }
 
 int move(struct quad *quad, struct argument *arg) {
-    char *code1 = concatenateStrings("MOVQ ",symbolToOperand(quad,arg));
+    char *operand = symbolToOperand(quad,arg);
+    char *code1 = concatenateStrings("MOVQ ",operand);
     int reg1 = scratch_alloc();
     code1 = concatenateStrings(code1,", ");
     code1 = concatenateStrings(code1,scratch_name(reg1));
+    if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand));
     addCode(code1);
     return reg1;
 }
@@ -343,7 +352,13 @@ void addParamsToStack(struct quad *quad) {
     }
 }
 
-
+void printUsedRegisters() {
+    for (int i = 0; i < numRegisters; i++) {
+        if (registers[i].inUse) {
+            printf("%s\n",registers[i].name);
+        }
+    }
+}
 
 /**
  * Generates code given IR
@@ -392,9 +407,12 @@ void generateCode() {
             expr_codegen(quads[i]);
         }
         else if (quads[i]->operation == OP_RET) {
-            char *ret = concatenateStrings("MOVQ ",symbolToOperand(quads[i],quads[i]->arg1));
+            char *operand = symbolToOperand(quads[i],quads[i]->arg1);
+            char *ret = concatenateStrings("MOVQ ",operand);
             ret = concatenateStrings(ret,", ");
             ret = concatenateStrings(ret,"%rax");
+            registers[0].inUse = 1;
+            if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand));
             addCode(ret);
             addCode("RET");
         }
@@ -406,4 +424,5 @@ void generateCode() {
     printSymbolAddress();
     printf("--------------------------\n");
     printCode();
+    printUsedRegisters();
 }
