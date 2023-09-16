@@ -21,6 +21,7 @@ typedef enum op {
     OP_BITXOR,
     OP_REF,
     OP_DEREF,
+    OP_ARRAY_INDEX,
     OP_CALL,
     OP_ASSIGN,
     OP_JUMP,
@@ -30,7 +31,6 @@ typedef enum op {
     OP_LABEL,
     OP_PARAM,
     OP_ARRAY_CREATE,
-    OP_ARRAY_INDEX,
 } op;
 
 //value types

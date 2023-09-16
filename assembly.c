@@ -21,11 +21,17 @@ struct scratch_register {
 char **code;
 int numCodeLines = 0;
 
+/**
+ * adds a string to the code array
+*/
 void addCode(char *str) {
     code = realloc(code, sizeof(char*) * (numCodeLines + 1));
     code[numCodeLines++] = str;
 }
 
+/**
+ * prints all the lines of code
+*/
 void printCode() {
     for (int i = 0; i < numCodeLines; i++) {
         printf("%s\n",code[i]);
@@ -75,6 +81,9 @@ void scratch_free(int reg) {
     registers[reg].inUse = 0;
 }
 
+/**
+ * gets the register index given the strings
+*/
 int regNameToNum(char *name) {
     for (int i = 0; i < numRegisters; i++) {
         if (strcmp(registers[i].name,name) == 0) return i;
@@ -240,6 +249,9 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
     return NULL;
 }
 
+/**
+ * concats two strings
+*/
 char *concatenateStrings(char *str1, char *str2) {
     size_t len1 = strlen(str1);
     size_t len2 = strlen(str2);
@@ -250,6 +262,9 @@ char *concatenateStrings(char *str1, char *str2) {
     return result;
 }
 
+/**
+ * moves the quad to a register and returns the register it's going to
+*/
 int move(struct quad *quad, struct argument *arg) {
     char *operand = symbolToOperand(quad,arg);
     char *code1 = concatenateStrings("MOVQ ",operand);
@@ -262,7 +277,9 @@ int move(struct quad *quad, struct argument *arg) {
 }
 
 
-
+/**
+ * Creates code based on an expression (quad)
+*/
 void expr_codegen(struct quad *quad) {
     switch (quad->operation) {
         case OP_ADD:{
@@ -360,6 +377,10 @@ void expr_codegen(struct quad *quad) {
     }
 }
 
+/**
+ * adds parameters to the stack given the amount of parameters
+ * free registers containing params
+*/
 void addParamsToStack(struct quad *quad) {
     switch (getValue(quad->arg1->val_t,quad->arg1->value)) {
         case 6:
@@ -392,6 +413,9 @@ void addParamsToStack(struct quad *quad) {
     }
 }
 
+/**
+ * prints the used registers
+*/
 void printUsedRegisters() {
     for (int i = 0; i < numRegisters; i++) {
         if (registers[i].inUse) {
@@ -454,7 +478,7 @@ void generateCode() {
             char *call = concatenateStrings("CALL ",quads[i]->arg1->name);
             addCode(call);
         }
-        else if (quads[i]->operation == OP_SUB || quads[i]->operation == OP_ADD) {
+        else if (quads[i]->operation < 19) {
             expr_codegen(quads[i]);
         }
         else if (quads[i]->operation == OP_RET) {
