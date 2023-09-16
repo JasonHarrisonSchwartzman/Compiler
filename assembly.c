@@ -473,6 +473,10 @@ void generateCode() {
                 continue;
             }
             quads[i]->reg = move(quads[i],quads[i]->arg1);
+            char *storeVar = concatenateStrings("MOVQ ", scratch_name(quads[i]->reg));
+            storeVar = concatenateStrings(storeVar, ", ");
+            storeVar = concatenateStrings(storeVar,symbol_codegen(quads[i],quads[i]->symbol));
+            scratch_free(quads[i]->reg);
         }
         else if (quads[i]->operation == OP_CALL) {
             char *call = concatenateStrings("CALL ",quads[i]->arg1->name);
