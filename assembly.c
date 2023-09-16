@@ -287,18 +287,50 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg1);
             quad->reg = reg2;
             break; }
-        case OP_MULT:
-            break;
+        case OP_MULT: {
+        int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *sub = concatenateStrings("IMUL ",scratch_name(reg1));
+            sub = concatenateStrings(sub, ", ");
+            sub = concatenateStrings(sub,scratch_name(reg2));
+            addCode(sub);
+            scratch_free(reg1);
+            quad->reg = reg2;
+            break; }
         case OP_DIV:
             break;
         case OP_MOD:
             break;
-        case OP_BITAND:
-            break;
-        case OP_BITOR:
-            break;
-        case OP_BITXOR:
-            break;
+        case OP_BITAND: {
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *sub = concatenateStrings("AND ",scratch_name(reg1));
+            sub = concatenateStrings(sub, ", ");
+            sub = concatenateStrings(sub,scratch_name(reg2));
+            addCode(sub);
+            scratch_free(reg1);
+            quad->reg = reg2;
+            break; }
+        case OP_BITOR: {
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *sub = concatenateStrings("OR ",scratch_name(reg1));
+            sub = concatenateStrings(sub, ", ");
+            sub = concatenateStrings(sub,scratch_name(reg2));
+            addCode(sub);
+            scratch_free(reg1);
+            quad->reg = reg2;
+            break; }
+        case OP_BITXOR: {
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *sub = concatenateStrings("SUBQ ",scratch_name(reg1));
+            sub = concatenateStrings(sub, ", ");
+            sub = concatenateStrings(sub,scratch_name(reg2));
+            addCode(sub);
+            scratch_free(reg1);
+            quad->reg = reg2;
+            break; }
         case OP_AND:
             break;
         case OP_OR:
@@ -337,16 +369,28 @@ void addParamsToStack(struct quad *quad) {
 	movq	%r9, -48(%rbp)*/
     switch (getValue(quad->arg1->val_t,quad->arg1->value)) {
         case 6:
+            addCode("MOVQ %r9, -48(%rbp)");
+            scratch_free(9);
 
         case 5:
+            addCode("MOVQ %r8, -40(%rbp)");
+            scratch_free(8);
 
         case 4:
+            addCode("MOVQ %rcx, -32(%rbp)");
+            scratch_free(2);
 
         case 3:
+            addCode("MOVQ %rdx, -24(%rbp)");
+            scratch_free(3);
 
         case 2:
+            addCode("MOVQ %rsi, -16(%rbp)");
+            scratch_free(4);
 
         case 1:
+            addCode("MOVQ %rdi, -8(%rbp)");
+            scratch_free(5);
 
         case 0:return;
         default:
