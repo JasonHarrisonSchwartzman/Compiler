@@ -361,12 +361,6 @@ void expr_codegen(struct quad *quad) {
 }
 
 void addParamsToStack(struct quad *quad) {
-/*movq	%rdi, -8(%rbp)
-	movq	%rsi, -16(%rbp)
-	movq	%rdx, -24(%rbp)
-	movq	%rcx, -32(%rbp)
-	movq	%r8, -40(%rbp)
-	movq	%r9, -48(%rbp)*/
     switch (getValue(quad->arg1->val_t,quad->arg1->value)) {
         case 6:
             addCode("MOVQ %r9, -48(%rbp)");
@@ -434,10 +428,9 @@ void generateCode() {
                 addCode("MOVQ %rsp, %rbp");
 
                 printf("added func\n");
+                addParamsToStack(quads[i]);
                 i++;
                 while (quads[i]->operation == OP_PARAM) {
-                    char *push = concatenateStrings("PUSHQ ",symbol_codegen(quads[i],quads[i]->symbol));
-                    //addCode(push);
                     i++;
                 }
                 printf("done adding params\n");
