@@ -216,11 +216,6 @@ void printSymbolAddress() {
  * or a value on a register %rX
 */
 char *symbolToOperand(struct quad *quad, struct argument *arg) {
-    if (quad->symbol) printf("%s\n",quad->symbol->name);
-    /*if (quad->symbol && (quad->symbol->sym == SYMBOL_GLOBAL)) {
-        printf("Global variable operand\n");
-        return quad->symbol->name;
-    }*/
     if (!arg->name) {
         long num = getValue(arg->val_t,arg->value);
         int totalLength = snprintf(NULL, 0, "$%ld", num) + 1;
@@ -231,15 +226,12 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
         return result;//immediate value
     }
     if (arg->name) {
-        printf("looking for operand of arg %s\n",arg->name);
         for (int i = quad->numQuad; i >= 0; i--) {
             if (quads[i]->result && strcmp(arg->name,quads[i]->result) == 0) {
                 if (quads[i]->symbol && quads[i]->symbol->sym == SYMBOL_GLOBAL) return quads[i]->symbol->name;
-                printf("register\n");
                 return registers[quads[i]->reg].name;//value on reg
             }
             if (quads[i]->symbol && strcmp(arg->name,quads[i]->symbol->name) == 0) {
-                printf("variable\n");
                 return symbol_codegen(quads[i],quads[i]->symbol);//variable
             }
         }
@@ -260,7 +252,6 @@ char *concatenateStrings(char *str1, char *str2) {
 
 int move(struct quad *quad, struct argument *arg) {
     char *operand = symbolToOperand(quad,arg);
-    printf("operand %s for quad %s\n",operand,quad->result);
     char *code1 = concatenateStrings("MOVQ ",operand);
     int reg1 = scratch_alloc();
     code1 = concatenateStrings(code1,", ");
