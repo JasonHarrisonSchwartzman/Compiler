@@ -475,5 +475,6 @@ void generateCode() {
     printSymbolAddress();
     printf("--------------------------\n");
     printCode();
+    printf("-------Used Registers--------\n");
     printUsedRegisters();
 }
