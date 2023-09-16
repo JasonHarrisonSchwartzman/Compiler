@@ -58,6 +58,7 @@ int numRegisters = 16;
 */
 int scratch_alloc() {
     for (int i = 0; i < numRegisters; i++) {
+        if (i == 6 || i == 7) continue; //don't alloc rsp and rbp
         if (!registers[i].inUse) {
             registers[i].inUse = 1;
             return i;
@@ -215,6 +216,11 @@ void printSymbolAddress() {
  * or a value on a register %rX
 */
 char *symbolToOperand(struct quad *quad, struct argument *arg) {
+    if (quad->symbol) printf("%s\n",quad->symbol->name);
+    /*if (quad->symbol && (quad->symbol->sym == SYMBOL_GLOBAL)) {
+        printf("Global variable operand\n");
+        return quad->symbol->name;
+    }*/
     if (!arg->name) {
         long num = getValue(arg->val_t,arg->value);
         int totalLength = snprintf(NULL, 0, "$%ld", num) + 1;
@@ -225,11 +231,15 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
         return result;//immediate value
     }
     if (arg->name) {
+        printf("looking for operand of arg %s\n",arg->name);
         for (int i = quad->numQuad; i >= 0; i--) {
             if (quads[i]->result && strcmp(arg->name,quads[i]->result) == 0) {
+                if (quads[i]->symbol && quads[i]->symbol->sym == SYMBOL_GLOBAL) return quads[i]->symbol->name;
+                printf("register\n");
                 return registers[quads[i]->reg].name;//value on reg
             }
             if (quads[i]->symbol && strcmp(arg->name,quads[i]->symbol->name) == 0) {
+                printf("variable\n");
                 return symbol_codegen(quads[i],quads[i]->symbol);//variable
             }
         }
@@ -250,6 +260,7 @@ char *concatenateStrings(char *str1, char *str2) {
 
 int move(struct quad *quad, struct argument *arg) {
     char *operand = symbolToOperand(quad,arg);
+    printf("operand %s for quad %s\n",operand,quad->result);
     char *code1 = concatenateStrings("MOVQ ",operand);
     int reg1 = scratch_alloc();
     code1 = concatenateStrings(code1,", ");
@@ -364,19 +375,26 @@ void printUsedRegisters() {
  * Generates code given IR
 */
 void generateCode() {
+    int inFunction = 0;
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
         if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
             symbol_codegen(quads[i],quads[i]->symbol);
         }
         if (quads[i]->operation == OP_LABEL) {
+            if (strcmp(quads[i]->result,"end func") == 0) {
+                inFunction = 0;
+                //printf("out of function\n");
+                continue;
+            }
             if (quads[i]->symbol) {//new function
+                inFunction = 1;
+                //printf("In function\n");
                 printSymbolAddress();
                 symAdds = realloc(symAdds, 0);
                 numSymbols = 0;
                 char *func = concatenateStrings(quads[i]->result,":");
                 addCode(func);
-
                 addCode("PUSHQ %rbp");
                 addCode("MOVQ %rsp, %rbp");
 
@@ -384,7 +402,7 @@ void generateCode() {
                 i++;
                 while (quads[i]->operation == OP_PARAM) {
                     char *push = concatenateStrings("PUSHQ ",symbol_codegen(quads[i],quads[i]->symbol));
-                    addCode(push);
+                    //addCode(push);
                     i++;
                 }
                 printf("done adding params\n");
@@ -396,7 +414,12 @@ void generateCode() {
             }
         }
         else if (quads[i]->operation == OP_ASSIGN) {//make sure to do someting different with globals
-            printf("ASSIGN\n");
+            //printf("ASSIGN\n");
+            if (inFunction == 0) {
+                symbol_codegen(quads[i],quads[i]->symbol);
+                printf("GLOBAL VAR %s\n",quads[i]->result);
+                continue;
+            }
             quads[i]->reg = move(quads[i],quads[i]->arg1);
         }
         else if (quads[i]->operation == OP_CALL) {
