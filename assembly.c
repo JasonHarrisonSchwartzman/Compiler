@@ -135,7 +135,7 @@ struct SymbolAddress {
     int placeOnStack;
 } SymbolAddress;
 
-struct SymbolAddress **symAdds;
+struct SymbolAddress **symAdds;//array of sym addresses
 int numSymbols = 0;
 
 /**
