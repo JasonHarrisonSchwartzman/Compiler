@@ -192,7 +192,9 @@ int calculateSize(struct quad *quad) {
 */
 char *addressCompute(struct quad *quad, struct Symbol *s) {
     char *address = lookUpAddress(s);
+    printf("computing address of %s\n",s->name);
     if (address) {
+        printf("found address %s\n",address);
         return address;
     }
     int size = calculateSize(quad);
@@ -455,6 +457,7 @@ void generateCode() {
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
         if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
+            printf("calcing symbol %s\n",quads[i]->symbol->name);
             symbol_codegen(quads[i],quads[i]->symbol);
         }
         if (quads[i]->operation == OP_LABEL) {
@@ -495,11 +498,13 @@ void generateCode() {
                 printf("GLOBAL VAR %s\n",quads[i]->result);
                 continue;
             }
+            printf("LOCAL VAR %s\n",quads[i]->symbol->name);
             quads[i]->reg = move(quads[i],quads[i]->arg1);
             char *storeVar = concatenateStrings("MOVQ ", scratch_name(quads[i]->reg));
             storeVar = concatenateStrings(storeVar, ", ");
             storeVar = concatenateStrings(storeVar,symbol_codegen(quads[i],quads[i]->symbol));
             scratch_free(quads[i]->reg);
+            addCode(storeVar);
         }
         else if (quads[i]->operation == OP_CALL) {
             char *call = concatenateStrings("CALL ",quads[i]->arg1->name);
