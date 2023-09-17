@@ -384,17 +384,16 @@ void expr_codegen(struct quad *quad) {
             lea = concatenateStrings(lea, ", ");
             lea = concatenateStrings(lea,scratch_name(reg1));
             addCode(lea);
-            /*int reg1 = move(quad,quad->arg1);
-            int reg2 = move(quad,quad->arg2);
-            char *sub = concatenateStrings("XORQ ",scratch_name(reg1));
-            sub = concatenateStrings(sub, ", ");
-            sub = concatenateStrings(sub,scratch_name(reg2));
-            addCode(sub);
-            scratch_free(reg1);
-            quad->reg = reg2;*/
             break; }
-        case OP_DEREF:
-            break;
+        case OP_DEREF: {
+            char *var = symbolToOperand(quad,quad->arg1);
+            int reg1 = scratch_alloc();
+            char *move = concatenateStrings("MOVQ ", var);
+            move = concatenateStrings(move, ", ");
+            move = concatenateStrings(move, scratch_name(reg1));
+            quad->reg = reg1;
+            addCode(move);
+            break; }
         case OP_ARRAY_INDEX:
             break;
         default:
