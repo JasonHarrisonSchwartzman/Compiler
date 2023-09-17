@@ -75,6 +75,14 @@ int scratch_alloc() {
 }
 
 /**
+ * Used for reserve the registers needed to pass to functions
+*/
+int scratch_reserve(int x) {
+    registers[x].inUse = 1;
+    return x;
+}
+
+/**
  * Marks register as free
 */
 void scratch_free(int reg) {
@@ -341,7 +349,7 @@ void expr_codegen(struct quad *quad) {
         case OP_BITXOR: {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *sub = concatenateStrings("SUBQ ",scratch_name(reg1));
+            char *sub = concatenateStrings("XORQ ",scratch_name(reg1));
             sub = concatenateStrings(sub, ", ");
             sub = concatenateStrings(sub,scratch_name(reg2));
             addCode(sub);
@@ -366,8 +374,23 @@ void expr_codegen(struct quad *quad) {
             break;
 
 
-        case OP_REF:
-            break;
+        case OP_REF:{
+            char *var = symbolToOperand(quad,quad->arg1);
+            char *lea = concatenateStrings("LEAQ ", var);
+            int reg1 = scratch_alloc();
+            quad->reg = reg1;
+            lea = concatenateStrings(lea, ", ");
+            lea = concatenateStrings(lea,scratch_name(reg1));
+            addCode(lea);
+            /*int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *sub = concatenateStrings("XORQ ",scratch_name(reg1));
+            sub = concatenateStrings(sub, ", ");
+            sub = concatenateStrings(sub,scratch_name(reg2));
+            addCode(sub);
+            scratch_free(reg1);
+            quad->reg = reg2;*/
+            break; }
         case OP_DEREF:
             break;
         case OP_ARRAY_INDEX:
