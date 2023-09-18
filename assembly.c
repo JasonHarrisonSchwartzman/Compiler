@@ -327,8 +327,57 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg1);
             quad->reg = reg2;
             break; }
-        case OP_DIV:
-            break;
+        case OP_DIV: {
+            int raxUsed = 0;
+            int rdxUsed = 0;
+            int raxTemp;
+            char *movRax;
+            int rdxTemp;
+            char *movRdx;
+            if (registers[0].inUse) {
+                raxUsed = 1;
+                raxTemp = scratch_alloc();
+                movRax = concatenateStrings("MOVQ %rax, ", scratch_name(raxTemp));
+                addCode(movRax);
+            }
+            if (registers[1].inUse) {
+                rdxUsed = 1;
+                rdxTemp = scratch_alloc();
+                movRdx = concatenateStrings("MOVQ %rdx, ", scratch_name(rdxTemp));
+                addCode(movRdx);
+            }
+
+            char *dividend = symbolToOperand(quad,quad->arg1);
+            char *movDividend = concatenateStrings("MOVQ ", dividend);
+            movDividend = concatenateStrings(movDividend,", %rax");
+            addCode(movDividend);
+            char *divisor = symbolToOperand(quad,quad->arg2);
+            char *movDivisor = concatenateStrings("MOVQ ", divisor);
+            int divisorReg = scratch_alloc();
+            movDivisor = concatenateStrings(movDivisor,", ");
+            movDivisor = concatenateStrings(movDivisor,scratch_name(divisorReg));
+            addCode(movDivisor);
+            char *div = concatenateStrings("IDIVQ ",scratch_name(divisorReg));
+            addCode(div);
+            int reg = scratch_alloc();
+            char *movResult = concatenateStrings("MOVQ %rax, ",scratch_name(reg));
+            addCode(movResult);
+            quad->reg = reg;
+            scratch_free(divisorReg);
+
+            if (raxUsed) {
+                char *movRaxBack = concatenateStrings("MOVQ ", scratch_name(raxTemp));
+                movRaxBack = concatenateStrings(movRaxBack, ", %rax");
+                addCode(movRaxBack);
+                scratch_free(raxTemp);
+            }
+            if (rdxUsed) {
+                char *movRdxBack = concatenateStrings("MOVQ ", scratch_name(rdxTemp));
+                movRdxBack = concatenateStrings(movRdxBack, ", %rdx");
+                addCode(movRdxBack);
+                scratch_free(rdxTemp);
+            }
+            break; }
         case OP_MOD:
             break;
         case OP_BITAND: {
