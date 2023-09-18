@@ -606,6 +606,7 @@ void generateCode() {
             registers[0].inUse = 1;
             if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand));
             addCode(ret);
+            addCode("POPQ %rbp");
             addCode("RET");
         }
         else if (quads[i]->operation == OP_JUMP) {
