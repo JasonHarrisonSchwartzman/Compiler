@@ -1063,14 +1063,16 @@ void initializeInstances() {
 	addInstanceGoto(94,VAR_U1,123);
 	addInstanceGoto(94,VAR_V1,80);
 	//instance 95-109
+	int j = 0;
 	for (int i = 0; i < 15; i++) {
-	if (i == 6) continue;
-	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_NUM);
-	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_ID);
-	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_AT);
-	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_CHARCONST);
-	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_STRINGCONST);
-	addInstanceAction(95+i,STEP_REDUCE,44+i,TOKEN_QUESTIONMARK);
+	if (i == 6) {j++; }
+	addInstanceAction(95+i,STEP_REDUCE,44+j,TOKEN_NUM);
+	addInstanceAction(95+i,STEP_REDUCE,44+j,TOKEN_ID);
+	addInstanceAction(95+i,STEP_REDUCE,44+j,TOKEN_AT);
+	addInstanceAction(95+i,STEP_REDUCE,44+j,TOKEN_CHARCONST);
+	addInstanceAction(95+i,STEP_REDUCE,44+j,TOKEN_STRINGCONST);
+	addInstanceAction(95+i,STEP_REDUCE,44+j,TOKEN_QUESTIONMARK);
+	j++;
 	}
 	//instance 110,111
 	for (int i = 0; i < 2; i++) {

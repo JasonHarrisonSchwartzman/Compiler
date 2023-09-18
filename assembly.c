@@ -349,6 +349,7 @@ void expr_codegen(struct quad *quad) {
             quad->reg = reg2;
             break; }
         case OP_BITXOR: {
+            printf("XOR\n");
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
             char *sub = concatenateStrings("XORQ ",scratch_name(reg1));
@@ -372,10 +373,22 @@ void expr_codegen(struct quad *quad) {
             break;
         case OP_LESS:
             break;
-        case OP_EQ:
-            break;
+        case OP_EQ: {
+            printf("EQ\n");
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
+            cmp = concatenateStrings(cmp, ", ");
+            cmp = concatenateStrings(cmp,scratch_name(reg2));
+            addCode(cmp);
+            scratch_free(reg1);
+            scratch_free(reg2);
 
-
+            int reg3 = scratch_alloc();
+            char *set = concatenateStrings("SETE ",scratch_name(reg3));
+            addCode(set);
+            quad->reg = reg3;
+            break; }
         case OP_REF:{
             char *var = symbolToOperand(quad,quad->arg1);
             char *lea = concatenateStrings("LEAQ ", var);
@@ -476,13 +489,13 @@ void generateCode() {
                 addCode("PUSHQ %rbp");
                 addCode("MOVQ %rsp, %rbp");
 
-                printf("added func\n");
+                //printf("added func\n");
                 addParamsToStack(quads[i]);
                 i++;
                 while (quads[i]->operation == OP_PARAM) {
                     i++;
                 }
-                printf("done adding params\n");
+                //printf("done adding params\n");
                 i--;
             }
             else {
@@ -494,7 +507,7 @@ void generateCode() {
             //printf("ASSIGN\n");
             if (inFunction == 0) {
                 symbol_codegen(quads[i],quads[i]->symbol);
-                printf("GLOBAL VAR %s\n",quads[i]->result);
+                //printf("GLOBAL VAR %s\n",quads[i]->result);
                 continue;
             }
             printf("LOCAL VAR %s\n",quads[i]->symbol->name);

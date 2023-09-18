@@ -233,8 +233,8 @@ op getQuadOp(operation_t op) {
         case MOD: return OP_MOD;
         case BITWISEAND: return OP_BITAND;
         case BITWISEOR: return OP_BITOR;
-        case BITWISEXOR: return OP_BITXOR;
-        case EQUAL: return OP_EQ;
+        case BITWISEXOR: {printf("quad op XOR\n");return OP_BITXOR;}
+        case EQUAL: {printf("quad op Equal\n");return OP_EQ;}
         case GREATEQUAL: return OP_GEQ;
         case LESSEQUAL: return OP_LEQ;
         case LESS: return OP_LESS;

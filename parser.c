@@ -232,8 +232,10 @@ void *callSemanticRule(void *param[], int rule) {
 			return addOperation(BITWISEAND);
 		case 50:
 			return addOperation(BITWISEOR);
-		case 51:
+		case 51: {
+			printf("parser bitwise or\n");
 			return addOperation(BITWISEXOR);
+		}
 		case 52:
 			return addOperation(EQUAL);
 		case 53:
