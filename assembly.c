@@ -362,10 +362,53 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg1);
             quad->reg = reg2;
             break; }
-        case OP_AND:
-            break;
-        case OP_OR:
-            break;
+        case OP_AND: {
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *and = concatenateStrings("AND ",scratch_name(reg1));
+            and = concatenateStrings(and, ", ");
+            and = concatenateStrings(and,scratch_name(reg2));
+            addCode(and);
+            scratch_free(reg1);
+            int reg3 = scratch_alloc();
+            char *move = concatenateStrings("MOVQ $0, ",scratch_name(reg3));
+            addCode(move);
+            char *cmp = concatenateStrings("CMP $0, ",scratch_name(reg2));
+            addCode(cmp);
+            char *cmov = concatenateStrings("CMOVNE $1,", scratch_name(reg3));
+            addCode(cmov);
+            scratch_free(reg2);
+            quad->reg = reg3;
+            break; }
+        case OP_OR: {
+            /*int reg1 = move(quad,quad->arg1);
+            char *cmp = concatenateStrings("CMP $0, ", scratch_name(reg1));//comparies 0 and first value
+            addCode(cmp);
+            int dstReg1 = scratch_alloc();
+            char *tempReg1 = concatenateStrings("MOVQ $0, ", scratch_name(dstReg1));
+            addCode(tempReg1);
+            char *cmovReg1 = concatenateStrings("CMOVNE ",scratch_name(reg1));
+            cmovReg1 = concatenateStrings(cmovReg1, ", ");
+            cmovReg1 = concatenateStrings(cmovReg1,scratch_name(dstReg1));*/ 
+            //THIS CODE COULD BE USED FOR SHORT CIRCUITING MAYBE
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *or = concatenateStrings("OR ",scratch_name(reg1));
+            or = concatenateStrings(or, ", ");
+            or = concatenateStrings(or,scratch_name(reg2));
+            addCode(or);
+            scratch_free(reg1);
+            int reg3 = scratch_alloc();
+            char *move = concatenateStrings("MOVQ $0, ",scratch_name(reg3));
+            addCode(move);
+            char *cmp = concatenateStrings("CMP $0, ",scratch_name(reg2));
+            addCode(cmp);
+            char *cmov = concatenateStrings("CMOVNE $1,", scratch_name(reg3));
+            addCode(cmov);
+            scratch_free(reg2);
+            quad->reg = reg3;
+
+            break;}
         case OP_NEQ:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
