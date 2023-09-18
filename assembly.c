@@ -248,9 +248,12 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
         for (int i = quad->numQuad; i >= 0; i--) {
             if (quads[i]->result && strcmp(arg->name,quads[i]->result) == 0) {
                 if (quads[i]->symbol && quads[i]->symbol->sym == SYMBOL_GLOBAL) return quads[i]->symbol->name;
+                printf("name %s\n",quads[i]->result);
+                if (quads[i]->symbol && quads[i]->symbol->sym == SYMBOL_LOCAL) return symbol_codegen(quads[i],quads[i]->symbol);
                 return registers[quads[i]->reg].name;//value on reg
             }
             if (quads[i]->symbol && strcmp(arg->name,quads[i]->symbol->name) == 0) {
+                printf("computing variable %s\n",quads[i]->symbol->name);
                 return symbol_codegen(quads[i],quads[i]->symbol);//variable
             }
         }
@@ -281,7 +284,7 @@ int move(struct quad *quad, struct argument *arg) {
     int reg1 = scratch_alloc();
     code1 = concatenateStrings(code1,", ");
     code1 = concatenateStrings(code1,scratch_name(reg1));
-    if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand));
+    if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand)); //figure out why this line was needed
     addCode(code1);
     return reg1;
 }
@@ -377,6 +380,7 @@ void expr_codegen(struct quad *quad) {
             printf("EQ\n");
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
+            printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
             cmp = concatenateStrings(cmp, ", ");
             cmp = concatenateStrings(cmp,scratch_name(reg2));
@@ -527,6 +531,7 @@ void generateCode() {
         }
         else if (quads[i]->operation == OP_RET) {
             char *operand = symbolToOperand(quads[i],quads[i]->arg1);
+            if (regNameToNum(operand) == 0) {addCode("RET");continue;}//if value being returned is already on %rax
             char *ret = concatenateStrings("MOVQ ",operand);
             ret = concatenateStrings(ret,", ");
             ret = concatenateStrings(ret,"%rax");
