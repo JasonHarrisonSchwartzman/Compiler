@@ -366,18 +366,86 @@ void expr_codegen(struct quad *quad) {
             break;
         case OP_OR:
             break;
-        case OP_NEQ:
-            break;
-        case OP_GEQ:
-            break;
-        case OP_LEQ:
-            break;
-        case OP_GREAT:
-            break;
-        case OP_LESS:
-            break;
+        case OP_NEQ:{
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
+            cmp = concatenateStrings(cmp, ", ");
+            cmp = concatenateStrings(cmp,scratch_name(reg2));
+            addCode(cmp);
+            scratch_free(reg1);
+            scratch_free(reg2);
+
+            int reg3 = scratch_alloc();
+            char *set = concatenateStrings("SETNE ",scratch_name(reg3));
+            addCode(set);
+            quad->reg = reg3;
+            break; }
+        case OP_GEQ:{
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
+            cmp = concatenateStrings(cmp, ", ");
+            cmp = concatenateStrings(cmp,scratch_name(reg2));
+            addCode(cmp);
+            scratch_free(reg1);
+            scratch_free(reg2);
+
+            int reg3 = scratch_alloc();
+            char *set = concatenateStrings("SETGE ",scratch_name(reg3));
+            addCode(set);
+            quad->reg = reg3;
+            break; }
+        case OP_LEQ:{
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
+            cmp = concatenateStrings(cmp, ", ");
+            cmp = concatenateStrings(cmp,scratch_name(reg2));
+            addCode(cmp);
+            scratch_free(reg1);
+            scratch_free(reg2);
+
+            int reg3 = scratch_alloc();
+            char *set = concatenateStrings("SETLE ",scratch_name(reg3));
+            addCode(set);
+            quad->reg = reg3;
+            break; }
+        case OP_GREAT:{
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
+            cmp = concatenateStrings(cmp, ", ");
+            cmp = concatenateStrings(cmp,scratch_name(reg2));
+            addCode(cmp);
+            scratch_free(reg1);
+            scratch_free(reg2);
+
+            int reg3 = scratch_alloc();
+            char *set = concatenateStrings("SETG ",scratch_name(reg3));
+            addCode(set);
+            quad->reg = reg3;
+            break; }
+        case OP_LESS: {
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
+            cmp = concatenateStrings(cmp, ", ");
+            cmp = concatenateStrings(cmp,scratch_name(reg2));
+            addCode(cmp);
+            scratch_free(reg1);
+            scratch_free(reg2);
+            int reg3 = scratch_alloc();
+            char *set = concatenateStrings("SETL ",scratch_name(reg3));
+            addCode(set);
+            quad->reg = reg3;
+            break; }
         case OP_EQ: {
-            printf("EQ\n");
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
             printf("REG1:%d REG2:%d\n",reg1,reg2);
