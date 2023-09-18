@@ -365,7 +365,7 @@ void expr_codegen(struct quad *quad) {
         case OP_AND: {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *and = concatenateStrings("AND ",scratch_name(reg1));
+            char *and = concatenateStrings("TEST ",scratch_name(reg1));
             and = concatenateStrings(and, ", ");
             and = concatenateStrings(and,scratch_name(reg2));
             addCode(and);
