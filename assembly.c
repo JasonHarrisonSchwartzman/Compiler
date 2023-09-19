@@ -192,9 +192,9 @@ int calculateSize(struct quad *quad) {
 */
 char *addressCompute(struct quad *quad, struct Symbol *s) {
     char *address = lookUpAddress(s);
-    printf("computing address of %s\n",s->name);
+    //printf("computing address of %s\n",s->name);
     if (address) {
-        printf("found address %s\n",address);
+        //printf("found address %s\n",address);
         return address;
     }
     int size = calculateSize(quad);
@@ -246,14 +246,15 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
     }
     if (arg->name) {
         for (int i = quad->numQuad; i >= 0; i--) {
+            //printf("%d\n",i);
             if (quads[i]->result && strcmp(arg->name,quads[i]->result) == 0) {
                 if (quads[i]->symbol && quads[i]->symbol->sym == SYMBOL_GLOBAL) return quads[i]->symbol->name;
-                printf("name %s\n",quads[i]->result);
+                //printf("name %s\n",quads[i]->result);
                 if (quads[i]->symbol && quads[i]->symbol->sym == SYMBOL_LOCAL) return symbol_codegen(quads[i],quads[i]->symbol);
                 return registers[quads[i]->reg].name;//value on reg
             }
             if (quads[i]->symbol && strcmp(arg->name,quads[i]->symbol->name) == 0) {
-                printf("computing variable %s\n",quads[i]->symbol->name);
+                //printf("computing variable %s\n",quads[i]->symbol->name);
                 return symbol_codegen(quads[i],quads[i]->symbol);//variable
             }
         }
@@ -510,7 +511,7 @@ void expr_codegen(struct quad *quad) {
         case OP_NEQ:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            //printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
             cmp = concatenateStrings(cmp, ", ");
             cmp = concatenateStrings(cmp,scratch_name(reg2));
@@ -526,7 +527,7 @@ void expr_codegen(struct quad *quad) {
         case OP_GEQ:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            //printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
             cmp = concatenateStrings(cmp, ", ");
             cmp = concatenateStrings(cmp,scratch_name(reg2));
@@ -542,7 +543,7 @@ void expr_codegen(struct quad *quad) {
         case OP_LEQ:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            //printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
             cmp = concatenateStrings(cmp, ", ");
             cmp = concatenateStrings(cmp,scratch_name(reg2));
@@ -558,7 +559,7 @@ void expr_codegen(struct quad *quad) {
         case OP_GREAT:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            //printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
             cmp = concatenateStrings(cmp, ", ");
             cmp = concatenateStrings(cmp,scratch_name(reg2));
@@ -574,7 +575,7 @@ void expr_codegen(struct quad *quad) {
         case OP_LESS: {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            //printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
             cmp = concatenateStrings(cmp, ", ");
             cmp = concatenateStrings(cmp,scratch_name(reg2));
@@ -589,7 +590,7 @@ void expr_codegen(struct quad *quad) {
         case OP_EQ: {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            printf("REG1:%d REG2:%d\n",reg1,reg2);
+            //printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
             cmp = concatenateStrings(cmp, ", ");
             cmp = concatenateStrings(cmp,scratch_name(reg2));
@@ -695,6 +696,7 @@ void generateCode() {
     int inFunction = 0;
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
+        printf("Num quad: %d\n",i);
         if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
             printf("calcing symbol %s\n",quads[i]->symbol->name);
             symbol_codegen(quads[i],quads[i]->symbol);
@@ -737,7 +739,7 @@ void generateCode() {
                 //printf("GLOBAL VAR %s\n",quads[i]->result);
                 continue;
             }
-            printf("LOCAL VAR %s\n",quads[i]->symbol->name);
+            //printf("LOCAL VAR %s\n",quads[i]->symbol->name);
             quads[i]->reg = move(quads[i],quads[i]->arg1);
             char *storeVar = concatenateStrings("MOVQ ", scratch_name(quads[i]->reg));
             storeVar = concatenateStrings(storeVar, ", ");
@@ -746,6 +748,20 @@ void generateCode() {
             addCode(storeVar);
         }
         else if (quads[i]->operation == OP_CALL) {
+            printf("CALL %s\n",quads[i]->arg1->name);
+            int numArgs = getValue(quads[i]->arg2->val_t,quads[i]->arg2->value);
+            for (int j = i + 1; j < numQuads; j++) {
+                if (numArgs == 0) break;
+                quads[j]->numQuad = j;
+                if (quads[j]->operation == OP_PARAM) {
+                    addCode("PARAM ");
+                    numArgs--;
+                }
+                else {
+                    printf("OPERATION %d\n",quads[j]->operation);
+                    expr_codegen(quads[j]);
+                }
+            }
             char *call = concatenateStrings("CALL ",quads[i]->arg1->name);
             addCode(call);
         }
@@ -767,6 +783,14 @@ void generateCode() {
         else if (quads[i]->operation == OP_JUMP) {
             char *jump = concatenateStrings("JMP ",quads[i]->result);
             addCode(jump);
+        }
+        else if (quads[i]->operation == OP_JUMPIFNOT) {
+            int reg1 = move(quads[i],quads[i]->arg1);
+            char *cmp = concatenateStrings("CMP $0, ",scratch_name(reg1));
+            addCode(cmp);
+            char *jump = concatenateStrings("JNE ", quads[i]->result);
+            addCode(jump);
+            scratch_free(reg1);
         }
     }
     printSymbolAddress();
