@@ -21,7 +21,7 @@ struct scratch_register {
 char **code;
 int numCodeLines = 0;
 
-char **data;
+char **data;//global variables
 int numDataLines = 0;
 
 /**
@@ -45,11 +45,17 @@ void addCode(char *str) {
     code[numCodeLines++] = str;
 }
 
+/**
+ * adds a string to the data array
+*/
 void addData(char *str) {
     data = realloc(data,sizeof(char*) * (numDataLines+1));
     data[numDataLines++] = str;
 }
 
+/**
+ * prints lines of data
+*/
 void printData() {
     for (int i = 0; i < numDataLines; i++) {
         printf("%s\n",data[i]);
@@ -692,6 +698,9 @@ void addParamsToStack(struct quad *quad) {
     }
 }
 
+/**
+ * converts the number param to the corresponding register
+*/
 char *argNumToReg(int x) {
     if (x == 6) return "%r9";
     else if (x==5) return "%r8";
@@ -713,6 +722,9 @@ void printUsedRegisters() {
     }
 }
 
+/**
+ * converts int to string
+*/
 char *intToString(int num) {
     int totalLength = snprintf(NULL, 0, "%d", num) + 1;
     char *result = (char *)malloc(totalLength);
@@ -722,6 +734,9 @@ char *intToString(int num) {
     return result;
 }
 
+/**
+ * adds a global variable to data array
+*/
 void globalDecl(struct quad *quad) {
     char *decl = concatenateStrings(quad->result, ": ");
     decl = concatenateStrings(decl, ".quad ");
