@@ -74,6 +74,7 @@ void printData(FILE *f) {
 void printCode(FILE *f) {
     if (f) {
         fprintf(f,".text\n");
+        fprintf(f,".globl _start");
         for (int i = 0; i < numCodeLines; i++) fprintf(f,"%s\n",code[i]);
         return;
     }
