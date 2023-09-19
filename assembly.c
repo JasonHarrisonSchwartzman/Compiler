@@ -706,9 +706,9 @@ void generateCode() {
     int inFunction = 0;
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
-        printf("Num quad: %d\n",i);
+        //printf("Num quad: %d\n",i);
         if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
-            printf("calcing symbol %s\n",quads[i]->symbol->name);
+            //printf("calcing symbol %s\n",quads[i]->symbol->name);
             symbol_codegen(quads[i],quads[i]->symbol);
         }
         if (quads[i]->operation == OP_LABEL) {
@@ -758,7 +758,7 @@ void generateCode() {
             addCode(storeVar);
         }
         else if (quads[i]->operation == OP_CALL) {
-            printf("CALL %s\n",quads[i]->arg1->name);
+            //printf("CALL %s\n",quads[i]->arg1->name);
             int numArgs = getValue(quads[i]->arg2->val_t,quads[i]->arg2->value);
             for (int j = i + 1; j < numQuads; j++) {
                 if (numArgs == 0) break;
@@ -773,7 +773,7 @@ void generateCode() {
                     numArgs--;
                 }
                 else {
-                    printf("OPERATION %d\n",quads[j]->operation);
+                    //printf("OPERATION %d\n",quads[j]->operation);
                     expr_codegen(quads[j]);
                 }
             }
