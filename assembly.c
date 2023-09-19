@@ -56,7 +56,13 @@ void addData(char *str) {
 /**
  * prints lines of data
 */
-void printData() {
+void printData(FILE *f) {
+    if (f) {
+        fprintf(f,".data:\n");
+        for (int i = 0; i < numDataLines; i++) fprintf(f,"%s\n",data[i]);
+        return;
+    }
+    printf(".data:\n");
     for (int i = 0; i < numDataLines; i++) {
         printf("%s\n",data[i]);
     }
@@ -65,7 +71,13 @@ void printData() {
 /**
  * prints all the lines of code
 */
-void printCode() {
+void printCode(FILE *f) {
+    if (f) {
+        fprintf(f,".text:\n");
+        for (int i = 0; i < numCodeLines; i++) fprintf(f,"%s\n",code[i]);
+        return;
+    }
+    printf(".text:\n");
     for (int i = 0; i < numCodeLines; i++) {
         printf("%s\n",code[i]);
     }
@@ -865,9 +877,12 @@ void generateCode() {
     }
     printSymbolAddress();
     printf("--------------------------\n");
-    printf(".data:\n");
-    printData();
-    printCode();
+    printData(NULL);
+    printCode(NULL);
+    FILE *f = fopen("test.s","w");
+    printData(f);
+    printCode(f);
     printf("-------Used Registers--------\n");
     printUsedRegisters();
+    fclose(f);
 }
