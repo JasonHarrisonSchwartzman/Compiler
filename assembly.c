@@ -789,7 +789,8 @@ void generateCode() {
                 printSymbolAddress();
                 symAdds = realloc(symAdds, 0);
                 numSymbols = 0;
-                char *func = concatenateStrings(quads[i]->result,":");
+                char *func = concatenateStrings("_",quads[i]->result);
+                func = concatenateStrings(func,":");
                 addCode(func);
                 addCode("PUSHQ %rbp");
                 addCode("MOVQ %rsp, %rbp");
@@ -844,7 +845,7 @@ void generateCode() {
                     expr_codegen(quads[j]);
                 }
             }
-            char *call = concatenateStrings("CALL ",quads[i]->arg1->name);
+            char *call = concatenateStrings("CALL _",quads[i]->arg1->name);
             addCode(call);
         }
         else if (quads[i]->operation < 19) {
