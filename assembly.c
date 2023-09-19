@@ -620,8 +620,22 @@ void expr_codegen(struct quad *quad) {
             quad->reg = reg1;
             addCode(move);
             break; }
-        case OP_ARRAY_INDEX:
-            break;
+        case OP_ARRAY_INDEX: {
+            //lea (array + index * 8) = rax
+
+            int reg1 = move(quad,quad->arg1);
+            int reg2 = move(quad,quad->arg2);
+            char *arrayIndex = concatenateStrings("LEA (",scratch_name(reg1));
+            arrayIndex = concatenateStrings(arrayIndex, ",");
+            arrayIndex = concatenateStrings(arrayIndex,scratch_name(reg2));
+            arrayIndex = concatenateStrings(arrayIndex,",8), ");
+            int reg3 = scratch_alloc();
+            arrayIndex = concatenateStrings(arrayIndex, scratch_name(reg3));
+            addCode(arrayIndex);
+            scratch_free(reg1);
+            scratch_free(reg2);
+            quad->reg = reg3;
+            break; }
         default:
         return;
     }
