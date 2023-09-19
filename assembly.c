@@ -21,12 +21,39 @@ struct scratch_register {
 char **code;
 int numCodeLines = 0;
 
+char **data;
+int numDataLines = 0;
+
+/**
+ * concats two strings
+*/
+char *concatenateStrings(char *str1, char *str2) {
+    size_t len1 = strlen(str1);
+    size_t len2 = strlen(str2);
+    char *result = (char *)malloc(len1 + len2 + 1);
+    if (result == NULL) return NULL;
+    strcpy(result, str1);
+    strcat(result, str2);
+    return result;
+}
+
 /**
  * adds a string to the code array
 */
 void addCode(char *str) {
     code = realloc(code, sizeof(char*) * (numCodeLines + 1));
     code[numCodeLines++] = str;
+}
+
+void addData(char *str) {
+    data = realloc(data,sizeof(char*) * (numDataLines+1));
+    data[numDataLines++] = str;
+}
+
+void printData() {
+    for (int i = 0; i < numDataLines; i++) {
+        printf("%s\n",data[i]);
+    }
 }
 
 /**
@@ -261,19 +288,6 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
     }
     printf("unable to find symbol of arg name%s\n",arg->name);
     return NULL;
-}
-
-/**
- * concats two strings
-*/
-char *concatenateStrings(char *str1, char *str2) {
-    size_t len1 = strlen(str1);
-    size_t len2 = strlen(str2);
-    char *result = (char *)malloc(len1 + len2 + 1);
-    if (result == NULL) return NULL;
-    strcpy(result, str1);
-    strcat(result, str2);
-    return result;
 }
 
 /**
@@ -699,6 +713,31 @@ void printUsedRegisters() {
     }
 }
 
+char *intToString(int num) {
+    int totalLength = snprintf(NULL, 0, "%d", num) + 1;
+    char *result = (char *)malloc(totalLength);
+    if (result != NULL) {
+        snprintf(result, totalLength, "%d", num);
+    }
+    return result;
+}
+
+void globalDecl(struct quad *quad) {
+    char *decl = concatenateStrings(quad->result, ": ");
+    decl = concatenateStrings(decl, ".quad ");
+    if (quad->operation == OP_ARRAY_CREATE) {//array
+        for (int i = 0; i < getValue(quad->arg1->val_t,quad->arg1->value) - 1; i++) {
+            decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
+            decl = concatenateStrings(decl, ", ");
+        }
+        decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
+    }
+    else {//single var
+        decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
+    }
+    addData(decl);
+}
+
 /**
  * Generates code given IR
 */
@@ -747,6 +786,7 @@ void generateCode() {
             if (inFunction == 0) {
                 symbol_codegen(quads[i],quads[i]->symbol);
                 //printf("GLOBAL VAR %s\n",quads[i]->result);
+                globalDecl(quads[i]);
                 continue;
             }
             //printf("LOCAL VAR %s\n",quads[i]->symbol->name);
@@ -810,6 +850,8 @@ void generateCode() {
     }
     printSymbolAddress();
     printf("--------------------------\n");
+    printf(".data:\n");
+    printData();
     printCode();
     printf("-------Used Registers--------\n");
     printUsedRegisters();
