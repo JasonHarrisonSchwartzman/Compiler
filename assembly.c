@@ -678,6 +678,16 @@ void addParamsToStack(struct quad *quad) {
     }
 }
 
+char *argNumToReg(int x) {
+    if (x == 6) return "%r9";
+    else if (x==5) return "%r8";
+    else if (x==4) return "%rcx";
+    else if (x==3) return "%rdx";
+    else if (x==2) return "%rsi";
+    else if (x==1) return "%rdi";
+    else return "ARG NUM NOT FOUND";
+}
+
 /**
  * prints the used registers
 */
@@ -754,7 +764,12 @@ void generateCode() {
                 if (numArgs == 0) break;
                 quads[j]->numQuad = j;
                 if (quads[j]->operation == OP_PARAM) {
-                    addCode("PARAM ");
+                    char *arg = symbolToOperand(quads[j],quads[j]->arg1);
+                    char *movArg = concatenateStrings("MOVQ ", arg);
+                    movArg = concatenateStrings(movArg, ", ");
+                    char *regArg = argNumToReg(getValue(quads[i]->arg2->val_t,quads[i]->arg2->value) - numArgs + 1);
+                    movArg = concatenateStrings(movArg,regArg);
+                    addCode(movArg);
                     numArgs--;
                 }
                 else {
