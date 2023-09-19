@@ -58,11 +58,11 @@ void addData(char *str) {
 */
 void printData(FILE *f) {
     if (f) {
-        fprintf(f,".data:\n");
+        fprintf(f,".data\n");
         for (int i = 0; i < numDataLines; i++) fprintf(f,"%s\n",data[i]);
         return;
     }
-    printf(".data:\n");
+    printf(".data\n");
     for (int i = 0; i < numDataLines; i++) {
         printf("%s\n",data[i]);
     }
@@ -73,11 +73,11 @@ void printData(FILE *f) {
 */
 void printCode(FILE *f) {
     if (f) {
-        fprintf(f,".text:\n");
+        fprintf(f,".text\n");
         for (int i = 0; i < numCodeLines; i++) fprintf(f,"%s\n",code[i]);
         return;
     }
-    printf(".text:\n");
+    printf(".text\n");
     for (int i = 0; i < numCodeLines; i++) {
         printf("%s\n",code[i]);
     }
@@ -878,6 +878,9 @@ void generateCode() {
     }
     printSymbolAddress();
     printf("--------------------------\n");
+    addCode("MOVQ $60, %rax");
+    addCode("XOR %rdi, %rdi");
+    addCode("syscall");
     printData(NULL);
     printCode(NULL);
     FILE *f = fopen("test.s","w");
