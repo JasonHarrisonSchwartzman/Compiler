@@ -625,7 +625,7 @@ void expr_codegen(struct quad *quad) {
 
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *arrayIndex = concatenateStrings("LEA (",scratch_name(reg1));
+            char *arrayIndex = concatenateStrings("MOVSLQ (",scratch_name(reg1));
             arrayIndex = concatenateStrings(arrayIndex, ",");
             arrayIndex = concatenateStrings(arrayIndex,scratch_name(reg2));
             arrayIndex = concatenateStrings(arrayIndex,",8), ");
