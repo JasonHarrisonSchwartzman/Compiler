@@ -67,6 +67,7 @@ int main(int argc, char *argv[]) {
 	system(assembler);
 	char *linker = concatenateStrings("ld -o ",argv[2]);
 	linker = concatenateStrings(linker, argv[2]);
+	linker = concatenateStrings(linker, " ");
 	linker = concatenateStrings(linker, ".o");
 	system(linker);
 	// //freeTokens();seg fault
