@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "token.h"
-#define NUM_STATES 103
+#define NUM_STATES 104
 
 struct Transition {
 	int state;
@@ -163,7 +163,9 @@ void initialize() {
 	
 	states[102].token = TOKEN_WHITESPACE;
 	
-	for (int i = 0; i < NUM_STATES - 2; i++) {
+	states[103].token = TOKEN_WHITESPACE; //comments
+	
+	for (int i = 0; i < NUM_STATES - 3; i++) {
 		addTransition(i, ' ', 102, 1);
 		addTransition(i, '\n',102, 1);
 		addTransition(i, '\t',102, 1);
@@ -193,8 +195,8 @@ void initialize() {
 	addSpecialCharacterTransitions(101);
 	
 
-	for (int i = 0; i < NUM_STATES - 1; i++) {
-		if ((i == 98) || (i == 99)) continue;
+	for (int i = 0; i < NUM_STATES - 3; i++) {
+		if ((i == 98) || (i == 99) || (i == 103)) continue;
 		addTransition(i, '\'', 98, 1);
 		addTransition(i, '\"', 99, 1);
 	} 
@@ -211,8 +213,19 @@ void initialize() {
 		addIDTransitions(i, "iewfldscrbu",1);
 	}
 	for (int i = 70; i <= 91; i++) {
+		if (i == 83) {
+			addTransition(83,'/',103,0);//comments
+		}
 		addSpecialCharacterTransitions(i);
 	}
+
+	//comments
+	for (int i = 0; i < numAlphabet - 2;i++) {
+		addTransition(103,alphabet[i],103,0);
+	}
+	addTransition(103,'\n',102,1);
+	addTransition(103,'\r',102,1);
+
 	states[72].transitions[51].state = 92;
 	states[72].transitions[51].delimeter = 0;
 	
