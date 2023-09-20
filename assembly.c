@@ -884,10 +884,10 @@ void generateCode() {
     addCode("syscall");
     printData(NULL);
     printCode(NULL);
-    FILE *f = fopen("test.s","w");
+    /*FILE *f = fopen("test.s","w");
     printData(f);
     printCode(f);
+    fclose(f);*/
     printf("-------Used Registers--------\n");
     printUsedRegisters();
-    fclose(f);
 }

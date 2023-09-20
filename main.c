@@ -54,6 +54,21 @@ int main(int argc, char *argv[]) {
 
 	freeRules();
 	freeInstanceAndVarTokens();
+
+	//writing to executable
+	FILE *f = fopen(concatenateStrings(argv[2],".s"),"w");
+    printData(f);
+    printCode(f);
+    fclose(f);
+	char *assembler = concatenateStrings("as -g -o ", argv[2]);
+	assembler = concatenateStrings(assembler, ".o ");
+	assembler = concatenateStrings(assembler, argv[2]);
+	assembler = concatenateStrings(assembler, ".s");
+	system(assembler);
+	char *linker = concatenateStrings("ld -o ",argv[2]);
+	linker = concatenateStrings(linker, argv[2]);
+	linker = concatenateStrings(linker, ".o");
+	system(linker);
 	// //freeTokens();seg fault
 }
 
