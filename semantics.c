@@ -145,9 +145,9 @@ struct Type *inferLiteral(struct Value *value) {
 		return type;
 	}
 	else { //STRING
-		printf("STRING INFERENCE-------------\n");
+		printf("STRING INFERENCE of %s\n",value->value);
 		struct Type *type = calloc(1,sizeof(struct Type));
-		type->dataType = LONG;
+		type->dataType = CHAR;
 		type->sign = UNSIGNED;
 		type->pointer = 1;
 		type->length = NULL;
@@ -163,7 +163,7 @@ int resolveExpr();
 struct Type *getType(struct Evaluation *eval) {
 	printf("type to get: %d\n",eval->eval);
 	if (eval->eval == VALUE) {
-		//printf("Inferring literal value of %s\n",eval->value->value);
+		printf("Inferring literal value of %s\n",eval->value->value);
 		return inferLiteral(eval->value);
 	}
 	else if (eval->eval == FUNCRETURN) {
@@ -209,6 +209,7 @@ struct Type *getType(struct Evaluation *eval) {
  */
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
 	if (!eval2) {
+		printf("Type of eval pointer: %p\n",getType(eval1));
 		return eval1->type = getType(eval1);
 	}
 	/*
@@ -650,12 +651,40 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 	}
 }
 
+
+void createBuiltInFunctions(struct SymbolTable *sym) {
+	struct FuncDecl *func = calloc(1,sizeof(struct FuncDecl));
+	func->line = 0;
+	func->name = "prints";
+	func->type = NULL; // no return type could be problematic!
+	func->params = calloc(1,sizeof(struct Params));
+	func->params->var = calloc(1,sizeof(struct VarDecl));
+	func->params->var->type = calloc(1,sizeof(struct Type));
+	func->params->var->type->dataType = CHAR;
+	func->params->var->type->pointer = 1;
+	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
+	addSymbol(sym,s);
+	func->symbol = s;
+}
+
+/*void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func) {
+	struct Symbol *x = lookUpNameCurrentScope(func->name,symTab);
+	if (x) {
+		printError(1,x->name,func->line,x->line);
+		return;
+	}
+	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
+	addSymbol(symTab,s);
+	func->symbol = s;
+}*/
+
 /*
  * Loops through the declarations calling the appropriate createSymbolTable function
  * adds level when it sees a function declaration and calls createSymbolTableParam for params and 
  * createSymbolTableStatement for the statements
  */
 void createSymbolTableDeclarations(struct SymbolTable *initial, struct Declaration *declarations) {
+	createBuiltInFunctions(initial);
 	struct Declaration *d = declarations;
 	while (d) {
 		if (d->dec == VAR) {
