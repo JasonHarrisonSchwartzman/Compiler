@@ -751,13 +751,21 @@ char *intToString(int num) {
  * adds a global variable to data array
 */
 void globalDecl(struct quad *quad) {
+    if (quad->arg1->val_t == VAL_STRING) {
+        char *decl = concatenateStrings(".",quad->result);
+        decl = concatenateStrings(decl,":");
+        addData(decl);
+        char *decl2 = concatenateStrings(".string ",quad->arg1->name);
+        decl2 = concatenateStrings(decl2,"\"");
+        addData(decl2);
+        char *decl3 = concatenateStrings(quad->result,":");
+        addData(decl3);
+        char *decl4 = concatenateStrings(".quad .",quad->result);
+        addData(decl4);
+        return;
+    }
     char *decl = concatenateStrings(quad->result, ": ");
-    if (quad->arg1->val_t != VAL_STRING) {
-        decl = concatenateStrings(decl, ".quad ");
-    }
-    else {
-        decl = concatenateStrings(decl, ".asciz ");
-    }
+    decl = concatenateStrings(decl, ".quad ");
     if (quad->operation == OP_ARRAY_CREATE) {//array
         for (int i = 0; i < getValue(quad->arg1->val_t,quad->arg1->value) - 1; i++) {
             decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
@@ -766,13 +774,7 @@ void globalDecl(struct quad *quad) {
         decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
     }
     else {//single var
-        if (quad->arg1->val_t != VAL_STRING) {
-            decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
-        }
-        else {
-            decl = concatenateStrings(decl, quad->arg1->name);
-            decl = concatenateStrings(decl, "\"");
-        }
+        decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
     }
     addData(decl);
 }
