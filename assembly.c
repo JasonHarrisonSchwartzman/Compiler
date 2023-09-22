@@ -790,7 +790,7 @@ void addBuiltInFunctions() {
     addCode("NOT %rcx");
     addCode("DEC %rcx");
     addCode("MOVQ %rcx,%rdx");
-    addCode("MOVQ %rdi, %rsi");
+    addCode("MOVQ -8(%rbp), %rsi");
     addCode("MOVQ $1, %rax");
     addCode("MOVQ %rax, %rdi");
     addCode("SYSCALL");
