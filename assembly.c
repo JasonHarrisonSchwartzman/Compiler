@@ -777,10 +777,20 @@ void globalDecl(struct quad *quad) {
     addData(decl);
 }
 
+void addBuiltInFunctions() {
+    addCode("_prints:");
+    addCode("PUSHQ %rbp");
+    addCode("MOVQ %rsp, %rbp");
+    addCode("MOVQ %rdi, -8(%rbp)");
+    addCode("POPQ %rbp");
+    addCode("RET");
+}
+
 /**
  * Generates code given IR
 */
 void generateCode() {
+    addBuiltInFunctions();
     int inFunction = 0;
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
