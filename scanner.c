@@ -181,9 +181,9 @@ void printTokens() {
  */
 int scanner(int argc, char *argv[]) {
 	FILE *file;
-	file = fopen(argv[1],"r");
+	file = fopen(argv[1],"r"); 
 
-	char c;//character that will be read
+	char c;//character that will be readf
 	int state = 0;//start state
 
 	char *string = malloc(sizeof(char));//current characters being read

@@ -190,7 +190,7 @@ void initialize() {
 	states[98].transitions[86].delimeter = 1;
 	states[99].transitions[85].state = 102;
 	states[99].transitions[85].delimeter = 1;
-
+	addTransition(99,'\\',99,0);
 	addSpecialCharacterTransitions(100);
 	addSpecialCharacterTransitions(101);
 	
