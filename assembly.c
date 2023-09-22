@@ -281,7 +281,7 @@ void printSymbolAddress() {
  * or a value on a register %rX
 */
 char *symbolToOperand(struct quad *quad, struct argument *arg) {
-    if (!arg->name) {
+    if (!arg->name) {//might need to add || arg->val_t == VAL_STRING here
         long num = getValue(arg->val_t,arg->value);
         int totalLength = snprintf(NULL, 0, "$%ld", num) + 1;
         char *result = (char *)malloc(totalLength);
