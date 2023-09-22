@@ -782,6 +782,18 @@ void addBuiltInFunctions() {
     addCode("PUSHQ %rbp");
     addCode("MOVQ %rsp, %rbp");
     addCode("MOVQ %rdi, -8(%rbp)");
+    addCode("XOR %rcx, %rcx");
+    addCode("NOT %rcx");
+    addCode("XOR %al,%al");
+    addCode("CLD");
+    addCode("REPNZ scasb");
+    addCode("NOT %rcx");
+    addCode("DEC %rcx");
+    addCode("MOVQ %rcx,%rdx");
+    addCode("MOVQ %rdi, %rsi");
+    addCode("MOVQ $1, %rax");
+    addCode("MOVQ %rax, %rdi");
+    addCode("SYSCALL");
     addCode("POPQ %rbp");
     addCode("RET");
 }
