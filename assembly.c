@@ -752,7 +752,12 @@ char *intToString(int num) {
 */
 void globalDecl(struct quad *quad) {
     char *decl = concatenateStrings(quad->result, ": ");
-    decl = concatenateStrings(decl, ".quad ");
+    if (quad->arg1->val_t != VAL_STRING) {
+        decl = concatenateStrings(decl, ".quad ");
+    }
+    else {
+        decl = concatenateStrings(decl, ".asciz ");
+    }
     if (quad->operation == OP_ARRAY_CREATE) {//array
         for (int i = 0; i < getValue(quad->arg1->val_t,quad->arg1->value) - 1; i++) {
             decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
@@ -761,7 +766,13 @@ void globalDecl(struct quad *quad) {
         decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
     }
     else {//single var
-        decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
+        if (quad->arg1->val_t != VAL_STRING) {
+            decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
+        }
+        else {
+            decl = concatenateStrings(decl, quad->arg1->name);
+            decl = concatenateStrings(decl, "\"");
+        }
     }
     addData(decl);
 }
