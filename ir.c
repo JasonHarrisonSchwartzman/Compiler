@@ -158,8 +158,9 @@ struct argument *createArg(char *name, enum val_t val, long value) {
 val_t getTypeQuad(struct Type *type) {
     if (!type) printf("TYPE NULL WHEN GETTING TYPE ERROR\n");
     if (type->pointer > 0) {
+        if (type->dataType == CHAR) return VAL_STRING;
         printf("POINTER or ARRAY POINTER\n");
-        return type->length != NULL ? VAL_POINTER : VAL_ARR_POINTER;
+        return type->length == NULL ? VAL_POINTER : VAL_ARR_POINTER;
     }
     switch (type->dataType) {
         case CHAR:
@@ -196,6 +197,10 @@ struct argument *evalToArg(struct Evaluation *eval) {
         return createArg(eval->name,getTypeQuad(eval->type),0);
     }
     if (eval->eval == VALUE) {
+        if (eval->value->val_t == STRINGCONST) {
+            printf("HI JASON\n");
+            return createArg(eval->value->value,VAL_STRING,0);
+        }
         return createArg(NULL,getTypeQuad(eval->type),strtol(eval->value->value,NULL,10));
     }
     if (eval->eval == FUNCRETURN) {

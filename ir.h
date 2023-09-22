@@ -55,6 +55,7 @@ typedef enum val_t {
     VAL_ARR_ULONG,
     VAL_ARR_DOUBLE,
     VAL_ARR_POINTER,
+    VAL_STRING,
 } val_t;
 
 //value of the argument 
