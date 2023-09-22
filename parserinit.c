@@ -960,6 +960,7 @@ void initializeInstances() {
 	addInstanceGoto(86,VAR_U1,74);
 	addInstanceGoto(86,VAR_V1,80);
 	addInstanceGoto(86,VAR_W1,118);
+	addInstanceGoto(86,VAR_J1,76);
 	//instance 87
 	addInstanceAction(87,STEP_REDUCE,26,TOKEN_RIGHTPAREN);
 	//instance 88
@@ -1124,7 +1125,7 @@ void initializeInstances() {
 	addInstanceAction(113,STEP_REDUCE,38,TOKEN_BREAK);
 	addInstanceAction(113,STEP_REDUCE,38,TOKEN_CONTINUE);
 	addInstanceAction(113,STEP_REDUCE,38,TOKEN_RIGHTCURLY);
-	//instancd 114
+	//instance 114
 	addInstanceAction(114,STEP_SHIFT,32,TOKEN_NUM);
 	addInstanceAction(114,STEP_SHIFT,79,TOKEN_ID);
 	addInstanceAction(114,STEP_SHIFT,77,TOKEN_AT);
@@ -1330,6 +1331,7 @@ void initializeInstances() {
 	addInstanceGoto(130,VAR_U1,74);
 	addInstanceGoto(130,VAR_V1,80);
 	addInstanceGoto(130,VAR_W1,137);
+	addInstanceGoto(130,VAR_J1,76);
 	//instance 131
 	addInstanceAction(131,STEP_SHIFT,138,TOKEN_LEFTCURLY);
 	//instance 132
