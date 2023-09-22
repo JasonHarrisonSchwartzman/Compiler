@@ -779,6 +779,9 @@ void globalDecl(struct quad *quad) {
     addData(decl);
 }
 
+/**
+ * Built in functions such as print
+*/
 void addBuiltInFunctions() {
     addCode("_prints:");
     addCode("PUSHQ %rbp");
