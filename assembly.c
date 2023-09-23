@@ -816,12 +816,12 @@ void addPrintd() {
     addCode("DIVQ %rcx");
     addCode("ADDQ '0', %rdx");
     addCode("DEC %rsi");
-    addCode("MOVQ %dl, %rsi");
+    addCode("MOV %dl, (%rsi)");
     addCode("TEST %rax, %rax");
     addCode("JNZ .toascii_digit");
     addCode("MOVQ $1, %rax");
     addCode("MOVQ $1, %rdi");
-    addCode("LEAQ (%rsp,,17), %rdx");
+    addCode("LEAQ 17(%rsp), %rdx");
     addCode("SUBQ %rsi,%rdx");
     addCode("SYSCALL");
     addCode("ADDQ $24, %rsp");
