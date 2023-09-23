@@ -807,6 +807,7 @@ void addPrints() {
  * Prints a digit
 */
 void addPrintd() {
+    addCode("_printd:");
     addCode("MOVQ %rdi, %rax");
     addCode("MOVQ %rsp, %rsi");
     addCode("SUBQ $16, %rsp");
