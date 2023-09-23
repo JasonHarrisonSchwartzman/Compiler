@@ -651,8 +651,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 	}
 }
 
-
-void createBuiltInFunctions(struct SymbolTable *sym) {
+void createPrints(struct SymbolTable *sym) {
 	struct FuncDecl *func = calloc(1,sizeof(struct FuncDecl));
 	func->line = 0;
 	func->name = "prints";
@@ -665,6 +664,27 @@ void createBuiltInFunctions(struct SymbolTable *sym) {
 	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
 	addSymbol(sym,s);
 	func->symbol = s;
+}
+
+void createPrintd(struct SymbolTable *sym) {
+	struct FuncDecl *func = calloc(1,sizeof(struct FuncDecl));
+	func->line = 0;
+	func->name = "printd";
+	func->type = NULL; // no return type could be problematic!
+	func->params = calloc(1,sizeof(struct Params));
+	func->params->var = calloc(1,sizeof(struct VarDecl));
+	func->params->var->type = calloc(1,sizeof(struct Type));
+	func->params->var->type->dataType = LONG;
+	func->params->var->type->pointer = 0;
+	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
+	addSymbol(sym,s);
+	func->symbol = s;
+}
+
+
+void createBuiltInFunctions(struct SymbolTable *sym) {
+	createPrints(sym);
+	createPrintd(sym);
 }
 
 /*void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func) {

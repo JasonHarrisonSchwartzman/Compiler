@@ -820,7 +820,7 @@ void addPrintd() {
     addCode("JNZ .toascii_digit");
     addCode("MOVQ $1, %rax");
     addCode("MOVQ $1, %rdi");
-    addCode("LEAQ (%rsp,1,17), %rdx");
+    addCode("LEAQ (%rsp,,17), %rdx");
     addCode("SUBQ %rsi,%rdx");
     addCode("SYSCALL");
     addCode("ADDQ $24, %rsp");
