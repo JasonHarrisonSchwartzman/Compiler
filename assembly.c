@@ -779,6 +779,9 @@ void globalDecl(struct quad *quad) {
     addData(decl);
 }
 
+/**
+ * Prints a string
+*/
 void addPrints() {
     addCode("_prints:");
     addCode("PUSHQ %rbp");
@@ -801,10 +804,35 @@ void addPrints() {
 }
 
 /**
+ * Prints a digit
+*/
+void addPrintd() {
+    addCode("MOVQ %rdi, %rax");
+    addCode("MOVQ %rsp, %rsi");
+    addCode("SUBQ $16, %rsp");
+    addCode(".toascii_digit:");
+    addCode("XOR %rdx, %rdx");
+    addCode("DIVQ %rcx");
+    addCode("ADDQ '0', %rdx");
+    addCode("DEC %rsi");
+    addCode("MOVQ %dl, %rsi");
+    addCode("TEST %rax, %rax");
+    addCode("JNZ .toascii_digit");
+    addCode("MOVQ $1, %rax");
+    addCode("MOVQ $1, %rdi");
+    addCode("LEAQ (%rsp,1,17), %rdx");
+    addCode("SUBQ %rsi,%rdx");
+    addCode("SYSCALL");
+    addCode("ADDQ $24, %rsp");
+    addCode("RET");
+}
+
+/**
  * Built in functions such as print
 */
 void addBuiltInFunctions() {
     addPrints();
+    addPrintd();
 }
 
 /**
