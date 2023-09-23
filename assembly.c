@@ -779,10 +779,7 @@ void globalDecl(struct quad *quad) {
     addData(decl);
 }
 
-/**
- * Built in functions such as print
-*/
-void addBuiltInFunctions() {
+void addPrints() {
     addCode("_prints:");
     addCode("PUSHQ %rbp");
     addCode("MOVQ %rsp, %rbp");
@@ -801,6 +798,13 @@ void addBuiltInFunctions() {
     addCode("SYSCALL");
     addCode("POPQ %rbp");
     addCode("RET");
+}
+
+/**
+ * Built in functions such as print
+*/
+void addBuiltInFunctions() {
+    addPrints();
 }
 
 /**
