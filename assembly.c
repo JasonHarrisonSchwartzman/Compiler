@@ -152,6 +152,32 @@ char *scratch_name(int reg) {
     return registers[reg].name;
 }
 
+char* registerBytes[16] = {
+    "%al",
+    "%bl",
+    "%cl",
+    "%dl",
+    "%sil",
+    "%dil",
+    "%bpl",
+    "%spl",
+    "%r8b",
+    "%r9b",
+    "%r10b",
+    "%r11b",
+    "%r12b",
+    "%r13b",
+    "%r14b",
+    "%r15b",
+};
+
+/**
+ * Returns the byte sub-regstier
+*/
+char *scratch_name_byte(int reg) {
+    return registerBytes[reg];
+}
+
 /**
  * Increments label and returns current value
 */
@@ -553,7 +579,7 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETNE ",scratch_name(reg3));
+            char *set = concatenateStrings("SETNE ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
@@ -569,7 +595,7 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETGE ",scratch_name(reg3));
+            char *set = concatenateStrings("SETGE ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
@@ -585,7 +611,7 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETLE ",scratch_name(reg3));
+            char *set = concatenateStrings("SETLE ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
@@ -601,7 +627,7 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETG ",scratch_name(reg3));
+            char *set = concatenateStrings("SETG ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
@@ -616,7 +642,7 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg1);
             scratch_free(reg2);
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETL ",scratch_name(reg3));
+            char *set = concatenateStrings("SETL ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
@@ -632,7 +658,7 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETE ",scratch_name(reg3));
+            char *set = concatenateStrings("SETE ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
