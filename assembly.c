@@ -809,6 +809,8 @@ void addPrints() {
 void addPrintd() {
     addCode("_printd:");
     addCode("MOVQ %rdi, %rax");
+    addCode("MOVQ $10, %rax");
+    addCode("PUSHQ %rcx");
     addCode("MOVQ %rsp, %rsi");
     addCode("SUBQ $16, %rsp");
     addCode(".toascii_digit:");
@@ -821,7 +823,7 @@ void addPrintd() {
     addCode("JNZ .toascii_digit");
     addCode("MOVQ $1, %rax");
     addCode("MOVQ $1, %rdi");
-    addCode("LEAQ 17(%rsp), %rdx");
+    addCode("LEAQ 16(%rsp), %rdx");
     addCode("SUBQ %rsi,%rdx");
     addCode("SYSCALL");
     addCode("ADDQ $24, %rsp");
