@@ -809,7 +809,7 @@ void addPrints() {
 void addPrintd() {
     addCode("_printd:");
     addCode("MOVQ %rdi, %rax");
-    addCode("MOVQ $10, %rax");
+    addCode("MOVQ $10, %rcx");
     addCode("PUSHQ %rcx");
     addCode("MOVQ %rsp, %rsi");
     addCode("SUBQ $16, %rsp");
