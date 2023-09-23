@@ -814,7 +814,7 @@ void addPrintd() {
     addCode(".toascii_digit:");
     addCode("XOR %rdx, %rdx");
     addCode("DIVQ %rcx");
-    addCode("ADDQ '0', %rdx");
+    addCode("ADDQ $48, %rdx");
     addCode("DEC %rsi");
     addCode("MOV %dl, (%rsi)");
     addCode("TEST %rax, %rax");
