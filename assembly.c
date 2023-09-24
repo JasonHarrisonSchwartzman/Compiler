@@ -636,14 +636,14 @@ void expr_codegen(struct quad *quad) {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
             //printf("REG1:%d REG2:%d\n",reg1,reg2);
-            char *cmp = concatenateStrings("CMP ",scratch_name(reg2));
+            char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
             cmp = concatenateStrings(cmp, ", ");
-            cmp = concatenateStrings(cmp,scratch_name(reg1));
+            cmp = concatenateStrings(cmp,scratch_name(reg2));
             addCode(cmp);
             scratch_free(reg1);
             scratch_free(reg2);
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETL ",scratch_name_byte(reg3));
+            char *set = concatenateStrings("SETLE ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
