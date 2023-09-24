@@ -778,8 +778,8 @@ long getValue(val_t val, union value value) {
  * Performs operation on two constants
 */
 long performOperation(struct argument *arg1, struct argument *arg2, enum op op) {
-    long value1 = getValue(arg1->val_t,arg1->value);
-    long value2 = getValue(arg2->val_t,arg2->value);
+    long value2 = getValue(arg1->val_t,arg1->value);
+    long value1 = getValue(arg2->val_t,arg2->value);
     switch(op) {
         case OP_ADD:
             return value2 + value1;
