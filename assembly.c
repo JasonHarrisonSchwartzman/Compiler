@@ -873,10 +873,6 @@ void generateCode() {
     int inFunction = 0;
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
-        //printf("Num quad: %d\n",i);
-        if (quads[i]->operation == OP_PARAM) {
-            printf("PARAM FOUND\n");
-        }
         if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
             printf("calcing symbol %s\n",quads[i]->symbol->name);
             symbol_codegen(quads[i],quads[i]->symbol);
@@ -903,6 +899,7 @@ void generateCode() {
                 addParamsToStack(quads[i]);
                 i++;
                 while (quads[i]->operation == OP_PARAM) {
+                    quads[i]->numQuad = i;
                     symbol_codegen(quads[i],quads[i]->symbol);
                     i++;
                 }
