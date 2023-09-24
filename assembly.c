@@ -643,7 +643,7 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg1);
             scratch_free(reg2);
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETLE ",scratch_name_byte(reg3));
+            char *set = concatenateStrings("SETL ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
