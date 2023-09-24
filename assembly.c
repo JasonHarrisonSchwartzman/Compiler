@@ -636,9 +636,9 @@ void expr_codegen(struct quad *quad) {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
             //printf("REG1:%d REG2:%d\n",reg1,reg2);
-            char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
+            char *cmp = concatenateStrings("CMP ",scratch_name(reg2));
             cmp = concatenateStrings(cmp, ", ");
-            cmp = concatenateStrings(cmp,scratch_name(reg2));
+            cmp = concatenateStrings(cmp,scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
             scratch_free(reg2);
