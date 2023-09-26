@@ -166,6 +166,13 @@ void initialize() {
 	states[103].token = TOKEN_WHITESPACE; //comments
 	
 	for (int i = 0; i < NUM_STATES - 3; i++) {
+		if (i == 99) {
+			addTransition(i, ' ', 99, 0);
+			addTransition(i, '\n', 99, 0);
+			addTransition(i, '\t', 99, 0);
+			addTransition(i, '\r', 99, 0);
+			continue;
+		}
 		addTransition(i, ' ', 102, 1);
 		addTransition(i, '\n',102, 1);
 		addTransition(i, '\t',102, 1);
