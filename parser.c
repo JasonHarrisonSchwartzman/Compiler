@@ -25,12 +25,12 @@ void printStack() {
 	for (int i = 0; i <= stackTopPointer; i++) {
 		printf("%d ", stack[i]->instance);
 		if (stack[i]->token != NULL) {
-			printToken(stack[i]->token->tokenType);
+			//printToken(stack[i]->token->tokenType);
 			printf(" ");
 			//printf("%d ",stack[i]->token->tokenType);
 		}
 		if (stack[i]->var != 0) {
-			printToken(stack[i]->var);
+			//printToken(stack[i]->var);
 			printf(" ");
 			//printf("%d ",stack[i]->var);
 		}
@@ -353,7 +353,7 @@ int parse() {
 	printStack();
 	while(1) {
 		printf("Reading token %d: ",tokenIndex);
-		printToken(tokens[tokenIndex]->tokenType);
+		//printToken(tokens[tokenIndex]->tokenType);
 		printf("\n");
 		if (tokens[tokenIndex]->tokenType == TOKEN_WHITESPACE) {
 			printf("Skipping whitespace!\n");
@@ -378,7 +378,7 @@ int parse() {
 			printParserError(tokens[tokenIndex]);
 			//printLine(tokens[tokenIndex]->line);
 			printf("Token not found %s NUM: %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
-			printToken(tokens[tokenIndex]->tokenType);
+			//printToken(tokens[tokenIndex]->tokenType);
 			printf("\n");
 			return 0;
 		}
