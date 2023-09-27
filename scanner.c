@@ -51,16 +51,16 @@ void transitionError(int startState, char letter, char *curString, int curLength
 	strncpy(c, curString, curLength);
 
 	//general error message
-	printf("Adding character '%c' to string '%s' will result in an invalid token\n",letter, (curLength == 0) || isWhitespace(c) ? "" : c);
+	fprintf(stderr,"Adding character '%c' to string '%s' will result in an invalid token\n",letter, (curLength == 0) || isWhitespace(c) ? "" : c);
 
 	//more specific error message
 	if (letter == '.') {
-		if (startState == 101) printf("Decimals can only have 1 '.' character\n");
-		else printf("Character '.' can only be used within a valid decimal token\n");
+		if (startState == 101) fprintf(stderr,"Decimals can only have 1 '.' character\n");
+		else fprintf(stderr,"Character '.' can only be used within a valid decimal token\n");
 	}
 
 	printLine(lineNum);
-	for (int i = 0; i < lineNum/10 + 4; i++) printf(" ");
+	for (int i = 0; i < lineNum/10 + 4; i++) fprintf(stderr," ");
 	unsigned long tokenIndex;
 	//find the current line number the error is on
 	for (tokenIndex = 0; tokenIndex < numTokens; tokenIndex++) {
@@ -84,13 +84,13 @@ void transitionError(int startState, char letter, char *curString, int curLength
 			}
 		}*/
 	}
-	printf("|");
+	fprintf(stderr,"|");
 	//if (curString[0] == '\t') printf("\t");//if a tab character is in the token stream a tab character must be printed to cover the same spacing
 	for (int i = 0; i < curLength -1 ; i++) {
-		printf(" ");
+		fprintf(stderr," ");
 	}
-	printf("^");//this should point to the invalid character in the line above
-	printf("\n\n");
+	fprintf(stderr,"^");//this should point to the invalid character in the line above
+	fprintf(stderr,"\n\n");
 }
 
 /*

@@ -373,27 +373,27 @@ void printError(int errorNum, char *name,unsigned long line1, unsigned long line
 	printf("Error #%lu:\n",errorNumber);
 	switch(errorNum) {
 		case 1:
-			printf("Redeclaration of identifier \"%s\" attempted on line [%lu] and declared on line [%lu] within the same scope.\n",name,line1,line2);
+			fprintf(stderr,"Redeclaration of identifier \"%s\" attempted on line [%lu] and declared on line [%lu] within the same scope.\n",name,line1,line2);
 			printLine(line2);
 			printLine(line1);
-			printf("To fix: either rename one of the identifiers and all uses of it or declare one of the identifiers in another scope.\n");
+			fprintf(stderr,"To fix: either rename one of the identifiers and all uses of it or declare one of the identifiers in another scope.\n");
 			break;
 		case 2:
-			printf("Identifier \"%s\" on line [%lu] not declared.\n",name,line1);
+			fprintf(stderr,"Identifier \"%s\" on line [%lu] not declared.\n",name,line1);
 			printLine(line1);
-			printf("To fix: declare the variable in a previous line or make this line a declaration\n");
+			fprintf(stderr,"To fix: declare the variable in a previous line or make this line a declaration\n");
 			break;
 		case 3:
-			printf("Identifier \"%s\" on line [%lu] is declared as a variable and is attempting to use it as a function call\n",name,line1);
+			fprintf(stderr,"Identifier \"%s\" on line [%lu] is declared as a variable and is attempting to use it as a function call\n",name,line1);
 			printLine(line1);
-			printf("To fix: either the name of the function is wrong or remove the parentheses\n");
+			fprintf(stderr,"To fix: either the name of the function is wrong or remove the parentheses\n");
 			break;
 		case 4:
-			printf("Control flow statement outside of loop.\n");
-			printf("To fix: remove this statement or put it within a loop.\n");
+			fprintf(stderr,"Control flow statement outside of loop.\n");
+			fprintf(stderr,"To fix: remove this statement or put it within a loop.\n");
 			break;
 	}
-	printf("\n");
+	fprintf(stderr,"\n");
 	errorNumber++;
 }
 

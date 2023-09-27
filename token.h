@@ -443,7 +443,7 @@ void printLine(unsigned long line) {
 		str = strncat(str, &c, 1);
 		i++;	
 	}
-	printf("[%lu]: %s",line,str);
+	fprintf(stderr,"[%lu]: %s",line,str);
 }
 
 /*
@@ -708,7 +708,7 @@ void printToken(token_t token) {
 			str = "ERROR TOKEN NOT FOUND";
 			break;
 	}
-	printf("%s",str);
+	fprintf(stderr,"%s",str);
 }
 
 

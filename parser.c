@@ -82,7 +82,7 @@ void *pop() {
 void printParserError(Token *token) {
 	int i;
 	printLine(token->line);
-	for (int x = 0; x < token->line/10 + 4; x++) printf(" ");
+	for (int x = 0; x < token->line/10 + 4; x++) fprintf(stderr," ");
 	for (i = 0; i < numTokens; i++) {
 		
 		if(tokens[i]->line == token->line) break;	
@@ -97,18 +97,18 @@ void printParserError(Token *token) {
 			//	continue;
 			}
 			whitespace = 1;
-			printf(" ");
+			fprintf(stderr," ");
 		}
 		else {
 			//printf("%x ", tokens[i]->token[0]);
 			for(int j = 0; j < strlen(tokens[i]->token); j++) {
-				printf(" ");
+				fprintf(stderr," ");
 			}
 			whitespace = 0;
 		}
 	}
-	printf("^");
-	printf("\n\n");
+	fprintf(stderr,"^");
+	fprintf(stderr,"\n\n");
 }
 
 //not finished yet TODO
