@@ -370,7 +370,7 @@ struct Symbol *lookUpName(char *name, struct SymbolTable *symTab) {
  * Given the error number and information prints out error messages in terms of the semantics of the language.
  */
 void printError(int errorNum, char *name,unsigned long line1, unsigned long line2) {
-	printf("Error #%lu:\n",errorNumber);
+	fprintf(stderr,"Error #%lu:\n",errorNumber);
 	switch(errorNum) {
 		case 1:
 			fprintf(stderr,"Redeclaration of identifier \"%s\" attempted on line [%lu] and declared on line [%lu] within the same scope.\n",name,line1,line2);
