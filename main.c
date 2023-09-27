@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 		printf("SCANNER FAILURE.\n");
 		exit(1);
 	}
-	printTokens();
+	//printTokens();
 	initializeRules();
 	//printRules();
 	createInstanceAndVarTokens();
