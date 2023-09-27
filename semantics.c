@@ -534,11 +534,11 @@ int resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 		printError(3, funccall->name,funccall->symbol->line,0);
 		return 0;
 	}
-	struct FunctionArgs *fargs = funccall->funcargs;
+	/*struct FunctionArgs *fargs = funccall->funcargs;
 	while (fargs) {
 		if (resolveExpr(symTab, fargs->expr) == 0) return 0;
 		fargs = fargs->funcargs;
-	}
+	}*/
 	return 1;
 }
 /*
