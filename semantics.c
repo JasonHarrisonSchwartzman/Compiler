@@ -133,7 +133,7 @@ struct Type *inferLiteral(struct Value *value) {
 		else {
 			type->dataType = determineSmallestType(val);
 		}
-		type->dataType = CHAR;
+		//type->dataType = CHAR;
 		return type;
 	}
 	else if(value->val_t == CHARCONST) {
