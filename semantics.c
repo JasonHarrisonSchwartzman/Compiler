@@ -177,7 +177,6 @@ struct Type *getType(struct Evaluation *eval) {
 		printf("index checked\n");
 
 		struct Expression *index = eval->type->length;
-		printf("hi\n");
 		/*if (eval->type) {
 			index = eval->type->length;
 		}
@@ -188,7 +187,6 @@ struct Type *getType(struct Evaluation *eval) {
 		eval->type->sign = eval->symbol->type->sign;
 	
 		eval->type->length = index;
-		printf("done\n");
 		return eval->type;
 	}
 	else {
@@ -204,43 +202,7 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		printf("Type of eval pointer: %p\n",getType(eval1));
 		return eval1->type = getType(eval1);
 	}
-	/*
-	Commenting out the following because unsure if I will typecheck based on operation
-	switch (*op) {
-		case PLUS:
-			break;
-		case MINUS:
-			break;
-		case MULT:
-			break;
-		case DIV:
-			break;
-		case MOD:
-			break;
-		case BITWISEAND:
-			break;
-		case BITWISEOR:
-			break;
-		case BITWISEXOR:
-			break;
-		case EQUAL:
-			break;
-		case GREATEQUAL:
-			break;
-		case LESSEQUAL:
-			break;
-		case GREAT:
-			break;
-		case LESS:
-			break;
-		case AND:
-			break;
-		case NOT:
-			break;
-		case OR:
-			break;
-	}
-	*/
+	
 	struct Type *type1 = getType(eval1);
 	struct Type *type2 = getType(eval2);
 
@@ -254,7 +216,7 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		type1->sign = SIGNED;
 		type2->sign = SIGNED;
 	}
-	if (type1->pointer > 0 || type2->pointer > 0) {//both become points
+	if (type1->pointer > 0 || type2->pointer > 0) {//both become pointers
 		printf("Pointer present in one or more evals");
 		printf("%d %d\n",type1->pointer,type2->pointer);
 		type1->pointer = 1;
