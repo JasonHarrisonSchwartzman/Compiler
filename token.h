@@ -440,7 +440,7 @@ void printLine(unsigned long line) {
 			c = lineStr[i];
 			whiteSpace = 0;
 		}
-		str = strncat(str, &c, 1);
+		str[i] = c;
 		i++;	
 	}
 	str[i] = '\0';
