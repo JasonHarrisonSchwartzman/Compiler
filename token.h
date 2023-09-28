@@ -421,14 +421,14 @@ void addLine(char *line) {
 
 //prints line from lines array
 void printLine(unsigned long line) {
-	int lineLength = strlen(lines[line -1] + 1);
-	char *str = malloc(lineLength + 1);
+	int lineLength = strlen(lines[line -1]);
+	char *str = calloc(1,lineLength + 1);
 	int i = 0;
 	int whiteSpace = 1;
 	char *lineStr = lines[line-1];
 	while (i < lineLength) {
 		char c;
-		if ((lineStr[i] == '\t') || (lineStr[i] == ' ')) {
+		if ((lineStr[i] == '\t') || (lineStr[i] == ' ')) {//removing concurrent whitespace
 			if (whiteSpace) {
 				i++;
 				continue;
@@ -440,10 +440,9 @@ void printLine(unsigned long line) {
 			c = lineStr[i];
 			whiteSpace = 0;
 		}
-		str[i] = c;
+		str = strncat(str, &c, 1);
 		i++;	
 	}
-	str[i] = '\0';
 	fprintf(stderr,"[%lu]: %s",line,str);
 }
 
