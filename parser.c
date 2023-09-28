@@ -25,12 +25,12 @@ void printStack() {
 	for (int i = 0; i <= stackTopPointer; i++) {
 		printf("%d ", stack[i]->instance);
 		if (stack[i]->token != NULL) {
-			//printToken(stack[i]->token->tokenType);
+			printToken(stack[i]->token->tokenType);
 			printf(" ");
 			//printf("%d ",stack[i]->token->tokenType);
 		}
 		if (stack[i]->var != 0) {
-			//printToken(stack[i]->var);
+			printToken(stack[i]->var);
 			printf(" ");
 			//printf("%d ",stack[i]->var);
 		}
