@@ -421,7 +421,7 @@ void addLine(char *line) {
 
 //prints line from lines array
 void printLine(unsigned long line) {
-	int lineLength = strlen(lines[line -1]);
+	int lineLength = strlen(lines[line -1] + 1);
 	char *str = malloc(lineLength + 1);
 	int i = 0;
 	int whiteSpace = 1;
