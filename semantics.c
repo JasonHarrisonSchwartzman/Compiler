@@ -5,6 +5,7 @@
 
 struct Type *typeCheckExpr();
 int resolveExpr();
+int resolveFuncCall();
 
 /**
  * This file deals with the semantics of the language after being given a syntax tree from the parser.
@@ -122,7 +123,7 @@ struct Type *inferLiteral(struct Value *value) {
 		type->pointer = 0;
 		type->length = NULL;
 		type->sign = SIGNED;
-		if (memchr(val, '.', sizeof(val)) != NULL) {
+		if (memchr(val, '.', 8) != NULL) {//8 was formerly sizeof(val)
 			type->dataType = DOUBLE;
 		}
 		else {
@@ -351,8 +352,6 @@ void printError(int errorNum, char *name,unsigned long line1, unsigned long line
 	errorNumber++;
 }
 
-int resolveExpr();
-
 /*
  * takes a var decl to create a symbol to add to current scope
  */
@@ -406,8 +405,6 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 	addSymbol(symTab,s);
 	param->var->symbol = s;
 }
-
-int resolveFuncCall();
 
 /*
  * Looks up in the symbol table if the symbol exists exists

@@ -9,11 +9,11 @@
 
 //not finished yet TODO
 void printParsingError(unsigned long n) {
-	switch (n) {
+	/*switch (n) {
 		case 1: 
 			printf("");
 			break;
-	}
+	}*/
 }
 
 //creates instance and variable tokens to be pushed onto the stack when needed
