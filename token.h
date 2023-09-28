@@ -443,6 +443,7 @@ void printLine(unsigned long line) {
 		str = strncat(str, &c, 1);
 		i++;	
 	}
+	str[i] = '\0';
 	fprintf(stderr,"[%lu]: %s",line,str);
 }
 
