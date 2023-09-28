@@ -3,9 +3,12 @@
 #include <string.h>
 #include <limits.h>
 
+struct Type *typeCheckExpr();
+int resolveExpr();
+
 /**
  * This file deals with the semantics of the language after being given a syntax tree from the parser.
- * Some semantics include the symbol table, expression resolution, etc.
+ * Some semantics include the symbol table, expression resolution, type resolution.
  */
 
 extern struct Declaration *syntaxTree;
@@ -80,14 +83,8 @@ void printSymbolTable(struct SymbolTable *sym) {
 	}
 }
 
-
 /*
-
-CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons, they will be converted to the bigger type before computed.
-
- */
-
-/*
+* CHAR SHORT INT LONG can be manipulated with any of the operators or comparisons, they will be converted to the bigger type before computed.
 * For inferring literals
 */
 type_t determineSmallestType(char *str) {
@@ -125,15 +122,12 @@ struct Type *inferLiteral(struct Value *value) {
 		type->pointer = 0;
 		type->length = NULL;
 		type->sign = SIGNED;
-
 		if (memchr(val, '.', sizeof(val)) != NULL) {
 			type->dataType = DOUBLE;
-			printf("DOUBLE\n");
 		}
 		else {
 			type->dataType = determineSmallestType(val);
 		}
-		//type->dataType = CHAR;
 		return type;
 	}
 	else if(value->val_t == CHARCONST) {
@@ -155,8 +149,6 @@ struct Type *inferLiteral(struct Value *value) {
 	}
 }
 
-struct Type *typeCheckExpr();
-int resolveExpr();
 /*
 * Gets type of eval (VALUE or other)
 */
