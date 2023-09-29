@@ -353,7 +353,7 @@ int parse() {
 	printStack();
 	while(1) {
 		printf("Reading token %d: ",tokenIndex);
-		//printToken(tokens[tokenIndex]->tokenType);
+		printToken(tokens[tokenIndex]->tokenType);
 		printf("\n");
 		if (tokens[tokenIndex]->tokenType == TOKEN_WHITESPACE) {
 			printf("Skipping whitespace!\n");

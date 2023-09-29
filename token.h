@@ -708,7 +708,7 @@ void printToken(token_t token) {
 			str = "ERROR TOKEN NOT FOUND";
 			break;
 	}
-	fprintf(stderr,"%s",str);
+	fprintf(stdout,"%s",str);
 }
 
 
