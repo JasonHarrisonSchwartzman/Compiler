@@ -886,8 +886,10 @@ void generateCode() {
     addBuiltInData();
     addBuiltInFunctions();
     int inFunction = 0;
+    int paramNum = 1;
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
+        printf("i: %d\n",i);
         if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
             printf("calcing symbol %s\n",quads[i]->symbol->name);
             symbol_codegen(quads[i],quads[i]->symbol);
@@ -900,7 +902,7 @@ void generateCode() {
             }
             if (quads[i]->symbol) {//new function
                 inFunction = 1;
-                //printf("In function\n");
+                printf("In function\n");
                 printSymbolAddress();
                 symAdds = realloc(symAdds, 0);
                 numSymbols = 0;
@@ -910,16 +912,21 @@ void generateCode() {
                 addCode("PUSHQ %rbp");
                 addCode("MOVQ %rsp, %rbp");
 
-                //printf("added func\n");
+                printf("added func\n");
                 addParamsToStack(quads[i]);
-                i++;
-                while (quads[i]->operation == OP_PARAM) {
+                printf("params added to stack\n");
+                int funcNum = i;
+                for (int j = 0; j < getValue(quads[funcNum]->arg1->val_t,quads[funcNum]->arg1->value); j++) {
                     quads[i]->numQuad = i;
                     symbol_codegen(quads[i],quads[i]->symbol);
                     i++;
                 }
-                //printf("done adding params\n");
-                i--;
+                /*while (quads[i]->operation == OP_PARAM) {
+                    quads[i]->numQuad = i;
+                    symbol_codegen(quads[i],quads[i]->symbol);
+                    i++;
+                }*/
+                printf("done adding params\n");
             }
             else {
                 char *label = concatenateStrings(quads[i]->result,":");
@@ -942,7 +949,26 @@ void generateCode() {
             scratch_free(quads[i]->reg);
             addCode(storeVar);
         }
+        else if (quads[i]->operation == OP_PARAM) {
+            printf("PARAM\n");
+            char *arg = symbolToOperand(quads[i],quads[i]->arg1);
+            char *movArg = concatenateStrings("MOVQ ", arg);
+            movArg = concatenateStrings(movArg, ", ");
+            char *regArg = argNumToReg(paramNum);
+            movArg = concatenateStrings(movArg,regArg);
+            addCode(movArg);
+            printf("SJLDKFJSD:\n");
+            paramNum++;
+        }
         else if (quads[i]->operation == OP_CALL) {
+            char *call = concatenateStrings("CALL _",quads[i]->arg1->name);
+            addCode(call);
+            for (int j = 1; j < paramNum; j++) {
+                scratch_free(regNameToNum(argNumToReg(j)));//frees the argument register
+            }
+            paramNum = 1;
+        }
+        /*else if (quads[i]->operation == OP_CALL) {
             //printf("CALL %s\n",quads[i]->arg1->name);
             int numArgs = getValue(quads[i]->arg2->val_t,quads[i]->arg2->value);
             for (int j = i + 1; j < numQuads; j++) {
@@ -964,7 +990,7 @@ void generateCode() {
             }
             char *call = concatenateStrings("CALL _",quads[i]->arg1->name);
             addCode(call);
-        }
+        }*/
         else if (quads[i]->operation < 19) {
             expr_codegen(quads[i]);
         }
@@ -993,6 +1019,7 @@ void generateCode() {
             scratch_free(reg1);
         }
     }
+    printf("MAIN CODE GEN FINISHED\n");
     printSymbolAddress();
     printf("--------------------------\n");
     addCode("MOVQ $60, %rax");

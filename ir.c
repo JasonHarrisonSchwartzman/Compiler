@@ -483,7 +483,7 @@ char *createQuadFuncCall(struct FunctionCall *call) {
         num++;
         count = count->funcargs;
     }
-    char *tempName = addQuad(createQuad(createArg(call->name,-1,0),createArg(NULL,VAL_ULONG,num),OP_CALL,createName("t",temp)));
+    //char *tempName = addQuad(createQuad(createArg(call->name,-1,0),createArg(NULL,VAL_ULONG,num),OP_CALL,createName("t",temp)));
     struct FunctionArgs *args = call->funcargs;
     while (args) {
         if (!args->expr->expr) {
@@ -499,6 +499,7 @@ char *createQuadFuncCall(struct FunctionCall *call) {
         }
         args = args->funcargs;
     }
+    char *tempName = addQuad(createQuad(createArg(call->name,-1,0),createArg(NULL,VAL_ULONG,num),OP_CALL,createName("t",temp)));
     printf("DONE with funccall\n");
     return tempName;
 }
