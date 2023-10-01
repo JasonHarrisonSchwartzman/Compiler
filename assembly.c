@@ -835,6 +835,14 @@ void addPrints() {
 */
 void addPrintd() {
     addCode("_printd:");
+    addCode("TEST %rdi, %rdi");
+    addCode("JNS .positive");
+    addCode("NEG %rdi");
+    addCode("MOVQ %rdi, %r9");
+    addCode("MOVQ negative, %rdi");
+    addCode("CALL _prints");
+    addCode("MOVQ %r9, %rdi");
+    addCode(".positive:");
     addCode("MOVQ %rdi, %rax");
     addCode("MOVQ $10, %rcx");
     addCode("PUSHQ %rcx");
@@ -864,11 +872,18 @@ void addBuiltInFunctions() {
     addPrints();
     addPrintd();
 }
+void addBuiltInData() {
+    addData(".negative:");
+    addData(".string \"-\"");
+    addData("negative:");
+    addData(".quad .negative");
+}
 
 /**
  * Generates code given IR
 */
 void generateCode() {
+    addBuiltInData();
     addBuiltInFunctions();
     int inFunction = 0;
     for (int i = 0; i < numQuads; i++) {
