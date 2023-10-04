@@ -636,9 +636,9 @@ void expr_codegen(struct quad *quad) {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
             //printf("REG1:%d REG2:%d\n",reg1,reg2);
-            char *cmp = concatenateStrings("CMP ",scratch_name(reg1));
+            char *cmp = concatenateStrings("CMP ",scratch_name(reg2));
             cmp = concatenateStrings(cmp, ", ");
-            cmp = concatenateStrings(cmp,scratch_name(reg2));
+            cmp = concatenateStrings(cmp,scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
             scratch_free(reg2);
@@ -826,6 +826,7 @@ void addPrints() {
     addCode("MOVQ $1, %rax");
     addCode("MOVQ %rax, %rdi");
     addCode("SYSCALL");
+    addCode("MOVQ %rbp, %rsp");
     addCode("POPQ %rbp");
     addCode("RET");
 }
@@ -890,12 +891,17 @@ void generateCode() {
     addBuiltInFunctions();
     int inFunction = 0;
     int paramNum = 1;
+    int stackSize = 0;
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
         printf("i: %d\n",i);
         if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
             printf("calcing symbol %s\n",quads[i]->symbol->name);
             symbol_codegen(quads[i],quads[i]->symbol);
+            
+            //stack size
+            addCode("SUBQ $8, %rsp");
+            stackSize+=8;
         }
         if (quads[i]->operation == OP_LABEL) {
             if (strcmp(quads[i]->result,"end func") == 0) {
@@ -907,8 +913,11 @@ void generateCode() {
                 inFunction = 1;
                 printf("In function\n");
                 printSymbolAddress();
+
                 symAdds = realloc(symAdds, 0);
                 numSymbols = 0;
+                stackSize = 0;
+
                 char *func = concatenateStrings("_",quads[i]->result);
                 func = concatenateStrings(func,":");
                 addCode(func);
@@ -1006,6 +1015,12 @@ void generateCode() {
             registers[0].inUse = 1;
             if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand));
             addCode(ret);
+
+            addCode("ADDQ $");
+            char *addBackToStack = concatenateStrings("ADDQ $",intToString(stackSize));
+            addBackToStack = concatenateStrings(addBackToStack,", %rsp");
+            addCode(addBackToStack);
+            addCode("MOVQ %rbp, %rsp");
             addCode("POPQ %rbp");
             addCode("RET");
         }
