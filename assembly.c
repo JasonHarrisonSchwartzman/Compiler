@@ -1016,7 +1016,6 @@ void generateCode() {
             if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand));
             addCode(ret);
 
-            addCode("ADDQ $");
             char *addBackToStack = concatenateStrings("ADDQ $",intToString(stackSize));
             addBackToStack = concatenateStrings(addBackToStack,", %rsp");
             addCode(addBackToStack);
