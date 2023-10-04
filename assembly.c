@@ -1034,7 +1034,7 @@ void generateCode() {
         }
         else if (quads[i]->operation == OP_JUMPIFNOT) {
             int reg1 = move(quads[i],quads[i]->arg1);
-            char *cmp = concatenateStrings("CMP $0, ",scratch_name(reg1));
+            char *cmp = concatenateStrings("CMP $1, ",scratch_name(reg1));
             addCode(cmp);
             char *jump = concatenateStrings("JNE ", quads[i]->result);
             addCode(jump);
