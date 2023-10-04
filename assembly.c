@@ -813,7 +813,7 @@ void addPrints() {
     addCode("_prints:");
     addCode("PUSHQ %rbp");
     addCode("MOVQ %rsp, %rbp");
-    addCode("MOVQ %rdi, -8(%rbp)");
+    addCode("PUSHQ %rdi");
     addCode("XOR %rcx, %rcx");
     addCode("NOT %rcx");
     addCode("XOR %al,%al");
@@ -835,6 +835,8 @@ void addPrints() {
 */
 void addPrintd() {
     addCode("_printd:");
+    addCode("PUSHQ %rbp");
+    addCode("MOVQ %rsp, %rbp");
     addCode("TEST %rdi, %rdi");
     addCode("JNS .positive");
     addCode("NEG %rdi");
