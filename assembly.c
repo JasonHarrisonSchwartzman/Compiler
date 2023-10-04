@@ -896,9 +896,6 @@ void generateCode() {
         quads[i]->numQuad = i;
         printf("i: %d\n",i);
         if (quads[i]->symbol && quads[i]->operation != OP_LABEL) {//symbol address (local variable/parameter)
-            printf("calcing symbol %s\n",quads[i]->symbol->name);
-            symbol_codegen(quads[i],quads[i]->symbol);
-            
             //stack size
             if (inFunction && (quads[i]->symbol->sym == SYMBOL_LOCAL)) {
                 char *address = lookUpAddress(quads[i]->symbol);
@@ -907,6 +904,9 @@ void generateCode() {
                     stackSize+=8;
                 }
             }
+            
+            printf("calcing symbol %s\n",quads[i]->symbol->name);
+            symbol_codegen(quads[i],quads[i]->symbol);
         }
         if (quads[i]->operation == OP_LABEL) {
             if (strcmp(quads[i]->result,"end func") == 0) {
