@@ -900,7 +900,7 @@ void generateCode() {
             symbol_codegen(quads[i],quads[i]->symbol);
             
             //stack size
-            if (inFunction) {
+            if (inFunction && quads[i]->symbol->sym == SYMBOL_LOCAL) {
                 addCode("SUBQ $8, %rsp");
                 stackSize+=8;
             }
