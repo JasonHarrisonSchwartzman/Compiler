@@ -864,6 +864,7 @@ void addPrintd() {
     addCode("SUBQ %rsi,%rdx");
     addCode("SYSCALL");
     addCode("ADDQ $24, %rsp");
+    addCode("POPQ %rbp");
     addCode("RET");
 }
 
