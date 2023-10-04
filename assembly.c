@@ -900,8 +900,10 @@ void generateCode() {
             symbol_codegen(quads[i],quads[i]->symbol);
             
             //stack size
-            addCode("SUBQ $8, %rsp");
-            stackSize+=8;
+            if (inFunction) {
+                addCode("SUBQ $8, %rsp");
+                stackSize+=8;
+            }
         }
         if (quads[i]->operation == OP_LABEL) {
             if (strcmp(quads[i]->result,"end func") == 0) {
