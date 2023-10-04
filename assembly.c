@@ -901,8 +901,11 @@ void generateCode() {
             
             //stack size
             if (inFunction && (quads[i]->symbol->sym == SYMBOL_LOCAL)) {
-                addCode("SUBQ $8, %rsp");
-                stackSize+=8;
+                char *address = lookUpAddress(quads[i]->symbol);
+                if (!address) {
+                    addCode("SUBQ $8, %rsp");
+                    stackSize+=8;
+                }
             }
         }
         if (quads[i]->operation == OP_LABEL) {
