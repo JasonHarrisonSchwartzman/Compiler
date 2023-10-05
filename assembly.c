@@ -569,10 +569,10 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg1);
             scratch_free(reg2);
             int reg3 = scratch_alloc();
-            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
-            addCode(clear);
             char *set = concatenateStrings(2,"SETNE ",scratch_name_byte(reg3));
             addCode(set);
+            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
+            addCode(clear);
             quad->reg = reg3;
             break; }
         case OP_GEQ:{
@@ -584,10 +584,10 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
-            addCode(clear);
             char *set = concatenateStrings(2,"SETGE ",scratch_name_byte(reg3));
             addCode(set);
+            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
+            addCode(clear);
             quad->reg = reg3;
             break; }
         case OP_LEQ:{
@@ -599,10 +599,10 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
-            addCode(clear);
             char *set = concatenateStrings(2,"SETLE ",scratch_name_byte(reg3));
             addCode(set);
+            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
+            addCode(clear);
             quad->reg = reg3;
             break; }
         case OP_GREAT:{
@@ -615,10 +615,10 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
-            addCode(clear);
             char *set = concatenateStrings(2,"SETG ",scratch_name_byte(reg3));
             addCode(set);
+            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
+            addCode(clear);
             quad->reg = reg3;
             break; }
         case OP_LESS: {
@@ -630,10 +630,10 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg1);
             scratch_free(reg2);
             int reg3 = scratch_alloc();
-            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
-            addCode(clear);
             char *set = concatenateStrings(2,"SETL ",scratch_name_byte(reg3));
             addCode(set);
+            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
+            addCode(clear);
             quad->reg = reg3;
             break; }
         case OP_EQ: {
@@ -646,10 +646,10 @@ void expr_codegen(struct quad *quad) {
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
-            addCode(clear);
             char *set = concatenateStrings(2,"SETE ",scratch_name_byte(reg3));
             addCode(set);
+            char *clear = concatenateStrings(2,"AND $0x000000FF, ", scratch_name(reg3));
+            addCode(clear);
             quad->reg = reg3;
             break; }
         case OP_REF:{
