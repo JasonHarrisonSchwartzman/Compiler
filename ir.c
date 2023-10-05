@@ -400,14 +400,15 @@ void createQuadConditional(struct CondStatement *cond) {
     char *labelName = createName("l",label);
     char *endLabel = createName("l",label);
 
-    int oneLabel = 1;
-
+    int onlyIf = 1;
+    int onlyElseIf = 0;
     addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIFNOT,labelName));
     createQuadStatements(cond->stmts);
     addQuad(createQuad(createArg("end_conditional",VAL_LONG,0),NULL,OP_JUMP,endLabel));
     cond = cond->next;
     while (cond && cond->stmt != ELSE) {//elseif
-        oneLabel = 0;
+        onlyIf = 0;
+        onlyElseIf = 1;
         addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
 
         tempName = createQuadExpr(cond->expr);
@@ -419,12 +420,14 @@ void createQuadConditional(struct CondStatement *cond) {
     }
     //else
     if (cond) {
-        oneLabel = 0;
+        onlyIf = 0;
+        onlyElseIf = 0;
         addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
 
         createQuadStatements(cond->stmts);
     }
-    if (oneLabel) addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
+    if (onlyElseIf) addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
+    if (onlyIf) addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
     addQuad(createQuad(createArg("end_conditional",VAL_LONG,0),NULL,OP_LABEL,endLabel));
 }
 
