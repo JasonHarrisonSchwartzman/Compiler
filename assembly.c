@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
 #include "syntaxtree.h"
 #include "ir.h"
 
@@ -34,6 +36,36 @@ char *concatenateStrings(char *str1, char *str2) {
     if (result == NULL) return NULL;
     strcpy(result, str1);
     strcat(result, str2);
+    return result;
+}
+char *concatenateStrings2(int numStrings, ...) {
+    // Initialize the result string with an empty string
+    char *result = (char *)malloc(1);
+    if (result == NULL) return NULL;
+    result[0] = '\0';
+
+    va_list args;
+    va_start(args, numStrings);
+
+    for (int i = 0; i < numStrings; i++) {
+        char *str = va_arg(args, char *);
+        if (str == NULL) {
+            // Handle NULL strings gracefully
+            continue;
+        }
+        size_t len1 = strlen(result);
+        size_t len2 = strlen(str);
+        char *temp = (char *)realloc(result, len1 + len2 + 1);
+        if (temp == NULL) {
+            free(result);
+            va_end(args);
+            return NULL;
+        }
+        result = temp;
+        strcat(result, str);
+    }
+
+    va_end(args);
     return result;
 }
 
@@ -341,10 +373,10 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
 */
 int move(struct quad *quad, struct argument *arg) {
     char *operand = symbolToOperand(quad,arg);
-    char *code1 = concatenateStrings("MOVQ ",operand);
     int reg1 = scratch_alloc();
-    code1 = concatenateStrings(code1,", ");
-    code1 = concatenateStrings(code1,scratch_name(reg1));
+    char *code1 = concatenateStrings2(4,"MOVQ ",operand,", ",scratch_name(reg1));
+    //code1 = concatenateStrings(code1,", ");
+    //code1 = concatenateStrings(code1,scratch_name(reg1));
     if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand)); //figure out why this line was needed
     addCode(code1);
     return reg1;
@@ -943,11 +975,6 @@ void generateCode() {
                     symbol_codegen(quads[i],quads[i]->symbol);
                     i++;
                 }
-                /*while (quads[i]->operation == OP_PARAM) {
-                    quads[i]->numQuad = i;
-                    symbol_codegen(quads[i],quads[i]->symbol);
-                    i++;
-                }*/
                 printf("done adding params\n");
             }
             else {
