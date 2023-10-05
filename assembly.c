@@ -758,7 +758,7 @@ void globalDecl(struct quad *quad) {
         addData(decl4);
         return;
     }
-    char *decl = concatenateStrings(2,quad->result, ": .quad");
+    char *decl = concatenateStrings(2,quad->result, ": .quad ");
     if (quad->operation == OP_ARRAY_CREATE) {//array
         for (int i = 0; i < getValue(quad->arg1->val_t,quad->arg1->value) - 1; i++) {
             decl = concatenateStrings(3,decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)),", ");
