@@ -28,7 +28,7 @@ int numDataLines = 0;
 
 /**
  * concats two strings
-*/
+
 char *concatenateStrings(char *str1, char *str2) {
     size_t len1 = strlen(str1);
     size_t len2 = strlen(str2);
@@ -37,8 +37,8 @@ char *concatenateStrings(char *str1, char *str2) {
     strcpy(result, str1);
     strcat(result, str2);
     return result;
-}
-char *concatenateStrings2(int numStrings, ...) {
+}*/
+char *concatenateStrings(int numStrings, ...) {
     // Initialize the result string with an empty string
     char *result = (char *)malloc(1);
     if (result == NULL) return NULL;
@@ -374,9 +374,7 @@ char *symbolToOperand(struct quad *quad, struct argument *arg) {
 int move(struct quad *quad, struct argument *arg) {
     char *operand = symbolToOperand(quad,arg);
     int reg1 = scratch_alloc();
-    char *code1 = concatenateStrings2(4,"MOVQ ",operand,", ",scratch_name(reg1));
-    //code1 = concatenateStrings(code1,", ");
-    //code1 = concatenateStrings(code1,scratch_name(reg1));
+    char *code1 = concatenateStrings(4,"MOVQ ",operand,", ",scratch_name(reg1));
     if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand)); //figure out why this line was needed
     addCode(code1);
     return reg1;
@@ -391,9 +389,7 @@ void expr_codegen(struct quad *quad) {
         case OP_ADD:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *add = concatenateStrings("ADDQ ",scratch_name(reg1));
-            add = concatenateStrings(add, ", ");
-            add = concatenateStrings(add,scratch_name(reg2));
+            char *add = concatenateStrings(4,"ADDQ ",scratch_name(reg1),", ",scratch_name(reg2));
             addCode(add);
             scratch_free(reg1);
             quad->reg = reg2;
@@ -403,9 +399,7 @@ void expr_codegen(struct quad *quad) {
             //sub eax, ebx  ; Subtract the value in ebx from eax, and store the result in eax
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *sub = concatenateStrings("SUBQ ",scratch_name(reg1));
-            sub = concatenateStrings(sub, ", ");
-            sub = concatenateStrings(sub,scratch_name(reg2));
+            char *sub = concatenateStrings(4,"SUBQ ",scratch_name(reg1),", ",scratch_name(reg2));
             addCode(sub);
             scratch_free(reg1);
             quad->reg = reg2;
@@ -413,9 +407,7 @@ void expr_codegen(struct quad *quad) {
         case OP_MULT: {
         int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *sub = concatenateStrings("IMUL ",scratch_name(reg1));
-            sub = concatenateStrings(sub, ", ");
-            sub = concatenateStrings(sub,scratch_name(reg2));
+            char *sub = concatenateStrings(4,"IMUL ",scratch_name(reg1),", ",scratch_name(reg2));
             addCode(sub);
             scratch_free(reg1);
             quad->reg = reg2;
@@ -430,43 +422,37 @@ void expr_codegen(struct quad *quad) {
             if (registers[0].inUse) {
                 raxUsed = 1;
                 raxTemp = scratch_alloc();
-                movRax = concatenateStrings("MOVQ %rax, ", scratch_name(raxTemp));
+                movRax = concatenateStrings(2,"MOVQ %rax, ", scratch_name(raxTemp));
                 addCode(movRax);
             }
             if (registers[3].inUse) {
                 rdxUsed = 1;
                 rdxTemp = scratch_alloc();
-                movRdx = concatenateStrings("MOVQ %rdx, ", scratch_name(rdxTemp));
+                movRdx = concatenateStrings(2,"MOVQ %rdx, ", scratch_name(rdxTemp));
                 addCode(movRdx);
             }
-
             char *dividend = symbolToOperand(quad,quad->arg1);
-            char *movDividend = concatenateStrings("MOVQ ", dividend);
-            movDividend = concatenateStrings(movDividend,", %rax");
+            char *movDividend = concatenateStrings(3,"MOVQ ", dividend,", %rax");
             addCode(movDividend);
             char *divisor = symbolToOperand(quad,quad->arg2);
-            char *movDivisor = concatenateStrings("MOVQ ", divisor);
             int divisorReg = scratch_alloc();
-            movDivisor = concatenateStrings(movDivisor,", ");
-            movDivisor = concatenateStrings(movDivisor,scratch_name(divisorReg));
+            char *movDivisor = concatenateStrings(4,"MOVQ ", divisor,", ",scratch_name(divisorReg));
             addCode(movDivisor);
-            char *div = concatenateStrings("IDIVQ ",scratch_name(divisorReg));
+            char *div = concatenateStrings(2,"IDIVQ ",scratch_name(divisorReg));
             addCode(div);
             int reg = scratch_alloc();
-            char *movResult = concatenateStrings("MOVQ %rax, ",scratch_name(reg));
+            char *movResult = concatenateStrings(2,"MOVQ %rax, ",scratch_name(reg));
             addCode(movResult);
             quad->reg = reg;
             scratch_free(divisorReg);
 
             if (raxUsed) {
-                char *movRaxBack = concatenateStrings("MOVQ ", scratch_name(raxTemp));
-                movRaxBack = concatenateStrings(movRaxBack, ", %rax");
+                char *movRaxBack = concatenateStrings(3, "MOVQ ", scratch_name(raxTemp), ", %rax");
                 addCode(movRaxBack);
                 scratch_free(raxTemp);
             }
             if (rdxUsed) {
-                char *movRdxBack = concatenateStrings("MOVQ ", scratch_name(rdxTemp));
-                movRdxBack = concatenateStrings(movRdxBack, ", %rdx");
+                char *movRdxBack = concatenateStrings(3,"MOVQ ", scratch_name(rdxTemp), ", %rdx");
                 addCode(movRdxBack);
                 scratch_free(rdxTemp);
             }
@@ -481,43 +467,38 @@ void expr_codegen(struct quad *quad) {
             if (registers[0].inUse) {
                 raxUsed = 1;
                 raxTemp = scratch_alloc();
-                movRax = concatenateStrings("MOVQ %rax, ", scratch_name(raxTemp));
+                movRax = concatenateStrings(2,"MOVQ %rax, ", scratch_name(raxTemp));
                 addCode(movRax);
             }
             if (registers[3].inUse) {
                 rdxUsed = 1;
                 rdxTemp = scratch_alloc();
-                movRdx = concatenateStrings("MOVQ %rdx, ", scratch_name(rdxTemp));
+                movRdx = concatenateStrings(2,"MOVQ %rdx, ", scratch_name(rdxTemp));
                 addCode(movRdx);
             }
 
             char *dividend = symbolToOperand(quad,quad->arg1);
-            char *movDividend = concatenateStrings("MOVQ ", dividend);
-            movDividend = concatenateStrings(movDividend,", %rax");
+            char *movDividend = concatenateStrings(3,"MOVQ ", dividend,", %rax");
             addCode(movDividend);
             char *divisor = symbolToOperand(quad,quad->arg2);
-            char *movDivisor = concatenateStrings("MOVQ ", divisor);
             int divisorReg = scratch_alloc();
-            movDivisor = concatenateStrings(movDivisor,", ");
-            movDivisor = concatenateStrings(movDivisor,scratch_name(divisorReg));
+            char *movDivisor = concatenateStrings(4,"MOVQ ", divisor,", ",scratch_name(divisorReg));
             addCode(movDivisor);
-            char *div = concatenateStrings("IDIVQ ",scratch_name(divisorReg));
+            char *div = concatenateStrings(2,"IDIVQ ",scratch_name(divisorReg));
             addCode(div);
             int reg = scratch_alloc();
-            char *movResult = concatenateStrings("MOVQ %rdx, ",scratch_name(reg));
+            char *movResult = concatenateStrings(2,"MOVQ %rdx, ",scratch_name(reg));
             addCode(movResult);
             quad->reg = reg;
             scratch_free(divisorReg);
 
             if (raxUsed) {
-                char *movRaxBack = concatenateStrings("MOVQ ", scratch_name(raxTemp));
-                movRaxBack = concatenateStrings(movRaxBack, ", %rax");
+                char *movRaxBack = concatenateStrings(3,"MOVQ ", scratch_name(raxTemp), ", %rax");
                 addCode(movRaxBack);
                 scratch_free(raxTemp);
             }
             if (rdxUsed) {
-                char *movRdxBack = concatenateStrings("MOVQ ", scratch_name(rdxTemp));
-                movRdxBack = concatenateStrings(movRdxBack, ", %rdx");
+                char *movRdxBack = concatenateStrings(3,"MOVQ ", scratch_name(rdxTemp),", %rdx");
                 addCode(movRdxBack);
                 scratch_free(rdxTemp);
             }
@@ -525,20 +506,16 @@ void expr_codegen(struct quad *quad) {
         case OP_BITAND: {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *sub = concatenateStrings("AND ",scratch_name(reg1));
-            sub = concatenateStrings(sub, ", ");
-            sub = concatenateStrings(sub,scratch_name(reg2));
-            addCode(sub);
+            char *and = concatenateStrings(4,"AND ",scratch_name(reg1),", ",scratch_name(reg2));
+            addCode(and);
             scratch_free(reg1);
             quad->reg = reg2;
             break; }
         case OP_BITOR: {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *sub = concatenateStrings("OR ",scratch_name(reg1));
-            sub = concatenateStrings(sub, ", ");
-            sub = concatenateStrings(sub,scratch_name(reg2));
-            addCode(sub);
+            char *or = concatenateStrings(4,"OR ",scratch_name(reg1),", ",scratch_name(reg2));
+            addCode(or);
             scratch_free(reg1);
             quad->reg = reg2;
             break; }
@@ -546,105 +523,79 @@ void expr_codegen(struct quad *quad) {
             printf("XOR\n");
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *sub = concatenateStrings("XORQ ",scratch_name(reg1));
-            sub = concatenateStrings(sub, ", ");
-            sub = concatenateStrings(sub,scratch_name(reg2));
-            addCode(sub);
+            char *xor = concatenateStrings(4,"XORQ ",scratch_name(reg1),", ",scratch_name(reg2));
+            addCode(xor);
             scratch_free(reg1);
             quad->reg = reg2;
             break; }
         case OP_AND: {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *and = concatenateStrings("TEST ",scratch_name(reg1));
-            and = concatenateStrings(and, ", ");
-            and = concatenateStrings(and,scratch_name(reg2));
+            char *and = concatenateStrings(4,"TEST ",scratch_name(reg1),", ",scratch_name(reg2));
             addCode(and);
             scratch_free(reg1);
             int reg3 = scratch_alloc();
-            char *move = concatenateStrings("MOVQ $0, ",scratch_name(reg3));
+            char *move = concatenateStrings(2,"MOVQ $0, ",scratch_name(reg3));
             addCode(move);
-            char *cmp = concatenateStrings("CMP $0, ",scratch_name(reg2));
+            char *cmp = concatenateStrings(2,"CMP $0, ",scratch_name(reg2));
             addCode(cmp);
-            char *cmov = concatenateStrings("CMOVNE $1,", scratch_name(reg3));
+            char *cmov = concatenateStrings(2,"CMOVNE $1,", scratch_name(reg3));
             addCode(cmov);
             scratch_free(reg2);
             quad->reg = reg3;
             break; }
         case OP_OR: {
-            /*int reg1 = move(quad,quad->arg1);
-            char *cmp = concatenateStrings("CMP $0, ", scratch_name(reg1));//comparies 0 and first value
-            addCode(cmp);
-            int dstReg1 = scratch_alloc();
-            char *tempReg1 = concatenateStrings("MOVQ $0, ", scratch_name(dstReg1));
-            addCode(tempReg1);
-            char *cmovReg1 = concatenateStrings("CMOVNE ",scratch_name(reg1));
-            cmovReg1 = concatenateStrings(cmovReg1, ", ");
-            cmovReg1 = concatenateStrings(cmovReg1,scratch_name(dstReg1));*/ 
             //THIS CODE COULD BE USED FOR SHORT CIRCUITING MAYBE
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *or = concatenateStrings("OR ",scratch_name(reg1));
-            or = concatenateStrings(or, ", ");
-            or = concatenateStrings(or,scratch_name(reg2));
+            char *or = concatenateStrings(4,"OR ",scratch_name(reg1),", ",scratch_name(reg2));
             addCode(or);
             scratch_free(reg1);
             int reg3 = scratch_alloc();
-            char *move = concatenateStrings("MOVQ $0, ",scratch_name(reg3));
+            char *move = concatenateStrings(2,"MOVQ $0, ",scratch_name(reg3));
             addCode(move);
-            char *cmp = concatenateStrings("CMP $0, ",scratch_name(reg2));
+            char *cmp = concatenateStrings(2,"CMP $0, ",scratch_name(reg2));
             addCode(cmp);
-            char *cmov = concatenateStrings("CMOVNE $1,", scratch_name(reg3));
+            char *cmov = concatenateStrings(2,"CMOVNE $1,", scratch_name(reg3));
             addCode(cmov);
             scratch_free(reg2);
             quad->reg = reg3;
-
             break;}
         case OP_NEQ:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            //printf("REG1:%d REG2:%d\n",reg1,reg2);
-            char *cmp = concatenateStrings("CMP ",scratch_name(reg2));
-            cmp = concatenateStrings(cmp, ", ");
-            cmp = concatenateStrings(cmp,scratch_name(reg1));
+            char *cmp = concatenateStrings(4,"CMP ",scratch_name(reg2),", ",scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
             scratch_free(reg2);
-
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETNE ",scratch_name_byte(reg3));
+            char *set = concatenateStrings(2,"SETNE ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
         case OP_GEQ:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            //printf("REG1:%d REG2:%d\n",reg1,reg2);
-            char *cmp = concatenateStrings("CMP ",scratch_name(reg2));
-            cmp = concatenateStrings(cmp, ", ");
-            cmp = concatenateStrings(cmp,scratch_name(reg1));
+            char *cmp = concatenateStrings(4,"CMP ",scratch_name(reg2),", ",scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETGE ",scratch_name_byte(reg3));
+            char *set = concatenateStrings(2,"SETGE ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
         case OP_LEQ:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            //printf("REG1:%d REG2:%d\n",reg1,reg2);
-            char *cmp = concatenateStrings("CMP ",scratch_name(reg2));
-            cmp = concatenateStrings(cmp, ", ");
-            cmp = concatenateStrings(cmp,scratch_name(reg1));
+            char *cmp = concatenateStrings(4,"CMP ",scratch_name(reg2),", ",scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETLE ",scratch_name_byte(reg3));
+            char *set = concatenateStrings(2,"SETLE ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
@@ -652,15 +603,13 @@ void expr_codegen(struct quad *quad) {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
             //printf("REG1:%d REG2:%d\n",reg1,reg2);
-            char *cmp = concatenateStrings("CMP ",scratch_name(reg2));
-            cmp = concatenateStrings(cmp, ", ");
-            cmp = concatenateStrings(cmp,scratch_name(reg1));
+            char *cmp = concatenateStrings(4,"CMP ",scratch_name(reg2),", ",scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETG ",scratch_name_byte(reg3));
+            char *set = concatenateStrings(2,"SETG ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
@@ -668,14 +617,12 @@ void expr_codegen(struct quad *quad) {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
             //printf("REG1:%d REG2:%d\n",reg1,reg2);
-            char *cmp = concatenateStrings("CMP ",scratch_name(reg2));
-            cmp = concatenateStrings(cmp, ", ");
-            cmp = concatenateStrings(cmp,scratch_name(reg1));
+            char *cmp = concatenateStrings(4,"CMP ",scratch_name(reg2),", ",scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
             scratch_free(reg2);
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETL ",scratch_name_byte(reg3));
+            char *set = concatenateStrings(2,"SETL ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
@@ -683,33 +630,27 @@ void expr_codegen(struct quad *quad) {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
             //printf("REG1:%d REG2:%d\n",reg1,reg2);
-            char *cmp = concatenateStrings("CMP ",scratch_name(reg2));
-            cmp = concatenateStrings(cmp, ", ");
-            cmp = concatenateStrings(cmp,scratch_name(reg1));
+            char *cmp = concatenateStrings(4,"CMP ",scratch_name(reg2),", ",scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
             scratch_free(reg2);
 
             int reg3 = scratch_alloc();
-            char *set = concatenateStrings("SETE ",scratch_name_byte(reg3));
+            char *set = concatenateStrings(2,"SETE ",scratch_name_byte(reg3));
             addCode(set);
             quad->reg = reg3;
             break; }
         case OP_REF:{
             char *var = symbolToOperand(quad,quad->arg1);
-            char *lea = concatenateStrings("LEAQ ", var);
             int reg1 = scratch_alloc();
             quad->reg = reg1;
-            lea = concatenateStrings(lea, ", ");
-            lea = concatenateStrings(lea,scratch_name(reg1));
+            char *lea = concatenateStrings(4,"LEAQ ", var,", ",scratch_name(reg1));
             addCode(lea);
             break; }
         case OP_DEREF: {
             char *var = symbolToOperand(quad,quad->arg1);
             int reg1 = scratch_alloc();
-            char *move = concatenateStrings("MOVQ ", var);
-            move = concatenateStrings(move, ", ");
-            move = concatenateStrings(move, scratch_name(reg1));
+            char *move = concatenateStrings(4,"MOVQ ", var,", ",scratch_name(reg1));
             quad->reg = reg1;
             addCode(move);
             break; }
@@ -718,12 +659,8 @@ void expr_codegen(struct quad *quad) {
 
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            char *arrayIndex = concatenateStrings("MOVSLQ (",scratch_name(reg1));
-            arrayIndex = concatenateStrings(arrayIndex, ",");
-            arrayIndex = concatenateStrings(arrayIndex,scratch_name(reg2));
-            arrayIndex = concatenateStrings(arrayIndex,",8), ");
             int reg3 = scratch_alloc();
-            arrayIndex = concatenateStrings(arrayIndex, scratch_name(reg3));
+            char *arrayIndex = concatenateStrings(6,"MOVSLQ (",scratch_name(reg1),",",scratch_name(reg2),",8), ",scratch_name(reg3));
             addCode(arrayIndex);
             scratch_free(reg1);
             scratch_free(reg2);
@@ -811,29 +748,25 @@ char *intToString(int num) {
 */
 void globalDecl(struct quad *quad) {
     if (quad->arg1->val_t == VAL_STRING) {
-        char *decl = concatenateStrings(".",quad->result);
-        decl = concatenateStrings(decl,":");
+        char *decl = concatenateStrings(3,".",quad->result,":");
         addData(decl);
-        char *decl2 = concatenateStrings(".string ",quad->arg1->name);
-        decl2 = concatenateStrings(decl2,"\"");
+        char *decl2 = concatenateStrings(3,".string ",quad->arg1->name,"\"");
         addData(decl2);
-        char *decl3 = concatenateStrings(quad->result,":");
+        char *decl3 = concatenateStrings(2,quad->result,":");
         addData(decl3);
-        char *decl4 = concatenateStrings(".quad .",quad->result);
+        char *decl4 = concatenateStrings(2,".quad .",quad->result);
         addData(decl4);
         return;
     }
-    char *decl = concatenateStrings(quad->result, ": ");
-    decl = concatenateStrings(decl, ".quad ");
+    char *decl = concatenateStrings(2,quad->result, ": .quad");
     if (quad->operation == OP_ARRAY_CREATE) {//array
         for (int i = 0; i < getValue(quad->arg1->val_t,quad->arg1->value) - 1; i++) {
-            decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
-            decl = concatenateStrings(decl, ", ");
+            decl = concatenateStrings(3,decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)),", ");
         }
-        decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
+        decl = concatenateStrings(2,decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
     }
     else {//single var
-        decl = concatenateStrings(decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
+        decl = concatenateStrings(2,decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
     }
     addData(decl);
 }
@@ -955,8 +888,7 @@ void generateCode() {
                 numSymbols = 0;
                 stackSize = 0;
 
-                char *func = concatenateStrings("_",quads[i]->result);
-                func = concatenateStrings(func,":");
+                char *func = concatenateStrings(3,"_",quads[i]->result,":");
                 addCode(func);
                 addCode("PUSHQ %rbp");
                 addCode("MOVQ %rsp, %rbp");
@@ -978,7 +910,7 @@ void generateCode() {
                 printf("done adding params\n");
             }
             else {
-                char *label = concatenateStrings(quads[i]->result,":");
+                char *label = concatenateStrings(2,quads[i]->result,":");
                 addCode(label);
             }
         }
@@ -992,24 +924,20 @@ void generateCode() {
             }
             //printf("LOCAL VAR %s\n",quads[i]->symbol->name);
             quads[i]->reg = move(quads[i],quads[i]->arg1);
-            char *storeVar = concatenateStrings("MOVQ ", scratch_name(quads[i]->reg));
-            storeVar = concatenateStrings(storeVar, ", ");
-            storeVar = concatenateStrings(storeVar,symbol_codegen(quads[i],quads[i]->symbol));
+            char *storeVar = concatenateStrings(4,"MOVQ ", scratch_name(quads[i]->reg),", ",symbol_codegen(quads[i],quads[i]->symbol));
             scratch_free(quads[i]->reg);
             addCode(storeVar);
         }
         else if (quads[i]->operation == OP_PARAM) {
             printf("quad %d PARAM name: %s\n",i,quads[i]->arg1->name);
             char *arg = symbolToOperand(quads[i],quads[i]->arg1);
-            char *movArg = concatenateStrings("MOVQ ", arg);
-            movArg = concatenateStrings(movArg, ", ");
             char *regArg = argNumToReg(paramNum);
-            movArg = concatenateStrings(movArg,regArg);
+            char *movArg = concatenateStrings(4,"MOVQ ", arg,", ",regArg);
             addCode(movArg);
             paramNum++;
         }
         else if (quads[i]->operation == OP_CALL) {
-            char *call = concatenateStrings("CALL _",quads[i]->arg1->name);
+            char *call = concatenateStrings(2,"CALL _",quads[i]->arg1->name);
             addCode(call);
             for (int j = 1; j < paramNum; j++) {
                 scratch_free(regNameToNum(argNumToReg(j)));//frees the argument register
@@ -1022,29 +950,26 @@ void generateCode() {
         else if (quads[i]->operation == OP_RET) {
             char *operand = symbolToOperand(quads[i],quads[i]->arg1);
             if (regNameToNum(operand) == 0) {addCode("RET");continue;}//if value being returned is already on %rax
-            char *ret = concatenateStrings("MOVQ ",operand);
-            ret = concatenateStrings(ret,", ");
-            ret = concatenateStrings(ret,"%rax");
+            char *ret = concatenateStrings(3,"MOVQ ",operand,", %rax");
             registers[0].inUse = 1;
             if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand));
             addCode(ret);
 
-            char *addBackToStack = concatenateStrings("ADDQ $",intToString(stackSize));
-            addBackToStack = concatenateStrings(addBackToStack,", %rsp");
+            char *addBackToStack = concatenateStrings(3,"ADDQ $",intToString(stackSize),", %rsp");
             addCode(addBackToStack);
             addCode("MOVQ %rbp, %rsp");
             addCode("POPQ %rbp");
             addCode("RET");
         }
         else if (quads[i]->operation == OP_JUMP) {
-            char *jump = concatenateStrings("JMP ",quads[i]->result);
+            char *jump = concatenateStrings(2,"JMP ",quads[i]->result);
             addCode(jump);
         }
         else if (quads[i]->operation == OP_JUMPIFNOT) {
             int reg1 = move(quads[i],quads[i]->arg1);
-            char *cmp = concatenateStrings("CMP $1, ",scratch_name(reg1));
+            char *cmp = concatenateStrings(2,"CMP $1, ",scratch_name(reg1));
             addCode(cmp);
-            char *jump = concatenateStrings("JNE ", quads[i]->result);
+            char *jump = concatenateStrings(2,"JNE ", quads[i]->result);
             addCode(jump);
             scratch_free(reg1);
         }
