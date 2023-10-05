@@ -164,8 +164,11 @@ void initialize() {
 	states[102].token = TOKEN_WHITESPACE;
 	
 	states[103].token = TOKEN_WHITESPACE; //comments
-	
-	for (int i = 0; i < NUM_STATES - 3; i++) {
+	addTransition(0, ' ', 102, 0);
+	addTransition(0, '\n',102, 0);
+	addTransition(0, '\t',102, 0);
+	addTransition(0, '\r',102, 0);
+	for (int i = 1; i < NUM_STATES - 3; i++) {
 		if (i == 99) {
 			addTransition(i, ' ', 99, 0);
 			addTransition(i, '\n', 99, 0);
