@@ -261,7 +261,10 @@ char *createQuadExpr(struct Expression *expr) {
     //t1 c -> t2
     //t2 d -> t3
     struct Expression *e = expr;
-
+    if (!e->expr) {//single value expression
+        char *tempName = addQuad(createQuad(evalToArg(e->eval),createArg(NULL,VAL_CHAR,0),OP_ADD,createName("t",temp)));
+        return tempName;
+    }
     //creates quad using the first two evals in an expression
     char *tempName = addQuad(createQuad(evalToArg(e->eval),evalToArg(e->expr->eval),getQuadOp(*e->op),createName("t",temp)));
     e = e->expr->expr;
@@ -396,11 +399,15 @@ void createQuadConditional(struct CondStatement *cond) {
     char *tempName = createQuadExpr(cond->expr);
     char *labelName = createName("l",label);
     char *endLabel = createName("l",label);
+
+    int oneLabel = 1;
+
     addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_JUMPIFNOT,labelName));
     createQuadStatements(cond->stmts);
     addQuad(createQuad(createArg("end_conditional",VAL_LONG,0),NULL,OP_JUMP,endLabel));
     cond = cond->next;
     while (cond && cond->stmt != ELSE) {//elseif
+        oneLabel = 0;
         addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
 
         tempName = createQuadExpr(cond->expr);
@@ -412,10 +419,12 @@ void createQuadConditional(struct CondStatement *cond) {
     }
     //else
     if (cond) {
+        oneLabel = 0;
         addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
 
         createQuadStatements(cond->stmts);
     }
+    if (oneLabel) addQuad(createQuad(NULL,NULL,OP_LABEL,labelName));
     addQuad(createQuad(createArg("end_conditional",VAL_LONG,0),NULL,OP_LABEL,endLabel));
 }
 
