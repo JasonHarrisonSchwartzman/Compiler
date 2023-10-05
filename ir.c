@@ -17,6 +17,8 @@ int numQuads = 0;//index of quads
 int temp = 0;//used to create temp names for storing values
 int label = 0;//used for label names
 
+int IRResult = 1; //success/error in IR
+
 /***
  * 3 functions create a name tX or rX where X is the number 
 */
@@ -532,6 +534,15 @@ void createQuadStatements(struct Statement *stmt) {
     }
 }
 
+void printIRError(int errorNum, char *name) {
+    IRResult = 0;
+    switch(errorNum) {
+        case 1:
+            fprintf(stderr,"Final line of function %s must have return statement.\n",name);
+            break;
+    }
+}
+
 /**
  * creates quad for a function
 */
@@ -550,6 +561,16 @@ void createQuadFunc(struct FuncDecl *func) {
     }
     struct Statement *stmt = func->statements;
     createQuadStatements(stmt);
+    if (strcmp(func->name,"start") == 0) {
+        if (quads[numQuads-1]->operation == OP_RET) {
+            numQuads--;
+        }
+    }
+    else {
+        if (quads[numQuads-1]->operation != OP_RET) {
+            printIRError(1,func->name);
+        }
+    }
     addQuad(createQuad(NULL,NULL,OP_LABEL,"end func"));
 }
 
@@ -750,13 +771,14 @@ void printQuads() {
 /**
  * Creates the full IR
 */
-void createIR() {
+int createIR() {
     struct Declaration *d = syntaxTree;
     while (d) {
         if (d->dec == VAR) createQuadVar(d->vardecl);
         else createQuadFunc(d->funcdecl);
         d = d->next;
     }
+    return IRResult;
 }
 
 /**

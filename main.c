@@ -48,7 +48,13 @@ int main(int argc, char *argv[]) {
 	printf("IR finished\n");
 	optimize();
 	printQuads();
-
+	if (IRResult == 1) {
+		printf("IR SUCCESS\n");
+	}
+	else {
+		printf("IR FAILURE\n");
+		exit(1);
+	}
 	
 	generateCode();
 
