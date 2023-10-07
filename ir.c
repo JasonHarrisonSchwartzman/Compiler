@@ -872,6 +872,7 @@ void constantFolding() {
     for (int i = 0; i < numQuads - 1; i++) {
         if (!quads[i]->arg1 || !quads[i]->arg2) continue;
         if (quads[i]->operation == OP_ARRAY_CREATE) continue;
+        if (quads[i]->operation == OP_ARRAY_INDEX) continue;
         char *name1 = quads[i]->arg1->name;
         char *name2 = quads[i]->arg2->name;
         if (!name1 && !name2) {
