@@ -319,7 +319,10 @@ char *addressCompute(struct quad *quad, struct Symbol *s) {
  * Returns the address computation for a given symbol 
 */
 char *symbol_codegen(struct quad *quad, struct Symbol *s) {
-    if (s->sym == SYMBOL_GLOBAL) return s->name;
+    if (s->sym == SYMBOL_GLOBAL) {
+        printf("GLOBAL SYMBOL\n");
+        return s->name;
+    }
     else {//LOCAL VARIABLES/PAREMETERS
         return addressCompute(quad,s);
     }
