@@ -173,7 +173,7 @@ struct Type *getType(struct Evaluation *eval) {
 		if (!eval->type) printf("no type\n");
 
 		if (!eval->type->length->eval) printf("NULL INDEx\n");
-		printf("%s\n",eval->type->length->eval->name);
+		//printf("%s\n",eval->type->length->eval->name);
 		typeCheckExpr(eval->type->length);
 		printf("index checked\n");
 
