@@ -774,12 +774,12 @@ void globalDecl(struct quad *quad) {
     if (quad->operation == OP_ARRAY_CREATE) {//array
         printf("CREATING GLOBAL ARRAY\n");
         for (int i = 0; i < getValue(quad->arg1->val_t,quad->arg1->value) - 1; i++) {
-            decl = concatenateStrings(3,decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)),", ");
+            decl = concatenateStrings(3,decl, intToString(getValue(quad->arg2->val_t,quad->arg2->value)),", ");
         }
-        decl = concatenateStrings(2,decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
+        decl = concatenateStrings(2,decl, intToString(getValue(quad->arg2->val_t,quad->arg2->value)));
     }
     else {//single var
-        decl = concatenateStrings(2,decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
+        decl = concatenateStrings(2,decl, intToString(getValue(quad->arg2->val_t,quad->arg2->value)));
     }
     addData(decl);
 }
