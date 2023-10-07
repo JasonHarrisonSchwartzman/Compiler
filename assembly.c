@@ -772,6 +772,7 @@ void globalDecl(struct quad *quad) {
     }
     char *decl = concatenateStrings(2,quad->result, ": .quad ");
     if (quad->operation == OP_ARRAY_CREATE) {//array
+        printf("CREATING GLOBAL ARRAY\n");
         for (int i = 0; i < getValue(quad->arg1->val_t,quad->arg1->value) - 1; i++) {
             decl = concatenateStrings(3,decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)),", ");
         }
@@ -884,6 +885,12 @@ void generateCode() {
             
             printf("calcing symbol %s\n",quads[i]->symbol->name);
             symbol_codegen(quads[i],quads[i]->symbol);
+        }
+        if (quads[i]->operation == OP_ARRAY_CREATE) {
+            if (!inFunction) globalDecl(quads[i]);
+            else {
+                
+            }
         }
         if (quads[i]->operation == OP_LABEL) {
             if (strcmp(quads[i]->result,"end func") == 0) {
