@@ -19,11 +19,11 @@ void printParsingError(unsigned long n) {
 //creates instance and variable tokens to be pushed onto the stack when needed
 void createInstanceAndVarTokens() {
 	for (int i = 0; i < NUM_INSTANCES; i++) {
-		instanceTokens[i] = malloc(sizeof(Token));
+		instanceTokens[i] = calloc(1,sizeof(Token));
 		instanceTokens[i]->tokenType = i;
 	}
 	for (int i = 0; i < NUM_GOTO; i++) {
-		varTokens[i] = malloc(sizeof(Token));
+		varTokens[i] = calloc(1,sizeof(Token));
 		varTokens[i]->tokenType = NUM_INSTANCES + TOTAL_TOKENS + i; 
 	}
 }
@@ -42,7 +42,7 @@ void freeInstanceAndVarTokens() {
 void addRule(int item, token_t var, int length, token_t symbol[length]) {
 	rules[item].var = var;
 	rules[item].length = length;
-	rules[item].symbols = malloc(sizeof(token_t) * length);
+	rules[item].symbols = calloc(1,sizeof(token_t) * length);
 	for (int i = 0; i < length; i++) {
 		rules[item].symbols[i] = symbol[i];
 	}

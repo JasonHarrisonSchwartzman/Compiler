@@ -25,7 +25,7 @@ extern struct State states[];//defined in dfa.c
  */
 void addToken(token_t tokenType, char *token, unsigned long lineNum, unsigned long tokenIndex) {
 	tokens = realloc(tokens,sizeof(Token)*(numTokens+1));
-	Token *t = malloc(sizeof(Token));
+	Token *t = calloc(1,sizeof(Token));
 	t->token = token;
 	t->tokenType = tokenType;
 	t->line = lineNum;
@@ -129,7 +129,7 @@ char* scan(char *curString, int *curStringLength, char c, int *state) {
 		curString = realloc(curString, sizeof(char) * (*curStringLength + 1));
 		curString[(*curStringLength)++] = '\0';
 
-		char *token = malloc(sizeof(char) * *curStringLength);
+		char *token = calloc(1,sizeof(char) * *curStringLength);
 		strcpy(token,curString);
 
 		//tokenifying the current string
@@ -186,7 +186,7 @@ int scanner(int argc, char *argv[]) {
 	char c;//character that will be readf
 	int state = 0;//start state
 
-	char *string = malloc(sizeof(char));//current characters being read
+	char *string = calloc(1,sizeof(char));//current characters being read
 	int stringLength = 0;
 
 	initialize();//creates dfa

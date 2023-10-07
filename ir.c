@@ -24,7 +24,7 @@ int IRResult = 1; //success/error in IR
 */
 char *createTempName(int num) {
     int totalLength = snprintf(NULL, 0, "t%d", num) + 1;
-    char *result = (char *)malloc(totalLength);
+    char *result = (char *)calloc(1,totalLength);
     if (result != NULL) {
         snprintf(result, totalLength, "t%d", num);
     }
@@ -34,7 +34,7 @@ char *createTempName(int num) {
 
 char *createLabelName(int num) {
     int totalLength = snprintf(NULL, 0, ".L%d", num) + 1;
-    char *result = (char *)malloc(totalLength);
+    char *result = (char *)calloc(1,totalLength);
     if (result != NULL) {
         snprintf(result, totalLength, ".L%d", num);
     }
@@ -44,7 +44,7 @@ char *createLabelName(int num) {
 
 char *createResultName(int num) {
     int totalLength = snprintf(NULL, 0, "r%d", num) + 1;
-    char *result = (char *)malloc(totalLength);
+    char *result = (char *)calloc(1,totalLength);
     if (result != NULL) {
         snprintf(result, totalLength, "r%d", num);
     }
@@ -66,7 +66,7 @@ char *createName(char *c, int num) {
 
 char *getTempName(int num) {
     int totalLength = snprintf(NULL, 0, "t%d", num) + 1;
-    char *result = (char *)malloc(totalLength);
+    char *result = (char *)calloc(1,totalLength);
     if (result != NULL) {
         snprintf(result, totalLength, "t%d", num);
     }
