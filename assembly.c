@@ -788,7 +788,7 @@ void globalDecl(struct quad *quad) {
         decl = concatenateStrings(2,decl, intToString(getValue(quad->arg2->val_t,quad->arg2->value)));
     }
     else {//single var
-        decl = concatenateStrings(2,decl, intToString(getValue(quad->arg2->val_t,quad->arg2->value)));
+        decl = concatenateStrings(2,decl, intToString(getValue(quad->arg1->val_t,quad->arg1->value)));
     }
     addData(decl);
 }
