@@ -925,6 +925,8 @@ void generateCode() {
         if (quads[i]->operation == OP_ARRAY_CREATE) {
             if (!inFunction) globalDecl(quads[i]);
             else {
+                symbol_codegen(quads[i],quads[i]->symbol);
+
                 int arraySize = getValue(quads[i]->arg1->val_t,quads[i]->arg1->value);
                 char *stackAdjustment = concatenateStrings(3,"SUBQ $",intToString(arraySize*8),", %rsp");
                 addCode(stackAdjustment);
