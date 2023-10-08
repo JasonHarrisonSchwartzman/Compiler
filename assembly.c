@@ -673,19 +673,24 @@ void expr_codegen(struct quad *quad) {
             //lea (array + index * 8) = rax
 
             //loading address of array
-            char *operand = symbolToOperand(quad,quad->arg1);
-            int reg1 = scratch_alloc();
-            char *code1 = concatenateStrings(4,"LEAQ (",operand,"), ",scratch_name(reg1));
-            if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand)); //figure out why this line was needed
-            addCode(code1);
+            if (!quad->symbol) {
+                char *operand = symbolToOperand(quad,quad->arg1);
+                int reg1 = scratch_alloc();
+                char *code1 = concatenateStrings(4,"LEAQ (",operand,"), ",scratch_name(reg1));
+                if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand)); //figure out why this line was needed
+                addCode(code1);
 
-            int reg2 = move(quad,quad->arg2);
-            int reg3 = scratch_alloc();
-            char *arrayIndex = concatenateStrings(6,"MOVSLQ (",scratch_name(reg1),",",scratch_name(reg2),",8), ",scratch_name(reg3));
-            addCode(arrayIndex);
-            scratch_free(reg1);
-            scratch_free(reg2);
-            quad->reg = reg3;
+                int reg2 = move(quad,quad->arg2);
+                int reg3 = scratch_alloc();
+                char *arrayIndex = concatenateStrings(6,"MOVSLQ (",scratch_name(reg1),",",scratch_name(reg2),",8), ",scratch_name(reg3));
+                addCode(arrayIndex);
+                scratch_free(reg1);
+                scratch_free(reg2);
+                quad->reg = reg3;
+            }
+            else {
+                printf("symbol");
+            }
             break; }
         default:
         return;
