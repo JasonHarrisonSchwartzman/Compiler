@@ -677,7 +677,13 @@ void expr_codegen(struct quad *quad) {
             if (!quad->symbol) {//right side of expression
                 char *operand = symbolToOperand(quad,quad->arg1);
                 int reg1 = scratch_alloc();
-                char *code1 = concatenateStrings(4,"LEAQ (",operand,"), ",scratch_name(reg1));
+                char *code1;
+                if (operand[strlen(operand)-1] != ')') {//global array
+                    code1 = concatenateStrings(4,"LEAQ (",operand,"), ",scratch_name(reg1));
+                }
+                else {//local array
+                    code1 = concatenateStrings(4,"LEAQ ",operand,", ",scratch_name(reg1));
+                }
                 if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand)); //figure out why this line was needed
                 addCode(code1);
 
