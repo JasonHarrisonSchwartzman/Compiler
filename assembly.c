@@ -690,15 +690,21 @@ void expr_codegen(struct quad *quad) {
                 quad->reg = reg3;
             }
             else {//left side of expression
-                int reg1 = move(quad,quad->arg1);
-                int reg2 = move(quad,quad->arg2);
-                int reg3 = scratch_alloc();
-                char *calcAddress = concatenateStrings(6,"LEAQ (",symbol_codegen(quad,quad->symbol),",",scratch_name(reg1),",8), ",scratch_name(reg3));
-                addCode(calcAddress);
-                char *store = concatenateStrings(5,"MOVQ ",scratch_name(reg2),", (",scratch_name(reg3),")");
+
+                char *operand = symbolToOperand(quad,quad->arg1);
+                int reg1 = scratch_alloc();
+                char *code1 = concatenateStrings(4,"LEAQ (",operand,"), ",scratch_name(reg1));
+                if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand)); //figure out why this line was needed
+                addCode(code1);
+
+                int reg2 = move(quad,quad->arg1);
+                int reg3 = move(quad,quad->arg2);
+
+                char *store = concatenateStrings(7,"MOVQ ",scratch_name(reg3),", (",scratch_name(reg1),",",scratch_name(reg2),",8)");
                 addCode(store);
                 scratch_free(reg1);
                 scratch_free(reg2);
+                scratch_free(reg3);
             }
             break; }
         default:
