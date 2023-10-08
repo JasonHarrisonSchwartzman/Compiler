@@ -932,9 +932,9 @@ void generateCode() {
                 addCode(concatenateStrings(2,label,":"));
 
                 int reg2 = scratch_alloc();
-                char *val = concatenateStrings(2,"MOVQ ",symbolToOperand(quads[i],quads[i]->arg2),", ",scratch_name(reg2));
+                char *val = concatenateStrings(4,"MOVQ ",symbolToOperand(quads[i],quads[i]->arg2),", ",scratch_name(reg2));
                 addCode(val);
-                
+
                 char *element = concatenateStrings(5,"MOVQ ",scratch_name(reg2),", (%rsp,",scratch_name(reg1),",8)");
                 addCode(element);
 
