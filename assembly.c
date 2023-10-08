@@ -692,7 +692,7 @@ void expr_codegen(struct quad *quad) {
             else {//left side of expression
                 int reg1 = move(quad,quad->arg1);
                 int reg2 = move(quad,quad->arg2);
-                char *store = concatenateStrings(7,"MOVSLQ ",scratch_name(reg1),"(",addressCompute(quad,quad->symbol),",",scratch_name(reg2),",8)");
+                char *store = concatenateStrings(7,"MOVSLQ ",scratch_name(reg2),", (",symbol_codegen(quad,quad->symbol),",",scratch_name(reg1),",8)");
                 addCode(store);
                 scratch_free(reg1);
                 scratch_free(reg2);
