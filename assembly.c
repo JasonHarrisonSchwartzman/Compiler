@@ -931,7 +931,7 @@ void generateCode() {
                 char *label = concatenateStrings(4,".L",intToString(labelNum++),quads[i]->result,":");
                 addCode(label);
 
-                char *element = concatenateStrings(5,"MOVQ ",symbolToOperand(quads[i],quads[i]->arg2),", (%rsp,",scratch_name(reg1),"8)");
+                char *element = concatenateStrings(5,"MOVQ ",symbolToOperand(quads[i],quads[i]->arg2),", (%rsp,",scratch_name(reg1),",8)");
                 addCode(element);
 
                 char *sub = concatenateStrings(2,"SUBQ $1, ",scratch_name(reg1));
