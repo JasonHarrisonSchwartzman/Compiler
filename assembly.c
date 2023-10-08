@@ -947,16 +947,17 @@ void generateCode() {
                 char *location = concatenateStrings(4,"LEAQ ",address,", ",scratch_name(reg3));
                 addCode(location);
 
+                char *sub = concatenateStrings(2,"SUBQ $1, ",scratch_name(reg1));
+                addCode(sub);
+
                 char *element = concatenateStrings(7,"MOVQ ",scratch_name(reg2),", (",scratch_name(reg3),", ",scratch_name(reg1),",8)");
                 addCode(element);
 
-                char *sub = concatenateStrings(2,"SUBQ $1, ",scratch_name(reg1));
-                addCode(sub);
 
                 char *cmp = concatenateStrings(2,"CMP $0, ",scratch_name(reg1));
                 addCode(cmp);
 
-                char *jump = concatenateStrings(2,"JNZ ",label);
+                char *jump = concatenateStrings(2,"JNS ",label);
                 addCode(jump);
                 scratch_free(reg1);
                 scratch_free(reg2);
