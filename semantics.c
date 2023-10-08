@@ -586,10 +586,11 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			if(s->var->type && s->var->type->length) resolveExpr(symTab,s->var->type->length);//array size if applicable
 			if(s->var->type && s->var->type->length) typeCheckExpr(s->var->type->length);//array size if applicable
 			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of ass
+			printf("Resolved assignment passed: %d Resolved expression passed: %d\n",resolvedAss,resolvedExpr);
 			printf("TYPE CHECKING ASSIGNMENT\n");
 			if (resolvedAss && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr); //if assignment is resolved you can type check
 			
-			if (s->var->type->length) printf("This is the pointer for the index of array after %p\n",s->var->type->length);
+			//if (s->var->type->length) printf("This is the pointer for the index of array after %p\n",s->var->type->length);
 		}
 		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
 			resolveControl(s->stmt);
