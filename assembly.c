@@ -931,7 +931,11 @@ void generateCode() {
                 char *label = concatenateStrings(3,".L",intToString(labelNum++),quads[i]->result);
                 addCode(concatenateStrings(2,label,":"));
 
-                char *element = concatenateStrings(5,"MOVQ ",symbolToOperand(quads[i],quads[i]->arg2),", (%rsp,",scratch_name(reg1),",8)");
+                int reg2 = scratch_alloc();
+                char *val = concatenateStrings(2,"MOVQ ",symbolToOperand(quads[i],quads[i]->arg2),", ",scratch_name(reg2));
+                addCode(val);
+                
+                char *element = concatenateStrings(5,"MOVQ ",scratch_name(reg2),", (%rsp,",scratch_name(reg1),",8)");
                 addCode(element);
 
                 char *sub = concatenateStrings(2,"SUBQ $1, ",scratch_name(reg1));
@@ -942,6 +946,8 @@ void generateCode() {
 
                 char *jump = concatenateStrings(2,"JNZ ",label);
                 addCode(jump);
+                scratch_free(reg1);
+                scratch_free(reg2);
             }
         }
         if (quads[i]->operation == OP_LABEL) {
