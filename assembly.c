@@ -692,7 +692,9 @@ void expr_codegen(struct quad *quad) {
             else {//left side of expression
                 int reg1 = move(quad,quad->arg1);
                 int reg2 = move(quad,quad->arg2);
-                char *store = concatenateStrings(7,"MOVSLQ ",scratch_name(reg2),", (",symbol_codegen(quad,quad->symbol),",",scratch_name(reg1),",8)");
+                int reg3 = scratch_alloc();
+                char *calcAddress = concatenateStrings(6,"LEAQ (",scratch_name(reg1),",",scratch_name(reg1),",8), ",scratch_name(reg3));
+                char *store = concatenateStrings(6,"MOVQ ",scratch_name(reg2),", (",scratch_name(reg3),symbol_codegen(quad,quad->symbol),")");
                 addCode(store);
                 scratch_free(reg1);
                 scratch_free(reg2);
