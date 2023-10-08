@@ -960,6 +960,7 @@ void generateCode() {
                 addCode(jump);
                 scratch_free(reg1);
                 scratch_free(reg2);
+                scratch_free(reg3);
             }
         }
         if (quads[i]->operation == OP_LABEL) {
