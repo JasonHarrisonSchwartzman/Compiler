@@ -673,7 +673,8 @@ void expr_codegen(struct quad *quad) {
             //lea (array + index * 8) = rax
 
             //loading address of array
-            if (!quad->symbol) {
+
+            if (!quad->symbol) {//right side of expression
                 char *operand = symbolToOperand(quad,quad->arg1);
                 int reg1 = scratch_alloc();
                 char *code1 = concatenateStrings(4,"LEAQ (",operand,"), ",scratch_name(reg1));
@@ -688,8 +689,13 @@ void expr_codegen(struct quad *quad) {
                 scratch_free(reg2);
                 quad->reg = reg3;
             }
-            else {
-                printf("symbol");
+            else {//left side of expression
+                int reg1 = move(quad,quad->arg1);
+                int reg2 = move(quad,quad->arg2);
+                char *store = concatenateStrings(7,"MOVSLQ ",scratch_name(reg1),"(",addressCompute(quad,quad->symbol),",",scratch_name(reg2),",8)");
+                addCode(store);
+                scratch_free(reg1);
+                scratch_free(reg2);
             }
             break; }
         default:
