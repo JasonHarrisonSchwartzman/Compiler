@@ -925,7 +925,7 @@ void generateCode() {
         if (quads[i]->operation == OP_ARRAY_CREATE) {
             if (!inFunction) globalDecl(quads[i]);
             else {
-                addressCompute(quads[i],quads[i]->symbol);
+                char *address = addressCompute(quads[i],quads[i]->symbol);
 
                 int arraySize = getValue(quads[i]->arg1->val_t,quads[i]->arg1->value);
                 char *stackAdjustment = concatenateStrings(3,"SUBQ $",intToString(arraySize*8),", %rsp");
@@ -943,7 +943,11 @@ void generateCode() {
                 char *val = concatenateStrings(4,"MOVQ ",symbolToOperand(quads[i],quads[i]->arg2),", ",scratch_name(reg2));
                 addCode(val);
 
-                char *element = concatenateStrings(5,"MOVQ ",scratch_name(reg2),", (%rsp,",scratch_name(reg1),",8)");
+                int reg3 = scratch_alloc();
+                char *location = concatenateStrings(4,"LEAQ ",address,", ",scratch_name(reg3));
+                addCode(location);
+
+                char *element = concatenateStrings(7,"MOVQ ",scratch_name(reg2),", (",scratch_name(reg3),", ",scratch_name(reg1),",8)");
                 addCode(element);
 
                 char *sub = concatenateStrings(2,"SUBQ $1, ",scratch_name(reg1));
