@@ -693,9 +693,9 @@ void expr_codegen(struct quad *quad) {
                 int reg1 = move(quad,quad->arg1);
                 int reg2 = move(quad,quad->arg2);
                 int reg3 = scratch_alloc();
-                char *calcAddress = concatenateStrings(6,"LEAQ (",scratch_name(reg1),",",scratch_name(reg1),",8), ",scratch_name(reg3));
+                char *calcAddress = concatenateStrings(6,"LEAQ (",symbol_codegen(quad,quad->symbol),",",scratch_name(reg1),",8), ",scratch_name(reg3));
                 addCode(calcAddress);
-                char *store = concatenateStrings(7,"MOVQ ",scratch_name(reg2),", (",symbol_codegen(quad,quad->symbol),",",scratch_name(reg3),")");
+                char *store = concatenateStrings(5,"MOVQ ",scratch_name(reg2),", (",scratch_name(reg3),")");
                 addCode(store);
                 scratch_free(reg1);
                 scratch_free(reg2);
