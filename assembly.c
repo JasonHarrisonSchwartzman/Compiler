@@ -899,6 +899,7 @@ void generateCode() {
     int inFunction = 0;
     int paramNum = 1;
     int stackSize = 0;
+    int labelNum = 0;//for array initialization IDs
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
         //printf("i: %d\n",i);
@@ -918,7 +919,29 @@ void generateCode() {
         if (quads[i]->operation == OP_ARRAY_CREATE) {
             if (!inFunction) globalDecl(quads[i]);
             else {
-                
+                int arraySize = getValue(quads[i]->arg1->val_t,quads[i]->arg1->value);
+                char *stackAdjustment = concatenateStrings(3,"SUBQ $",intToString(arraySize*8),", %rsp");
+                addCode(stackAdjustment);
+                stackSize+=(8*arraySize);
+
+                int reg1 = scratch_alloc();
+                char *init = concatenateStrings(4,"MOVQ $",intToString(arraySize),", ",scratch_name(reg1));
+                addCode(init);
+
+                char *label = concatenateStrings(3,".L",intToString(labelNum++),quads[i]->result);
+                addCode(label);
+
+                char *element = concatenateStrings(5,"MOVQ ",symbolToOperand(quads[i],quads[i]->arg2),", (%rsp,",scratch_name(reg1),"8)");
+                addCode(element);
+
+                char *sub = concatenateStrings(2,"SUBQ $1, ",scratch_name(reg1));
+                addCode(sub);
+
+                char *cmp = concatenateStrings(2,"CMP $0, ",scratch_name(reg1));
+                addCode(cmp);
+
+                char *jump = concatenateStrings(2,"JNZ ",label);
+                addCode(jump);
             }
         }
         if (quads[i]->operation == OP_LABEL) {
