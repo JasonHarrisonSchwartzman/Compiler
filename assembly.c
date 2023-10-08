@@ -307,7 +307,7 @@ char *addressCompute(struct quad *quad, struct Symbol *s) {
     }
     else {
         int placeOnStack = symAdds[numSymbols-1]->placeOnStack + symAdds[numSymbols-1]->size;
-        printf("%d\n",placeOnStack);
+        printf("Place on stack %d for symbol %s\n",placeOnStack,s->name);
         return addSymbolAddress(s,createAddressName(placeOnStack),size,placeOnStack);
     }
     return NULL;
@@ -925,7 +925,7 @@ void generateCode() {
         if (quads[i]->operation == OP_ARRAY_CREATE) {
             if (!inFunction) globalDecl(quads[i]);
             else {
-                symbol_codegen(quads[i],quads[i]->symbol);
+                addressCompute(quads[i],quads[i]->symbol);
 
                 int arraySize = getValue(quads[i]->arg1->val_t,quads[i]->arg1->value);
                 char *stackAdjustment = concatenateStrings(3,"SUBQ $",intToString(arraySize*8),", %rsp");
