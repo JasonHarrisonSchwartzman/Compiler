@@ -665,7 +665,7 @@ void expr_codegen(struct quad *quad) {
         case OP_DEREF: {
             char *var = symbolToOperand(quad,quad->arg1);
             int reg1 = scratch_alloc();
-            char *move = concatenateStrings(4,"MOVQ ", var,", ",scratch_name(reg1));
+            char *move = concatenateStrings(4,"MOVQ (", var,"), ",scratch_name(reg1));
             quad->reg = reg1;
             addCode(move);
             break; }
