@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
 	system(assembler);
 	char *linker = concatenateStrings(5,"ld -o ",argv[2]," ",argv[2],".o");
 	system(linker);
-	exit(0);
+	return 0;
 	// //freeTokens();seg fault
 }
 
