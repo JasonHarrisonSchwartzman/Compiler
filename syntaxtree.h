@@ -93,6 +93,8 @@ struct Symbol {
 	unsigned long sequence;
 
 	unsigned long line;
+
+	struct Params *params;
 } Symbol;
 
 

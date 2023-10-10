@@ -46,6 +46,16 @@ struct Symbol *createSymbol(char *name, struct Type *type, symbol_t sym, dec_t d
 	s->line = line;
 	return s;
 }
+struct Symbol *createSymbolFunc(char *name, struct Type *type, symbol_t sym, dec_t dec, unsigned long line,struct Params *params) {
+	struct Symbol *s = calloc(1,sizeof(struct Symbol));
+	s->name = name;
+	s->type = type;
+	s->sym = sym;
+	s->dec = dec;
+	s->line = line;
+	s->params = params;
+	return s;
+}
 
 /*
  * adds a symbol to a given symbol table
@@ -382,7 +392,7 @@ void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func
 		printError(1,x->name,func->line,x->line);
 		return;
 	}
-	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
+	struct Symbol *s = createSymbolFunc(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line,func->params);
 	addSymbol(symTab,s);
 	func->symbol = s;
 }
@@ -487,6 +497,7 @@ int resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 		printError(3, funccall->name,funccall->symbol->line,0);
 		return 0;
 	}
+	
 	struct FunctionArgs *fargs = funccall->funcargs;
 	while (fargs) {
 		if (resolveExpr(symTab, fargs->expr) == 0) return 0;
