@@ -913,6 +913,7 @@ void generateCode() {
     int paramNum = 1;
     int stackSize = 0;
     int labelNum = 0;//for array initialization IDs
+    int startFunc = 0;//are we in the start function
     for (int i = 0; i < numQuads; i++) {
         quads[i]->numQuad = i;
         //printf("i: %d\n",i);
@@ -973,12 +974,23 @@ void generateCode() {
         }
         if (quads[i]->operation == OP_LABEL) {
             if (strcmp(quads[i]->result,"end func") == 0) {
+                if (startFunc) {
+                    //exits program
+                    addCode("MOVQ $60, %rax");
+                    addCode("XOR %rdi, %rdi");
+                    addCode("syscall");
+                }
+
                 inFunction = 0;
                 //printf("out of function\n");
                 continue;
             }
             if (quads[i]->symbol) {//new function
+                if (strcmp(quads[i]->result,"start") == 0) startFunc = 1;
+                else startFunc = 0;
+
                 inFunction = 1;
+
                 printf("In function\n");
                 printSymbolAddress();
 
@@ -1075,11 +1087,6 @@ void generateCode() {
     printf("MAIN CODE GEN FINISHED\n");
     printSymbolAddress();
     printf("--------------------------\n");
-
-    //exits program
-    addCode("MOVQ $60, %rax");
-    addCode("XOR %rdi, %rdi");
-    addCode("syscall");
 
     printData(NULL);
     printCode(NULL);
