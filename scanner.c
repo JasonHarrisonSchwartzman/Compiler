@@ -180,9 +180,16 @@ void printTokens() {
  * Scans input file generating tokens and adding them to token stream.
  */
 int scanner(int argc, char *argv[]) {
+	if (argc < 3) {
+		fprintf(stderr,"Missing run-time args. \nUsage: ./jcc [src] [bin]\n");
+		exit(1);
+	}
 	FILE *file;
 	file = fopen(argv[1],"r"); 
-
+	if (!file) {
+		fprintf(stderr,"Could not read file %s. Please try again.\n",argv[1]);
+		exit(1);
+	}
 	char c;//character that will be readf
 	int state = 0;//start state
 
