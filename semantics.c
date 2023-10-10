@@ -191,6 +191,7 @@ struct Type *getType(struct Evaluation *eval) {
 		return eval->type;
 	}
 	else {
+		if (eval->name) printf("%s\n",eval->name);
 		if (!eval->symbol) printf("No symbol\n");
 		return eval->symbol->type;
 	}
@@ -200,7 +201,7 @@ struct Type *getType(struct Evaluation *eval) {
  */
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
 	if (!eval2) {
-		printf("Type of eval pointer: %p\n",getType(eval1));
+		//printf("Type of eval pointer: %p\n",getType(eval1));
 		return eval1->type = getType(eval1);
 	}
 	
@@ -218,8 +219,8 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		type2->sign = SIGNED;
 	}
 	if (type1->pointer > 0 || type2->pointer > 0) {//both become pointers
-		printf("Pointer present in one or more evals");
-		printf("%d %d\n",type1->pointer,type2->pointer);
+		//printf("Pointer present in one or more evals");
+		//printf("%d %d\n",type1->pointer,type2->pointer);
 		type1->pointer = 1;
 		type2->pointer = 1;
 	}
@@ -361,13 +362,13 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 		printError(1,x->name,var->line,x->line);
 		return;
 	}
-	printf("before symbol created var type: %d\n",var->type->pointer);
+	//printf("before symbol created var type: %d\n",var->type->pointer);
 	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR,var->line);
 	addSymbol(symTab,s);
 	var->symbol = s;
 	//typeCheckExpr(var->expr);
-	printf("var symbol type pointer %d\n",var->symbol->type->pointer);
-	printf("before typeCheck pointer of var %d\n",var->type->pointer);
+	//printf("var symbol type pointer %d\n",var->symbol->type->pointer);
+	//printf("before typeCheck pointer of var %d\n",var->type->pointer);
 	int exprResolved = resolveExpr(symTab,var->expr);
 	if (exprResolved) typeCheckAssignment(var->type,var->expr);
 }
@@ -413,6 +414,7 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
 int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 	printf("TRYING TO RESOLVE EVAL\n");
 	if (eval->eval == FUNCRETURN) {
+		printf("FUNCRETURN\n");
 		return resolveFuncCall(symTab,eval->funccall);
 	}
 	else if (eval->eval == ARRAYINDEX) {
@@ -485,11 +487,11 @@ int resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 		printError(3, funccall->name,funccall->symbol->line,0);
 		return 0;
 	}
-	/*struct FunctionArgs *fargs = funccall->funcargs;
+	struct FunctionArgs *fargs = funccall->funcargs;
 	while (fargs) {
 		if (resolveExpr(symTab, fargs->expr) == 0) return 0;
 		fargs = fargs->funcargs;
-	}*/
+	}
 	return 1;
 }
 /*
@@ -557,6 +559,7 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			}
 		}
 		if (s->stmt == FUNCCALL) {
+			printf("FUNCCALL\n");
 			resolveFuncCall(symTab,s->funccall);
 			struct FunctionArgs *f = s->funccall->funcargs;
 			while (f) {
