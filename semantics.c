@@ -358,6 +358,12 @@ void printError(int errorNum, char *name,unsigned long line1, unsigned long line
 			fprintf(stderr,"Control flow statement outside of loop.\n");
 			fprintf(stderr,"To fix: remove this statement or put it within a loop.\n");
 			break;
+		case 5:
+			fprintf(stderr,"Function call \"%s\" has an unequal amount of arguments as parameters in declaration.\n",name);
+			printLine(line1);
+			printLine(line2);
+			fprintf(stderr,"To fix: match the number of arguments in function call to the number of parameters in function declaration.\n");
+			break;
 	}
 	fprintf(stderr,"\n");
 	errorNumber++;
@@ -497,11 +503,22 @@ int resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 		printError(3, funccall->name,funccall->symbol->line,0);
 		return 0;
 	}
-	
+	int numParams = 0;
+	struct Params *params = funccall->symbol->params;
+	while (params) {
+		params = params->next;
+		numParams++;
+	}
 	struct FunctionArgs *fargs = funccall->funcargs;
+	int numFargs = 0;
 	while (fargs) {
 		if (resolveExpr(symTab, fargs->expr) == 0) return 0;
 		fargs = fargs->funcargs;
+		numFargs++;
+	}
+	if (numParams != numFargs) {
+		printError(5,funccall->name,funccall->symbol->line,funccall->line);
+		return 0;
 	}
 	return 1;
 }
