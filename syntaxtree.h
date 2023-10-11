@@ -292,7 +292,6 @@ struct VarDecl *addVarDecl(struct Type *type, struct Decl *decl) {
 	struct VarDecl *var = calloc(1,sizeof(struct VarDecl));
 	var->type = type;
 	if (decl->name->expr && !type) {
-		printf("Adding var decl with array\n");
 		var->type = addType(NULL,NULL);
 		var->type->length = decl->name->expr;
 	}
@@ -449,7 +448,6 @@ struct Statement *addStatement(statement_t stmt, struct VarDecl *vardecl, struct
 }
 
 struct Statement *addStatements(struct Statement *stmt, struct Statement *next) {
-	printf("Test\n");
 	stmt->next = next;
 	return stmt;
 }
