@@ -1,7 +1,11 @@
 #include "syntaxtree.h"
 
+/**
+ * NOTE: This file is no longer in use but contains some of the ideas that were considered when making 
+ * the intermediate language which was initially going to be a DAG. Later, I decided that the IR should be
+ * quadruples as it is closer to the targeted assembly language.
+*/
 extern struct Declaration *syntaxTree;
-
 
 //all types of nodes within the DAG 
 typedef enum {
