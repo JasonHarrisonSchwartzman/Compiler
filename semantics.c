@@ -228,6 +228,7 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
  */
 struct Type *typeCheckExpr(struct Expression *expr) {
 	if (!expr) printf("Type checking expression null\n");
+	if (!expr) return NULL;
 	struct Evaluation **evalStack = calloc(1,sizeof(struct Evaluation*));
 	operation_t **opStack = calloc(1,sizeof(operation_t *));
 	long stackIndex = 0;
