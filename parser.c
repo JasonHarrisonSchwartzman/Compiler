@@ -108,12 +108,15 @@ void printParserError(Token *token) {
 		}
 	}
 	fprintf(stderr,"^");
-	fprintf(stderr,"\n\n");
+	fprintf(stderr,"\n");
 }
 
 //not finished yet TODO
-void parseError() {
-	
+void parseError(int numError) {
+	switch (numError) {
+		default:
+			fprintf(stderr,"Unexpected token.\n");
+	}
 }
 
 /*
@@ -380,6 +383,7 @@ int parse() {
 			printf("Token not found %s NUM: %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
 			//printToken(tokens[tokenIndex]->tokenType);
 			printf("\n");
+			parseError(-1);
 			return 0;
 		}
 		printStack();
