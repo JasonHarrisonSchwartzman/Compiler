@@ -200,7 +200,6 @@ struct argument *evalToArg(struct Evaluation *eval) {
     }
     if (eval->eval == VALUE) {
         if (eval->value->val_t == STRINGCONST) {
-            printf("HI JASON\n");
             return createArg(eval->value->value,VAL_STRING,0);
         }
         return createArg(NULL,getTypeQuad(eval->type),strtol(eval->value->value,NULL,10));
@@ -210,17 +209,14 @@ struct argument *evalToArg(struct Evaluation *eval) {
         return createArg(tempName,getTypeQuad(eval->type),0);
     }
     if (eval->eval == REF) {
-        printf("REFERENCE\n");
         char *tempName = addQuad(createQuad(createArg(eval->name,VAL_POINTER,0),NULL,OP_REF,createName("t",temp)));
         return createArg(tempName,VAL_POINTER,0);
     }
     if (eval->eval == DEREF) {
-        printf("DEREREFENCE\n");
         char *tempName = addQuad(createQuad(createArg(eval->name,getTypeQuad(eval->type),0),NULL,OP_DEREF,createName("t",temp)));
         return createArg(tempName,getTypeQuad(eval->type),0);
     }
     if (eval->eval == ARRAYINDEX) {
-        printf("ARRAYINDEX\n");
         if (!eval->type) printf("eval type null\n");
         if (!eval->type->length->eval->type) printf("eval length type null\n");
         char *tempName = addQuad(createQuad(createArg(eval->name,getTypeQuad(eval->type),0),evalToArg(eval->type->length->eval),OP_ARRAY_INDEX,createName("t",temp)));
@@ -286,17 +282,7 @@ void createQuadArr(struct VarDecl *var) {
     if (var->symbol->line == var->line) {//declaration of array
         printf("declaration of array %s\n",var->name);
         struct argument *tempSize;
-        
-        //size/index of array
-        /*if (var->type->length->expr) {
-            //multi eval expression
-            printf("multi eval\n");
-            tempNameSize = createQuadExpr(var->type->length);
-        }*/
-        //else {
-        //single eval expression
         tempSize = evalToArg(var->type->length->eval);
-        //}
 
         char *tempNameValue;
 
@@ -328,12 +314,10 @@ void createQuadArr(struct VarDecl *var) {
         }
         else {//multi eval expression (for value)
             if (!var->type->length->expr) {//single eval expression (for index)
-                printf("multi single\n");
                 char *tempName = createQuadExpr(var->expr);
                 addQuad(createQuad2(evalToArg(var->type->length->eval),createArg(tempName,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_INDEX,var->symbol));
             }
             else {//multi eval expression (for index)
-                printf("multi multi\n");
                 char *tempNameIndex = createQuadExpr(var->type->length);
                 char *tempNameValue = createQuadExpr(var->expr);
                 addQuad(createQuad2(createArg(tempNameIndex,VAL_ULONG,0),createArg(tempNameValue,getTypeQuad(var->expr->eval->type),0),OP_ARRAY_INDEX,var->symbol));
@@ -501,20 +485,16 @@ char *createQuadFuncCall(struct FunctionCall *call) {
     struct FunctionArgs *args = call->funcargs;
     while (args) {
         if (!args->expr->expr) {
-            printf("Problem starts here 1\n");
-            if (!args->expr->eval) printf("Problem lol\n");
+            if (!args->expr->eval) printf("Args expression doesn't have an eval\n");
             addQuad(createQuad(evalToArg(args->expr->eval), NULL, OP_PARAM, NULL));
-            printf("DONE\n");
         }
         else {
-            printf("Problem starts here 2\n");
             char *tempName = createQuadExpr(args->expr);
             addQuad(createQuad(createArg(tempName,VAL_LONG,0),NULL,OP_PARAM,NULL));
         }
         args = args->funcargs;
     }
     char *tempName = addQuad(createQuad(createArg(call->name,-1,0),createArg(NULL,VAL_ULONG,num),OP_CALL,createName("t",temp)));
-    printf("DONE with funccall\n");
     return tempName;
 }
 
