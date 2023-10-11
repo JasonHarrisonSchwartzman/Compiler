@@ -296,9 +296,7 @@ int calculateSize(struct quad *quad) {
 */
 char *addressCompute(struct quad *quad, struct Symbol *s) {
     char *address = lookUpAddress(s);
-    //printf("computing address of %s\n",s->name);
     if (address) {
-        //printf("found address %s\n",address);
         return address;
     }
     int size = calculateSize(quad);
@@ -307,7 +305,7 @@ char *addressCompute(struct quad *quad, struct Symbol *s) {
     }
     else {
         int placeOnStack = symAdds[numSymbols-1]->placeOnStack + symAdds[numSymbols-1]->size;
-        printf("Place on stack %d for symbol %s\n",placeOnStack,s->name);
+        //printf("Place on stack %d for symbol %s\n",placeOnStack,s->name);
         return addSymbolAddress(s,createAddressName(placeOnStack),size,placeOnStack);
     }
     return NULL;
@@ -320,7 +318,6 @@ char *addressCompute(struct quad *quad, struct Symbol *s) {
 */
 char *symbol_codegen(struct quad *quad, struct Symbol *s) {
     if (s->sym == SYMBOL_GLOBAL) {
-        printf("GLOBAL SYMBOL\n");
         return s->name;
     }
     else {//LOCAL VARIABLES/PAREMETERS
@@ -611,7 +608,6 @@ void expr_codegen(struct quad *quad) {
         case OP_GREAT:{
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            //printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings(4,"CMP ",scratch_name(reg2),", ",scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
@@ -627,7 +623,6 @@ void expr_codegen(struct quad *quad) {
         case OP_LESS: {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            //printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings(4,"CMP ",scratch_name(reg2),", ",scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
@@ -642,7 +637,6 @@ void expr_codegen(struct quad *quad) {
         case OP_EQ: {
             int reg1 = move(quad,quad->arg1);
             int reg2 = move(quad,quad->arg2);
-            //printf("REG1:%d REG2:%d\n",reg1,reg2);
             char *cmp = concatenateStrings(4,"CMP ",scratch_name(reg2),", ",scratch_name(reg1));
             addCode(cmp);
             scratch_free(reg1);
@@ -819,7 +813,6 @@ void globalDecl(struct quad *quad) {
     }
     char *decl = concatenateStrings(2,quad->result, ": .quad ");
     if (quad->operation == OP_ARRAY_CREATE) {//array
-        printf("CREATING GLOBAL ARRAY\n");
         for (int i = 0; i < getValue(quad->arg1->val_t,quad->arg1->value) - 1; i++) {
             decl = concatenateStrings(3,decl, intToString(getValue(quad->arg2->val_t,quad->arg2->value)),", ");
         }
@@ -996,7 +989,6 @@ void generateCode() {
 
                 inFunction = 1;
 
-                printf("In function\n");
                 printSymbolAddress();
 
                 symAdds = realloc(symAdds, 0);
@@ -1008,9 +1000,7 @@ void generateCode() {
                 addCode("PUSHQ %rbp");
                 addCode("MOVQ %rsp, %rbp");
 
-                printf("added func\n");
                 addParamsToStack(quads[i]);
-                printf("params added to stack\n");
                 int funcNum = i;
                 for (int j = 0; j < getValue(quads[funcNum]->arg1->val_t,quads[funcNum]->arg1->value); j++) {
                     quads[i]->numQuad = i;
@@ -1022,29 +1012,24 @@ void generateCode() {
                     symbol_codegen(quads[i],quads[i]->symbol);
                     i++;
                 }
-                printf("done adding params\n");
             }
             else {
                 char *label = concatenateStrings(2,quads[i]->result,":");
                 addCode(label);
             }
         }
-        else if (quads[i]->operation == OP_ASSIGN) {//make sure to do someting different with globals
-            //printf("ASSIGN\n");
+        else if (quads[i]->operation == OP_ASSIGN) {
             if (inFunction == 0) {
                 symbol_codegen(quads[i],quads[i]->symbol);
-                //printf("GLOBAL VAR %s\n",quads[i]->result);
                 globalDecl(quads[i]);
                 continue;
             }
-            //printf("LOCAL VAR %s\n",quads[i]->symbol->name);
             quads[i]->reg = move(quads[i],quads[i]->arg1);
             char *storeVar = concatenateStrings(4,"MOVQ ", scratch_name(quads[i]->reg),", ",symbol_codegen(quads[i],quads[i]->symbol));
             scratch_free(quads[i]->reg);
             addCode(storeVar);
         }
         else if (quads[i]->operation == OP_PARAM) {
-            printf("quad %d PARAM name: %s\n",i,quads[i]->arg1->name);
             char *arg = symbolToOperand(quads[i],quads[i]->arg1);
             char *regArg = argNumToReg(paramNum);
             char *movArg = concatenateStrings(4,"MOVQ ", arg,", ",regArg);
