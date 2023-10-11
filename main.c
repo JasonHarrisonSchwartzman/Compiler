@@ -17,9 +17,8 @@ int main(int argc, char *argv[]) {
 		printf("SCANNER FAILURE.\n");
 		exit(1);
 	}
-	//printTokens();
+	printTokens();
 	initializeRules();
-	//printRules();
 	createInstanceAndVarTokens();
 	initializeInstances();
 	int result = parse();
@@ -66,11 +65,11 @@ int main(int argc, char *argv[]) {
     printData(f);
     printCode(f);
     fclose(f);
+	//assemble and link
 	char *assembler = concatenateStrings(5,"as -g -o ", argv[2],".o ",argv[2],".s");
 	system(assembler);
 	char *linker = concatenateStrings(5,"ld -o ",argv[2]," ",argv[2],".o");
 	system(linker);
 	return 0;
-	// //freeTokens();seg fault
 }
 
