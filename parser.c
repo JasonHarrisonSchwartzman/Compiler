@@ -69,16 +69,14 @@ void *pop() {
 		return NULL;
 	}
 	else {
-		/*if (stack[stackTopPointer]->ptr == NULL) {
-			printf("Variable contains a NULL pointer: ");
-			printToken(stack[stackTopPointer]->var);
-			printf("\n");
-		}*/
 		stack[stackTopPointer]->token = NULL;
 		stack[stackTopPointer]->var = 0;
 		return stack[stackTopPointer]->ptr;
 	}
 }
+/**
+ * Prints the line and a '^' character finding the error
+*/
 void printParserError(Token *token) {
 	int i;
 	printLine(token->line);
@@ -235,10 +233,8 @@ void *callSemanticRule(void *param[], int rule) {
 			return addOperation(BITWISEAND);
 		case 50:
 			return addOperation(BITWISEOR);
-		case 51: {
-			printf("parser bitwise or\n");
+		case 51: 
 			return addOperation(BITWISEXOR);
-		}
 		case 52:
 			return addOperation(EQUAL);
 		case 53:
@@ -264,8 +260,6 @@ void *callSemanticRule(void *param[], int rule) {
 		case 63:
 			return addEval(ID,NULL,NULL,((struct Token*)param[0])->token,-1,-1,NULL,((struct Token*)param[0])->line);
 		case 64:
-			//printf("Eval: %s\n",((struct Expression*)param[2])->eval->value->value);
-			//exit(1);
 			return addEval(ARRAYINDEX,NULL,param[2],((struct Token*)param[0])->token,-1,-1,NULL,((struct Token*)param[0])->line);
 		case 65:
 			return addEval(FUNCRETURN,NULL,NULL,NULL,-1,-1,param[0],((struct FunctionCall*)param[0])->line);
@@ -341,7 +335,7 @@ void reduce(int rule) {
 			pointers[num--] = p;
 		}
 	}
-	if (num != -1) printf("Did not fill up pointer array ERROR remaining: %d\n",num+1);
+	if (num != -1) printf("While reducing: Did not fill up pointer array ERROR remaining: %d\n",num+1);
 	token_t var = varTokens[rules[rule].var-(TOTAL_TOKENS+NUM_INSTANCES)]->tokenType;
 	token_t instance = instanceTokens[instances[stack[stackTopPointer]->instance].gotoAction[var-(TOTAL_TOKENS+NUM_INSTANCES)]]->tokenType;
 
@@ -377,11 +371,8 @@ int parse() {
 			reduce(instances[state].actions[actionIndex].instance);
 		}
 		else {
-			//add error handling TODO
 			printParserError(tokens[tokenIndex]);
-			//printLine(tokens[tokenIndex]->line);
 			printf("Token not found %s NUM: %d Token type: ",tokens[tokenIndex]->token,tokens[tokenIndex]->tokenType);
-			//printToken(tokens[tokenIndex]->tokenType);
 			printf("\n");
 			parseError(-1);
 			return 0;
