@@ -360,7 +360,15 @@ void printError(int errorNum, char *name,unsigned long line1, unsigned long line
 			break;
 		case 5:
 			fprintf(stderr,"Function call \"%s\" has an unequal amount of arguments as parameters in declaration.\n",name);
-			printLine(line1);
+			if (strcmp(name,"printd") == 0) {
+				fprintf(stderr,"[X]: printd(int number);\n");
+			}
+			else if (strcmp(name,"prints") == 0){ 
+				fprintf(stderr,"[X]: prints(char ~string);\n");
+			}
+			else {
+				printLine(line1);
+			}
 			printLine(line2);
 			fprintf(stderr,"To fix: match the number of arguments in function call to the number of parameters in function declaration.\n");
 			break;
@@ -517,7 +525,9 @@ int resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 		numFargs++;
 	}
 	if (numParams != numFargs) {
+		printf("%lu %s %lu\n",funccall->symbol->line,funccall->name,funccall->line);
 		printError(5,funccall->name,funccall->symbol->line,funccall->line);
+		printf("finished error\n");
 		return 0;
 	}
 	return 1;
@@ -638,7 +648,11 @@ void createPrints(struct SymbolTable *sym) {
 	struct FuncDecl *func = calloc(1,sizeof(struct FuncDecl));
 	func->line = 0;
 	func->name = "prints";
-	func->type = NULL; // no return type could be problematic!
+	func->type = calloc(1,sizeof(struct Type));
+	func->type->dataType = INT;
+	func->type->length = NULL;
+	func->type->pointer = 0;
+	func->type->sign = SIGNED;
 	func->params = calloc(1,sizeof(struct Params));
 	func->params->var = calloc(1,sizeof(struct VarDecl));
 	func->params->var->type = calloc(1,sizeof(struct Type));
@@ -653,7 +667,11 @@ void createPrintd(struct SymbolTable *sym) {
 	struct FuncDecl *func = calloc(1,sizeof(struct FuncDecl));
 	func->line = 0;
 	func->name = "printd";
-	func->type = NULL; // no return type could be problematic!
+	func->type = calloc(1,sizeof(struct Type));
+	func->type->dataType = INT;
+	func->type->length = NULL;
+	func->type->pointer = 0;
+	func->type->sign = SIGNED;
 	func->params = calloc(1,sizeof(struct Params));
 	func->params->var = calloc(1,sizeof(struct VarDecl));
 	func->params->var->type = calloc(1,sizeof(struct Type));
