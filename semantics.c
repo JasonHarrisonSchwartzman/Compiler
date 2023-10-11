@@ -46,6 +46,9 @@ struct Symbol *createSymbol(char *name, struct Type *type, symbol_t sym, dec_t d
 	s->line = line;
 	return s;
 }
+/**
+ * Extra param field for function
+*/
 struct Symbol *createSymbolFunc(char *name, struct Type *type, symbol_t sym, dec_t dec, unsigned long line,struct Params *params) {
 	struct Symbol *s = calloc(1,sizeof(struct Symbol));
 	s->name = name;
@@ -89,7 +92,6 @@ void printSymbolTable(struct SymbolTable *sym) {
 		temp->symbols = temp->symbols->next;
 	}
 	for (int i = 0; i < temp->numInner; i++ ) {
-		//printf("Num inner %d\n",i);
 		printSymbolTable(temp->inner[i]);
 	}
 }
@@ -150,7 +152,6 @@ struct Type *inferLiteral(struct Value *value) {
 		return type;
 	}
 	else { //STRING
-		printf("STRING INFERENCE of %s\n",value->value);
 		struct Type *type = calloc(1,sizeof(struct Type));
 		type->dataType = CHAR;
 		type->sign = UNSIGNED;
@@ -164,9 +165,7 @@ struct Type *inferLiteral(struct Value *value) {
 * Gets type of eval (VALUE or other)
 */
 struct Type *getType(struct Evaluation *eval) {
-	printf("type to get: %d\n",eval->eval);
 	if (eval->eval == VALUE) {
-		printf("Inferring literal value of %s\n",eval->value->value);
 		return inferLiteral(eval->value);
 	}
 	else if (eval->eval == FUNCRETURN) {
@@ -178,31 +177,17 @@ struct Type *getType(struct Evaluation *eval) {
 		return eval->funccall->symbol->type;
 	}
 	else if (eval->eval == ARRAYINDEX) {
-		if (!eval->symbol) printf("no symbol\n");
-		printf("%s\n",eval->name);
-		if (!eval->type) printf("no type\n");
-
-		if (!eval->type->length->eval) printf("NULL INDEx\n");
-		//printf("%s\n",eval->type->length->eval->name);
 		typeCheckExpr(eval->type->length);
-		printf("index checked\n");
 
 		struct Expression *index = eval->type->length;
-		/*if (eval->type) {
-			index = eval->type->length;
-		}
-		else index = eval->symbol->type->length;*/
 		eval->type = calloc(1,sizeof(struct Type));
 		eval->type->dataType = eval->symbol->type->dataType;
 		eval->type->pointer = eval->symbol->type->pointer;
 		eval->type->sign = eval->symbol->type->sign;
-	
 		eval->type->length = index;
 		return eval->type;
 	}
 	else {
-		if (eval->name) printf("%s\n",eval->name);
-		if (!eval->symbol) printf("No symbol\n");
 		return eval->symbol->type;
 	}
 }
@@ -211,7 +196,6 @@ struct Type *getType(struct Evaluation *eval) {
  */
 struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evaluation *eval2) {
 	if (!eval2) {
-		//printf("Type of eval pointer: %p\n",getType(eval1));
 		return eval1->type = getType(eval1);
 	}
 	
@@ -229,8 +213,6 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
 		type2->sign = SIGNED;
 	}
 	if (type1->pointer > 0 || type2->pointer > 0) {//both become pointers
-		//printf("Pointer present in one or more evals");
-		//printf("%d %d\n",type1->pointer,type2->pointer);
 		type1->pointer = 1;
 		type2->pointer = 1;
 	}
@@ -245,8 +227,7 @@ struct Type *resolveType(struct Evaluation *eval1, operation_t *op, struct Evalu
  * Given an expression, resolve all subexpression types given operations between two values and return the type computed when reduced all the way.
  */
 struct Type *typeCheckExpr(struct Expression *expr) {
-	if (!expr) printf("Expression null\n");
-	if (!expr) return NULL; //sholdn't be null, might have to find the cause
+	if (!expr) printf("Type checking expression null\n");
 	struct Evaluation **evalStack = calloc(1,sizeof(struct Evaluation*));
 	operation_t **opStack = calloc(1,sizeof(operation_t *));
 	long stackIndex = 0;
@@ -284,8 +265,7 @@ struct Type *typeCheckExpr(struct Expression *expr) {
  * Checking to see if assignment is legal between an expression into a variable
  */
 struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) {
-	if (!expr) printf("Expression NULL here\n");
-	if (!expr) return NULL;
+	if (!expr) printf("Assignment expression NULL\n");
 
 	struct Type *exprType = typeCheckExpr(expr);
 
@@ -298,7 +278,6 @@ struct Type *typeCheckAssignment(struct Type *varType, struct Expression *expr) 
 		printf("Variable type data loss (left side has smaller data type than the right).\n");
 		return NULL;
 	}
-	printf("within typeCheckAss pointer of X? %d\n",exprType->pointer);
 	return varType;
 }
 
@@ -386,13 +365,9 @@ void createSymbolTableVarDecl(struct SymbolTable *symTab, struct VarDecl *var) {
 		printError(1,x->name,var->line,x->line);
 		return;
 	}
-	//printf("before symbol created var type: %d\n",var->type->pointer);
 	struct Symbol *s = createSymbol(var->name,var->type,symTab->level == 0 ? SYMBOL_GLOBAL : SYMBOL_LOCAL,VAR,var->line);
 	addSymbol(symTab,s);
 	var->symbol = s;
-	//typeCheckExpr(var->expr);
-	//printf("var symbol type pointer %d\n",var->symbol->type->pointer);
-	//printf("before typeCheck pointer of var %d\n",var->type->pointer);
 	int exprResolved = resolveExpr(symTab,var->expr);
 	if (exprResolved) typeCheckAssignment(var->type,var->expr);
 }
@@ -436,9 +411,7 @@ void createSymbolTableParams(struct SymbolTable *symTab, struct Params *param) {
  * Return 0 if you cannot find symbol else return 1
  */
 int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
-	printf("TRYING TO RESOLVE EVAL\n");
 	if (eval->eval == FUNCRETURN) {
-		printf("FUNCRETURN\n");
 		return resolveFuncCall(symTab,eval->funccall);
 	}
 	else if (eval->eval == ARRAYINDEX) {
@@ -449,7 +422,6 @@ int resolveEval(struct SymbolTable *symTab, struct Evaluation *eval) {
 			return 0;
 		}
 		return 1;
-		//return resolveExpr(symTab,eval->expr); //array index
 	}
 	else if (eval->eval != VALUE) {
 		eval->symbol = lookUpName(eval->name,symTab);
@@ -491,9 +463,6 @@ int resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
 	var->type->sign = var->symbol->type->sign;
 	
 	var->type->length = index;//this is so the index of the array doesn't point to the total size within var->symbol->type
-	//var->type = var->symbol->type;
-	//var->type->length = index;
-	//printf("Expression length in symbol %s\nExpression length in var %s\n",var->symbol->type->length->eval->value->value,var->type->length->eval->value->value);
 	return 1;
 }
 
@@ -502,7 +471,7 @@ int resolveAssignment(struct SymbolTable *symTab, struct VarDecl *var) {
  */
 int resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 	funccall->symbol = lookUpName(funccall->name,symTab);
-	if (!funccall->symbol->type) printf("NULL HERE\n");
+	if (!funccall->symbol->type) printf("Funccall symbol is NULL\n");
 	if (!funccall->symbol) {
 		printError(2, funccall->name,funccall->symbol->line,0);
 		return 0;
@@ -525,9 +494,7 @@ int resolveFuncCall(struct SymbolTable *symTab, struct FunctionCall *funccall) {
 		numFargs++;
 	}
 	if (numParams != numFargs) {
-		printf("%lu %s %lu\n",funccall->symbol->line,funccall->name,funccall->line);
 		printError(5,funccall->name,funccall->symbol->line,funccall->line);
-		printf("finished error\n");
 		return 0;
 	}
 	return 1;
@@ -550,7 +517,6 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 	struct Statement *s = statement;
 	while (s) {
 		if (s->stmt == DECLARATION) {
-			printf("RESOLVING DECLARATION of %s\n", s->var->name);
 			createSymbolTableVarDecl(symTab,s->var);//var decl
 
 			if(s->var->type->length) resolveExpr(symTab,s->var->type->length);//array size (if applicable)
@@ -597,7 +563,6 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 			}
 		}
 		if (s->stmt == FUNCCALL) {
-			printf("FUNCCALL\n");
 			resolveFuncCall(symTab,s->funccall);
 			struct FunctionArgs *f = s->funccall->funcargs;
 			while (f) {
@@ -609,29 +574,21 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 		}
 		if (s->stmt == RETURN) {
 			int resolvedExpr = resolveExpr(symTab,s->returnstmt);
-			printf("Expression resolve?: %d\n",resolvedExpr);
 			if (resolvedExpr) {
 				typeCheckExpr(s->returnstmt); 
-				if (!returnType) printf("NO RETURN TYPE NOT GOOD\n");
+				if (!returnType) printf("NO RETURN TYPE\n");
 				typeCheckAssignment(returnType,s->returnstmt);
 			}
 		}
 		if (s->stmt == ASSIGNMENT) {
-			printf("RESOLVING ASSIGNMENT of %s\n",s->var->name);
-			//if (s->var->type && s->var->type->length) printf("This is the pointer for the index of array before resolution %p\n",s->var->type->length);
 
 			int resolvedAss = resolveAssignment(symTab,s->var);//var assign
-
-			//if (s->var->type->length) printf("This is the pointer for the index of array before %p\n",s->var->type->length);
 
 			if(s->var->type && s->var->type->length) resolveExpr(symTab,s->var->type->length);//array size if applicable
 			if(s->var->type && s->var->type->length) typeCheckExpr(s->var->type->length);//array size if applicable
 			int resolvedExpr = resolveExpr(symTab,s->var->expr);//right hand side of ass
-			printf("Resolved assignment passed: %d Resolved expression passed: %d\n",resolvedAss,resolvedExpr);
-			printf("TYPE CHECKING ASSIGNMENT\n");
 			if (resolvedAss && resolvedExpr) typeCheckAssignment(s->var->type,s->var->expr); //if assignment is resolved you can type check
 			
-			//if (s->var->type->length) printf("This is the pointer for the index of array after %p\n",s->var->type->length);
 		}
 		if ((s->stmt == BREAK) || (s->stmt == CONTINUE)) {
 			resolveControl(s->stmt);
@@ -644,6 +601,9 @@ void createSymbolTableStatements(struct SymbolTable *symTab, struct Statement *s
 	}
 }
 
+/**
+ * Creates symbol for the prints function
+*/
 void createPrints(struct SymbolTable *sym) {
 	struct FuncDecl *func = calloc(1,sizeof(struct FuncDecl));
 	func->line = 0;
@@ -663,6 +623,9 @@ void createPrints(struct SymbolTable *sym) {
 	func->symbol = s;
 }
 
+/**
+ * Creates symbol for the printd function
+*/
 void createPrintd(struct SymbolTable *sym) {
 	struct FuncDecl *func = calloc(1,sizeof(struct FuncDecl));
 	func->line = 0;
@@ -687,17 +650,6 @@ void createBuiltInFunctions(struct SymbolTable *sym) {
 	createPrints(sym);
 	createPrintd(sym);
 }
-
-/*void createSymbolTableFuncDecl(struct SymbolTable *symTab, struct FuncDecl *func) {
-	struct Symbol *x = lookUpNameCurrentScope(func->name,symTab);
-	if (x) {
-		printError(1,x->name,func->line,x->line);
-		return;
-	}
-	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
-	addSymbol(symTab,s);
-	func->symbol = s;
-}*/
 
 /*
  * Loops through the declarations calling the appropriate createSymbolTable function
@@ -730,7 +682,7 @@ void createSymbolTableDeclarations(struct SymbolTable *initial, struct Declarati
 }
 
 /*
- * Mostly done
+ * Checks all semantics
  */ 
 int checkAll() {
 	symbolTables = calloc(1,sizeof(struct SymbolTable));
