@@ -644,7 +644,7 @@ void createPrints(struct SymbolTable *sym) {
 	func->params->var->type = calloc(1,sizeof(struct Type));
 	func->params->var->type->dataType = CHAR;
 	func->params->var->type->pointer = 1;
-	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
+	struct Symbol *s = createSymbolFunc(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line,func->params);
 	addSymbol(sym,s);
 	func->symbol = s;
 }
@@ -659,7 +659,7 @@ void createPrintd(struct SymbolTable *sym) {
 	func->params->var->type = calloc(1,sizeof(struct Type));
 	func->params->var->type->dataType = LONG;
 	func->params->var->type->pointer = 0;
-	struct Symbol *s = createSymbol(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line);
+	struct Symbol *s = createSymbolFunc(func->name,func->type,SYMBOL_GLOBAL,FUNC,func->line,func->params);
 	addSymbol(sym,s);
 	func->symbol = s;
 }
