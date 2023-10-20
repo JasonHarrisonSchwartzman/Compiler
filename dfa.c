@@ -168,6 +168,7 @@ void initialize() {
 	addTransition(0, '\n',102, 0);
 	addTransition(0, '\t',102, 0);
 	addTransition(0, '\r',102, 0);
+	addTransition(0, '/', 83, 0);
 	for (int i = 1; i < NUM_STATES - 3; i++) {
 		if (i == 99) {
 			addTransition(i, ' ', 99, 0);
