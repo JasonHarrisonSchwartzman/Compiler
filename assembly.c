@@ -677,17 +677,19 @@ void expr_codegen(struct quad *quad) {
                 char *operand = symbolToOperand(quad,quad->arg1);
                 int reg1 = scratch_alloc();
                 char *code1;
+                int localArray = 0;
                 if (operand[strlen(operand)-1] != ')') {//global array
                     code1 = concatenateStrings(4,"LEAQ (",operand,"), ",scratch_name(reg1));
                 }
                 else {//local array
+                    localArray = 1;
                     code1 = concatenateStrings(4,"LEAQ ",operand,", ",scratch_name(reg1));
                 }
                 if (regNameToNum(operand) > -1) scratch_free(regNameToNum(operand)); //figure out why this line was needed
                 addCode(code1);
 
                 int reg2 = move(quad,quad->arg2);
-                if (quad->symbol->sym == SYMBOL_LOCAL) {//local variables 
+                if (localArray) {//local variables 
                     char *neg = concatenateStrings(2, "NEG ",scratch_name(reg2));
                     addCode(neg);
                 }
@@ -703,10 +705,12 @@ void expr_codegen(struct quad *quad) {
                 char *operand = symbol_codegen(quad,quad->symbol);
                 int reg1 = scratch_alloc();
                 char *code1;
+                int localArray = 0;
                 if (operand[strlen(operand)-1] != ')') {//global array
                     code1 = concatenateStrings(4,"LEAQ (",operand,"), ",scratch_name(reg1));
                 }
                 else {//local array
+                    localArray = 1;
                     code1 = concatenateStrings(4,"LEAQ ",operand,", ",scratch_name(reg1));
                 }
 
@@ -714,7 +718,7 @@ void expr_codegen(struct quad *quad) {
                 addCode(code1);
 
                 int reg2 = move(quad,quad->arg1);
-                if (quad->symbol->sym == SYMBOL_LOCAL) {//local variables 
+                if (localArray) {//local variables 
                     char *neg = concatenateStrings(2, "NEG ",scratch_name(reg2));
                     addCode(neg);
                 }
