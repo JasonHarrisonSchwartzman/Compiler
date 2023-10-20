@@ -209,11 +209,11 @@ struct argument *evalToArg(struct Evaluation *eval) {
         return createArg(tempName,getTypeQuad(eval->type),0);
     }
     if (eval->eval == REF) {
-        char *tempName = addQuad(createQuad2(createArg(eval->name,VAL_POINTER,0),NULL,OP_REF,eval->symbol));
+        char *tempName = addQuad(createQuad(createArg(eval->name,VAL_POINTER,0),NULL,OP_REF,createName("t",temp)));
         return createArg(tempName,VAL_POINTER,0);
     }
     if (eval->eval == DEREF) {
-        char *tempName = addQuad(createQuad2(createArg(eval->name,getTypeQuad(eval->type),0),NULL,OP_DEREF,eval->symbol));
+        char *tempName = addQuad(createQuad(createArg(eval->name,getTypeQuad(eval->type),0),NULL,OP_DEREF,createName("t",temp)));
         return createArg(tempName,getTypeQuad(eval->type),0);
     }
     if (eval->eval == ARRAYINDEX) {
