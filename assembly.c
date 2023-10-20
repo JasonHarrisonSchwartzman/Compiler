@@ -919,7 +919,7 @@ void generateCode() {
             //stack size
             if (inFunction && (quads[i]->symbol->sym == SYMBOL_LOCAL)) {
                 char *address = lookUpAddress(quads[i]->symbol);
-                if (!address) {
+                if (!address && (quads[i]->operation != OP_ARRAY_CREATE)) {
                     addCode("SUBQ $8, %rsp");
                     stackSize+=8;
                 }
