@@ -687,6 +687,10 @@ void expr_codegen(struct quad *quad) {
                 addCode(code1);
 
                 int reg2 = move(quad,quad->arg2);
+                if (quad->symbol->sym == SYMBOL_LOCAL) {//local variables 
+                    char *neg = concatenateStrings(2, "NEG ",scratch_name(reg2));
+                    addCode(neg);
+                }
                 int reg3 = scratch_alloc();
                 char *arrayIndex = concatenateStrings(6,"MOVSLQ (",scratch_name(reg1),",",scratch_name(reg2),",8), ",scratch_name(reg3));
                 addCode(arrayIndex);
@@ -710,6 +714,10 @@ void expr_codegen(struct quad *quad) {
                 addCode(code1);
 
                 int reg2 = move(quad,quad->arg1);
+                if (quad->symbol->sym == SYMBOL_LOCAL) {//local variables 
+                    char *neg = concatenateStrings(2, "NEG ",scratch_name(reg2));
+                    addCode(neg);
+                }
                 int reg3 = move(quad,quad->arg2);
 
                 char *store = concatenateStrings(7,"MOVQ ",scratch_name(reg3),", (",scratch_name(reg1),",",scratch_name(reg2),",8)");
@@ -939,7 +947,7 @@ void generateCode() {
                 stackSize+=(8*arraySize);
 
                 int reg1 = scratch_alloc();
-                char *init = concatenateStrings(4,"MOVQ $",intToString(arraySize),", ",scratch_name(reg1));
+                char *init = concatenateStrings(4,"MOVQ $",intToString(arraySize*-1),", ",scratch_name(reg1));
                 addCode(init);
 
                 char *label = concatenateStrings(3,".L",intToString(labelNum++),quads[i]->result);
@@ -953,7 +961,7 @@ void generateCode() {
                 char *location = concatenateStrings(4,"LEAQ ",address,", ",scratch_name(reg3));
                 addCode(location);
 
-                char *sub = concatenateStrings(2,"SUBQ $1, ",scratch_name(reg1));
+                char *sub = concatenateStrings(2,"ADDQ $1, ",scratch_name(reg1));
                 addCode(sub);
 
                 char *element = concatenateStrings(7,"MOVQ ",scratch_name(reg2),", (",scratch_name(reg3),", ",scratch_name(reg1),",8)");
@@ -963,7 +971,7 @@ void generateCode() {
                 char *cmp = concatenateStrings(2,"CMP $0, ",scratch_name(reg1));
                 addCode(cmp);
 
-                char *jump = concatenateStrings(2,"JNS ",label);
+                char *jump = concatenateStrings(2,"JS ",label);
                 addCode(jump);
                 scratch_free(reg1);
                 scratch_free(reg2);
