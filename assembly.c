@@ -660,12 +660,12 @@ void expr_codegen(struct quad *quad) {
             char *var = symbolToOperand(quad,quad->arg1);
             int reg1 = scratch_alloc();
             char *move = concatenateStrings(4,"MOVQ ", var,", ",scratch_name(reg1));
+            addCode(move);
             
             int reg2 = scratch_alloc();
             char *deref = concatenateStrings(4,"MOVQ (",scratch_name(reg1),"), ",scratch_name(reg2));
             addCode(deref);
             quad->reg = reg2;
-            addCode(move);
             scratch_free(reg1);
             break; }
         case OP_ARRAY_INDEX: {
