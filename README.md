@@ -3,31 +3,31 @@
 Try running code on my website: https://jasonhschwartzman.com/jlang
 
 ### Keywords:
-Types: int, long, double, short, char
-Sign: signed, unsigned
-Loops: for, while
-Loop control: break, continue
-Conditionals: if, else, elseif
-Functions: return
+Types: int, long, double, short, char  
+Sign: signed, unsigned  
+Loops: for, while  
+Loop control: break, continue  
+Conditionals: if, else, elseif  
+Functions: return  
 
 
-Operations: + - * / % & | ^ == <= >= < > && || !=
-Assignment: =
+Operations: + - * / % & | ^ == <= >= < > && || !=  
+Assignment: =  
 
 ### Expressions:
-Expressions are combinations of values where some being literal while others being a variable that are evaluated to a single value. Expressions are read BACKWARDS.
+Expressions are combinations of values where some being literal while others being a variable that are evaluated to a single value. Expressions are read BACKWARDS.  
 
-2 - 3 / 4
-read 4 / 3 - 2 which is equal to -1
-3 < 1 - 3
-read 3 - 1 < 3 which is equal to 1 (true)
+2 - 3 / 4  
+read 4 / 3 - 2 which is equal to -1  
+3 < 1 - 3  
+read 3 - 1 < 3 which is equal to 1 (true)  
 
-These combinations are separated by operations.
+These combinations are separated by operations.  
 
-The different types of the values:
-identifiers (or dereferenced pointers)
-function calls (return value)
-literals
+The different types of the values:  
+identifiers (or dereferenced pointers)  
+function calls (return value)  
+literals  
 memory locations
 array values
 strings
