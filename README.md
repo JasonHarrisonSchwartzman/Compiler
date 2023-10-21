@@ -28,9 +28,9 @@ The different types of the values:
 identifiers (or dereferenced pointers)  
 function calls (return value)  
 literals  
-memory locations
-array values
-strings
+memory locations  
+array values  
+strings  
 
 
 There are two types of declarations: function declarations and variable declarations.
@@ -38,30 +38,30 @@ There are two types of declarations: function declarations and variable declarat
 ## Variables: 
 
 ### Variable declarations:
-[sign (optional)] [type] identifier = [CHARACTER/STRING/NUMBER]; //for global variables
-                                    = expression; //for local variables
+[sign (optional)] [type] identifier = [CHARACTER/STRING/NUMBER]; //for global variables  
+                                    = expression; //for local variables  
                                  
 ### Variable assignments:
 identifier = expression;
 
 Identifier must be declared prior.
 
-a ~ may proceed identifier and a [NUM] may follow or both
-~id is a pointer
-id[NUM] is an array of size NUM
-~id[NUM] is an array of pointers size NUM
+a ~ may proceed identifier and a [NUM] may follow or both  
+~id is a pointer  
+id[NUM] is an array of size NUM  
+~id[NUM] is an array of pointers size NUM  
 
 ### Arrays:
-Arrays must have a constant size even if the array is a local variable.
-int array[5] = 0;
-This initializes an array with 5 elements all equal to 0.
-You can update values in the array like:
-array[0] = 2;
-This updates the 1st element to 2.
+Arrays must have a constant size even if the array is a local variable.  
+int array[5] = 0;  
+This initializes an array with 5 elements all equal to 0.  
+You can update values in the array like:  
+array[0] = 2;  
+This updates the 1st element to 2.  
 
 ### Function declarations:
-[sign (optional)] [type] identifier (parameters) { function body }
-parameters are 0 or more [sign (optional)] [type] identifier    separated by a comma.
+[sign (optional)] [type] identifier (parameters) { function body }  
+parameters are 0 or more [sign (optional)] [type] identifier    separated by a comma.  
 
 ## The function body can consists of statements:
 
@@ -70,7 +70,7 @@ parameters are 0 or more [sign (optional)] [type] identifier    separated by a c
     elseif (expr) { statements }
     else { statements }
  
- the ordering most go if -> elseif -> else with 0 or more elseif statements. else is optional. elseif and else must directly follow if. There can be if statements without elseif or else statements.
+ The ordering most go if -> elseif -> else with 0 or more elseif statements. else is optional. elseif and else must directly follow if. There can be if statements without elseif or else statements.
 
 ### Variable declarations and assignments:
 shown above
@@ -97,9 +97,9 @@ we can call this function like calc(10,15);
 Scope is defined by different levels starting at level 0 where the global variables are while local variables are level 1+. Inside any curly braces increases the level by 1. You can have multiple scopes at the same level such as an if { ... } else { ... } where ... in if and else are at the same level but in different scopes. You cannot declare two identifiers with the same name in the same scope, but you can define them with the same name in different scope. Parameters and expression inside statements (such as if (...) { } or while (...) {} ) will be considered within the scope of the { }. You may call identifiers that have been declared in scopes above and at the current scope, but they must be declared BEFORE used. You cannot call a function in the beginning of the file that is declared somewhere below.
 
 ## Printing:
-There are two built in functions: printd(int number) and prints(char ~string)
-printd takes a number and prints it to stdout.
-prints takes a GLOBAL char pointer (also known as a string) and prints it to stdout.
+There are two built in functions: printd(int number) and prints(char ~string)  
+printd takes a number and prints it to stdout.  
+prints takes a GLOBAL char pointer (also known as a string) and prints it to stdout.  
 
 ## Future work:
 JLang recognizes different data types such as short, int, long syntactically. Even though data types have different sizes in theory(int is 4 bytes, short is 2 bytes) all data types are implemented as signed 8 bytes. In the future, I plan to add support for this feature. 
