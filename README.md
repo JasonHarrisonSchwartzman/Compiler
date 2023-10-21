@@ -39,7 +39,7 @@ There are two types of declarations: function declarations and variable declarat
 
 ### Variable declarations:
 [sign (optional)] [type] identifier = [CHARACTER/STRING/NUMBER]; //for global variables  
-                                    = expression; //for local variables  
+[sign (optional)] [type] identifier = expression; //for local variables  
                                  
 ### Variable assignments:
 identifier = expression;
@@ -99,7 +99,7 @@ Scope is defined by different levels starting at level 0 where the global variab
 ## Printing:
 There are two built in functions: printd(int number) and prints(char ~string)  
 printd takes a number and prints it to stdout.  
-prints takes a GLOBAL char pointer (also known as a string) and prints it to stdout.  
+prints takes a GLOBAL char pointer (also known as a string ex: char ~string = "Hello world!\n") and prints it to stdout.  
 
 ## Future work:
 JLang recognizes different data types such as short, int, long syntactically. Even though data types have different sizes in theory(int is 4 bytes, short is 2 bytes) all data types are implemented as signed 8 bytes. In the future, I plan to add support for this feature. 
