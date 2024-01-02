@@ -1,6 +1,7 @@
 # JLang Documentation
 
 Try running code on my website: https://jasonhschwartzman.com/jlang
+You can check out more information about this project on my website: https://jasonhschwartzman.com/projects/compiler
 
 ### Keywords:
 Types: int, long, double, short, char  
