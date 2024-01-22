@@ -23,8 +23,6 @@ read 4 / 3 - 2 which is equal to -1
 3 < 1 - 3  
 read 3 - 1 < 3 which is equal to 1 (true)  
 
-These combinations are separated by operations.  
-
 The different types of the values:  
 identifiers (or dereferenced pointers)  
 function calls (return value)  
